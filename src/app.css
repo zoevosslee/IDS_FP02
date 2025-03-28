@@ -7,9 +7,9 @@
     --gray-medium: #B4B6B8;
   
     /* REDS */
-    --red-primary: #A12624;
-    --red-muted: #CA8584;
-    --red-pale: #E3BFBE;
+    --red: #A12624;
+    --red-medium: #CA8584;
+    --red-light: #E3BFBE;
   
     /* ORANGES */
     --orange-primary: #EE762C;
@@ -114,14 +114,16 @@
   h1 {
     color: rgba(255, 255, 255, 0);
     -webkit-text-stroke-width: 4px;
-    -webkit-text-stroke-color: #BF8484;
+    -webkit-text-stroke-color: var(--red);
     font-family: 'Utendo', sans-serif;
     font-size: 96px;
     font-style: normal;
     font-weight: 800;
     line-height: normal;
+    margin: 0;
+    padding:0;
   }
-  
+
   h2 {
     color: #000;
     font-family: 'Utendo', sans-serif;
@@ -129,6 +131,20 @@
     font-style: normal;
     font-weight: 700;
     line-height: normal;
+    margin: 0;
+    padding:0;
+
+  }
+
+  h3 {
+    color: #000;
+    font-family: 'Utendo', sans-serif;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin: 0;
+    padding:0;
   }
   
   p {
@@ -147,5 +163,18 @@
     font-style: normal;
     font-weight: 700;
     line-height: normal;
+  }
+  
+
+  /*page layout*/
+
+  #home-page {
+    padding:20px;
+
+  }
+
+  #home-page .text-content {
+    padding-top: 20px;
+    padding-bottom: 30px;
   }
   
