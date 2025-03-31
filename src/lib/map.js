@@ -13,12 +13,10 @@ export async function initMap(container) {
 
     map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-    // Wait for map to load
     await new Promise(resolve => map.on('load', resolve));
 
     const res = await fetch('/boston_neighborhoods_timelapse_cleaned.geojson');
     const geojsonData = await res.json();
 
-    // You can add source/layer here or return map + data
     return { map, geojsonData };
 }
