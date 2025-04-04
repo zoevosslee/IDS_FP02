@@ -31,12 +31,11 @@
   <div class="container">
     <div class="text-content">
       <h1>Rent is a Trap!</h1>
-      <h2>By Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, Zoe Voss Lee</h2>
+      <h3>By Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, Zoe Voss Lee</h3>
     </div>
     
     <div id="map" bind:this={mapContainer} style="width: 100%; height: 500px;"></div>
     <TimelineSlider {years} {year} onYearChange={updateYear} />
   </div>
 </div>
-r {years} {year} onYearChange={updateYear} />
   
