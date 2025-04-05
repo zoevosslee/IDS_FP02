@@ -127,7 +127,7 @@
   h2 {
     color: #000;
     font-family: 'Utendo', sans-serif;
-    font-size: 36px;
+    font-size: 24px;
     font-style: normal;
     font-weight: 700;
     line-height: normal;
@@ -137,9 +137,9 @@
   }
 
   h3 {
-    color: #000;
+    color: #616266;
     font-family: 'Utendo', sans-serif;
-    font-size: 24px;
+    font-size: 18px;
     font-style: normal;
     font-weight: 700;
     line-height: normal;
@@ -150,7 +150,7 @@
   p {
     color: #616266;
     font-family: 'Utendo', sans-serif;
-    font-size: 36px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -159,7 +159,7 @@
   .p-bold {
     color: #616266;
     font-family: 'Utendo', sans-serif;
-    font-size: 36px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 700;
     line-height: normal;
@@ -170,6 +170,8 @@
 
   #home-page {
     padding:20px;
+    padding-left: 10vw;
+    padding-right: 10vw;
 
   }
 
