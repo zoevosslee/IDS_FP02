@@ -1,6 +1,14 @@
 <script>
     export let feature;
     export let year;
+
+    $: properties = feature?.properties || {};
+
+    $: education = properties[`BachelorOrHigher${year}`];
+    $: income = properties[`MedianIncome${year}`];
+    $: race = properties[`White${year}`];
+    $: rentBurden = properties[`RentBurden${year}`];
+
   </script>
   
   <div class="floating-panel">
