@@ -51,6 +51,7 @@
 
   let map;
   let educationVisible = true;
+  let neighborhoods = [];
 
   function handleLayerToggle(event) {
   const { layer, visible } = event.detail;
@@ -71,7 +72,6 @@ function updateEducationVisibility() {
   map.setLayoutProperty('education-2023', 'visibility', selectedYear === 2023 && educationVisible ? 'visible' : 'none');
 }
 
-
   onMount(async () => {
     map = new mapboxgl.Map({
       container: 'map',
@@ -84,11 +84,11 @@ function updateEducationVisibility() {
     await new Promise(resolve => map.on('load', resolve));
 
     const data2023 = await d3.json('/data/education23.geojson');
-const data2015 = await d3.json('/data/education15.geojson');
+    const data2015 = await d3.json('/data/education15.geojson');
+    const neighborhoods = await d3.json('/data/bpda_neighborhood_boundaries.json');
 
 assignQuartiles(data2023.features, 'BachelorOrHigher2023');
 assignQuartiles(data2015.features, 'BachelorOrHigher2015');
-
 
     map.addSource('education23', {
       type: 'geojson',
@@ -99,6 +99,13 @@ assignQuartiles(data2015.features, 'BachelorOrHigher2015');
       type: 'geojson',
       data: data2015
     });
+
+    map.addSource('neighborhoods', {
+      type: 'geojson',
+      data: neighborhoods, // Path to your GeoJSON file
+    })
+
+    
 
     map.addLayer({
       id: 'education-2023',
@@ -143,6 +150,17 @@ assignQuartiles(data2015.features, 'BachelorOrHigher2015');
         visibility: selectedYear === 2015 ? 'visible' : 'none'
       }
     });
+
+    map.addLayer({
+      id: 'neighborhoods-boundaries',
+      type: 'line', // or 'fill' for filled polygons
+      source: 'neighborhoods',
+      paint: {
+                "line-color": "gray",
+                "line-width": 2, // Width of the line
+                "line-opacity": 0.7 // Opacity of the line
+            },
+    })
 
     map.on('click', (e) => {
   const features = map.queryRenderedFeatures(e.point, {
