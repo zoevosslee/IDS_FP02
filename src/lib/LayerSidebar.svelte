@@ -43,7 +43,7 @@
   </p>
 
   <h3>Policing Indicators</h3>
-  <p><label><input type="checkbox" disabled /> 311 Calls</label></p>
+  <p><label><input type="checkbox" checked disabled /> 311 Calls</label></p>
   <p><label><input type="checkbox" disabled /> DOB Violations</label></p>
 </div>
 
