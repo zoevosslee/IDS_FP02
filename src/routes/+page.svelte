@@ -41,6 +41,16 @@
     f.properties[`${fieldName}_quartile`] = quartile;
   }
 }
+
+  function assignExtrudeHeights(features, fieldName, amplitude) {
+    const values = features.map(f => f.properties[fieldName]).filter(v => typeof v === 'number' && !isNaN(v));
+
+    for (let f of features) {
+      const val = f.properties[fieldName];
+
+      f.properties[`${fieldName}_extrude`] = val*amplitude;
+    }
+  }
  
   function handleYearChange(year) {
     selectedYear = year;
@@ -103,7 +113,9 @@
       container: 'map',
       style: 'mapbox://styles/mapbox/light-v10',
       center: [-71.0589, 42.3601],
-      zoom: 11
+      zoom: 11,
+      pitch: 80,
+      bearing: 41
     
     });
 
@@ -115,6 +127,8 @@
 
     ['BachelorOrHigher2015', 'MedianIncome2015', 'White2015', 'RentBurden2015'].forEach(field => assignQuartiles(data2015.features, field));
     ['BachelorOrHigher2023', 'MedianIncome2023', 'White2023', 'RentBurden2023'].forEach(field => assignQuartiles(data2023.features, field));
+    ['reqs_per_1000', 'viol_per_1000'].forEach(field => assignExtrudeHeights(data2015.features, field, 100));
+    ['reqs_per_1000', 'viol_per_1000'].forEach(field => assignExtrudeHeights(data2023.features, field, 1000));
 
     map.addSource('merged2015', { type: 'geojson', data: data2015 });
     map.addSource('merged2023', { type: 'geojson', data: data2023 });
@@ -154,12 +168,12 @@
         const id = `${layer}-${year}`;
         map.addLayer({
           id,
-          type: 'fill',
+          type: 'fill-extrusion',
           source: `merged${year}`,
           paint: {
-            'fill-color': getFillColorExpression(fullKey), // Use the quartile color expression
-            'fill-opacity': 0.7,
-            'fill-outline-color': '#ffffff'
+            'fill-extrusion-color': getFillColorExpression(fullKey), // Use the quartile color expression
+            'fill-extrusion-opacity': 0.7,
+            'fill-extrusion-height': ['get', `reqs_per_1000_extrude`]
           },
           layout: {
             visibility: visibleLayers[layer] && selectedYear === year ? 'visible' : 'none'
