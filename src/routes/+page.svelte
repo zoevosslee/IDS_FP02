@@ -320,8 +320,8 @@
 /* Floating info panel */
 :global(.floating-panel) {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 54px;
+  right: 10px;
   background: rgba(255, 255, 255, 0.85);  /* white with 90% opacity */
   padding: 1rem;
   border-radius: 8px;
