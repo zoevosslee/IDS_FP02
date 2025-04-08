@@ -7,6 +7,9 @@
   import { onMount } from "svelte";
   import * as d3 from "d3";
   import FeatureInfoPanel from '$lib/FeatureInfoPanel.svelte';
+  import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+  import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+
 
   let selectedYear = 2015;
   let selectedFeature = null; // Initialize selectedFeature to null
@@ -192,6 +195,19 @@
         selectedFeature = null;
       }
     });
+
+    const geocoder = new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    mapboxgl: mapboxgl,
+    marker: {
+    color: '#A12624' // Set custom color (e.g., red)
+  },
+    placeholder: "Search for an address",
+    zoom: 14
+});
+
+map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
+
   });
 </script>
 
