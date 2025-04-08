@@ -19,6 +19,7 @@
     race: false,
     rentBurden: false
   };
+  let policeInd = 'reqs';
 
 
   function assignQuartiles(features, fieldName) {
@@ -64,6 +65,12 @@
     updateLayerVisibility();
     console.log(layer, visible);
   }
+  function handlePoliceIndToggle(event) {
+    const { ind } = event.detail;
+    policeInd = ind;
+    updateLayerVisibility();
+    console.log(ind);
+  }
 
   function updateLayerVisibility() {
     if (!map) return;
@@ -75,6 +82,16 @@
         const visible = visibleLayers[layer] && selectedYear === year;
         if (map.getLayer(id)) {
           map.setLayoutProperty(id, 'visibility', visible ? 'visible' : 'none');
+          // now setup policing indicators as height
+          if (policeInd == 'viol') {
+            map.setPaintProperty(id, 'fill-extrusion-height', ['get', `viol_per_1000_extrude`]);
+
+          } else if (policeInd == 'reqs') {
+            map.setPaintProperty(id, 'fill-extrusion-height', ['get', `reqs_per_1000_extrude`]);
+          } else {
+            map.setPaintProperty(id, 'fill-extrusion-height', 0);
+
+          }
         }
       }
     }
@@ -128,7 +145,7 @@
     ['BachelorOrHigher2015', 'MedianIncome2015', 'White2015', 'RentBurden2015'].forEach(field => assignQuartiles(data2015.features, field));
     ['BachelorOrHigher2023', 'MedianIncome2023', 'White2023', 'RentBurden2023'].forEach(field => assignQuartiles(data2023.features, field));
     ['reqs_per_1000', 'viol_per_1000'].forEach(field => assignExtrudeHeights(data2015.features, field, 100));
-    ['reqs_per_1000', 'viol_per_1000'].forEach(field => assignExtrudeHeights(data2023.features, field, 1000));
+    ['reqs_per_1000', 'viol_per_1000'].forEach(field => assignExtrudeHeights(data2023.features, field, 100));
 
     map.addSource('merged2015', { type: 'geojson', data: data2015 });
     map.addSource('merged2023', { type: 'geojson', data: data2023 });
@@ -173,7 +190,7 @@
           paint: {
             'fill-extrusion-color': getFillColorExpression(fullKey), // Use the quartile color expression
             'fill-extrusion-opacity': 0.7,
-            'fill-extrusion-height': ['get', `reqs_per_1000_extrude`]
+            'fill-extrusion-height': ['get', `viol_per_1000_extrude`]
           },
           layout: {
             visibility: visibleLayers[layer] && selectedYear === year ? 'visible' : 'none'
@@ -227,7 +244,7 @@
         <div class="year-toggle-wrapper">
           <YearToggle {selectedYear} onChange={handleYearChange} />
         </div>
-        <LayerSidebar on:toggleLayer={handleLayerToggle} />
+        <LayerSidebar on:toggleLayer={handleLayerToggle} on:togglePoliceInd={handlePoliceIndToggle} />
       </div>
 
       <div class="map-wrapper">

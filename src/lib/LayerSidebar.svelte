@@ -9,9 +9,15 @@
     rentBurden: false
   };
 
+  let policeInds = 'reqs';
+
   function toggleLayer(layer) {
     layers = { ...layers, [layer]: !layers[layer] };
     dispatch('toggleLayer', { layer, visible: layers[layer] });
+  }
+  function togglePoliceInd(ind) {
+    policeInds = ind;
+    dispatch('togglePoliceInd', { ind });
   }
 </script>
 
@@ -43,8 +49,14 @@
   </p>
 
   <h3>Policing Indicators</h3>
-  <p><label><input type="checkbox" checked disabled /> 311 Calls</label></p>
-  <p><label><input type="checkbox" disabled /> DOB Violations</label></p>
+  <p><label>
+    <input type="radio" id="policeInd1" name="policeInd" value='reqs' on:change={() => togglePoliceInd('reqs')}>
+    <label for="policeInd1">311 Calls</label><br>
+    <input type="radio" id="policeInd2" name="policeInd" value='viol' on:change={() => togglePoliceInd('viol')}>
+    <label for="policeInd2">DOB Violations</label><br>
+    <input type="radio" id="policeInd3" name="policeInd" value='NA' on:change={() => togglePoliceInd('NA')}>
+    <label for="policeInd3">NA</label><br>
+  </p>
 </div>
 
   <style>
