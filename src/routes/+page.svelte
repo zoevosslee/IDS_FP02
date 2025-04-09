@@ -141,8 +141,8 @@
 
     await new Promise(resolve => map.on('load', resolve));
 
-    const data2023 = await d3.json('/data/merged2023');
-    const data2015 = await d3.json('/data/merged2015');
+    const data2023 = await d3.json('/data/merged2023_finalfinal.geojson');
+    const data2015 = await d3.json('/data/merged2015_final.geojson');
     const neighborhoods = await d3.json('/data/bpda_neighborhood_boundaries.json');
 
     ['BachelorOrHigher2015', 'MedianIncome2015', 'White2015', 'RentBurden2015'].forEach(field => assignQuartiles(data2015.features, field));
