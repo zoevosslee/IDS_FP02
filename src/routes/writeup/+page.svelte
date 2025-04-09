@@ -2,7 +2,7 @@
   <title>Rent is a Trap!</title>
 </svelte:head>
 
-<div id="home-page">
+<div id="plan-page">
   <div class="container">
     <div class="text-content">
       <h4>Rent is a Trap!</h4>
