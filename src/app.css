@@ -192,4 +192,16 @@
     padding-top: 20px;
     padding-bottom: 30px;
   }
+
+  #plan-page {
+    padding:60px;
+    padding-left: 20vw;
+    padding-right: 20vw;
+
+  }
+
+  #plan-page .text-content {
+    padding-top: 20px;
+    padding-bottom: 30px;
+  }
   
