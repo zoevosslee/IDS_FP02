@@ -7,18 +7,29 @@
   import { onMount } from "svelte";
   import * as d3 from "d3";
   import FeatureInfoPanel from '$lib/FeatureInfoPanel.svelte';
+  import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+  import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
-  let selectedFeature = null;
+
+  let selectedYear = 2015;
+  let selectedFeature = null; // Initialize selectedFeature to null
+  let selectedLayer = 'education';
+
+  let map;
+  let visibleLayers = {
+    education: true, // Default to showing education layer
+    income: false,
+    race: false,
+    rentBurden: false
+  };
+  let policeInd = 'reqs';
+
 
   function assignQuartiles(features, fieldName) {
-  const values = features
-    .map(f => f.properties[fieldName])
-    .filter(v => typeof v === 'number' && !isNaN(v))
-    .sort((a, b) => a - b);
-
-  const q1 = d3.quantile(values, 0.25);
-  const q2 = d3.quantile(values, 0.5);
-  const q3 = d3.quantile(values, 0.75);
+    const values = features.map(f => f.properties[fieldName]).filter(v => typeof v === 'number' && !isNaN(v)).sort((a, b) => a - b);
+    const q1 = d3.quantile(values, 0.25);
+    const q2 = d3.quantile(values, 0.5);
+    const q3 = d3.quantile(values, 0.75);
 
   for (let f of features) {
     const val = f.properties[fieldName];
@@ -31,135 +42,204 @@
       else quartile = 4;
     }
 
-    f.properties.quartile = quartile;
+    f.properties[`${fieldName}_quartile`] = quartile;
   }
 }
 
-  
-  let selectedYear = 2015;
+  function assignExtrudeHeights(features, fieldName, amplitude) {
+    const values = features.map(f => f.properties[fieldName]).filter(v => typeof v === 'number' && !isNaN(v));
+
+    for (let f of features) {
+      const val = f.properties[fieldName];
+
+      f.properties[`${fieldName}_extrude`] = val*amplitude;
+    }
+  }
+ 
   function handleYearChange(year) {
-  selectedYear = year;
-
-  if (map) {
-    map.setLayoutProperty('education-2015', 'visibility', year === 2015 && educationVisible ? 'visible' : 'none');
-    map.setLayoutProperty('education-2023', 'visibility', year === 2023 && educationVisible ? 'visible' : 'none');
+    selectedYear = year;
+    updateLayerVisibility();
   }
-}
 
+  function handleLayerToggle(event) {
+    const { layer, visible } = event.detail;
+    visibleLayers[layer] = visible;
+    if (visible) selectedLayer = layer;
+    updateLayerVisibility();
+    console.log(layer, visible);
+  }
+  function handlePoliceIndToggle(event) {
+    const { ind } = event.detail;
+    policeInd = ind;
+    updateLayerVisibility();
+    console.log(ind);
+  }
+
+  function updateLayerVisibility() {
+    if (!map) return;
+
+    const layers = ['education', 'income', 'race', 'rentBurden'];
+    for (const layer of layers) {
+      for (const year of [2015, 2023]) {
+        const id = `${layer}-${year}`;
+        const visible = visibleLayers[layer] && selectedYear === year;
+        if (map.getLayer(id)) {
+          map.setLayoutProperty(id, 'visibility', visible ? 'visible' : 'none');
+          // now setup policing indicators as height
+          if (policeInd == 'viol') {
+            map.setPaintProperty(id, 'fill-extrusion-height', ['get', `viol_per_1000_extrude`]);
+
+          } else if (policeInd == 'reqs') {
+            map.setPaintProperty(id, 'fill-extrusion-height', ['get', `reqs_per_1000_extrude`]);
+          } else {
+            map.setPaintProperty(id, 'fill-extrusion-height', 0);
+
+          }
+        }
+      }
+    }
+  }
+
+  // if (map) {
+  //   map.setLayoutProperty('education-2015', 'visibility', year === 2015 && educationVisible ? 'visible' : 'none');
+  //   map.setLayoutProperty('education-2023', 'visibility', year === 2023 && educationVisible ? 'visible' : 'none');
+  // }
 
   mapboxgl.accessToken = "pk.eyJ1IjoienZsMTIxNSIsImEiOiJjbTkxZ2k3cjYwMHBhMnZwd2dneWZjeXhhIn0.KK0PwZsLffFl4_qtLg-efQ";
 
-  let map;
-  let educationVisible = true;
+  // let educationVisible = true;
 
-  function handleLayerToggle(event) {
-  const { layer, visible } = event.detail;
+//   function handleLayerToggle(event) {
+//   const { layer, visible } = event.detail;
 
-  if (layer === 'education') {
-    educationVisible = visible;
-    if (map) {
-      map.setLayoutProperty(`education-2015`, 'visibility', selectedYear === 2015 && visible ? 'visible' : 'none');
-      map.setLayoutProperty(`education-2023`, 'visibility', selectedYear === 2023 && visible ? 'visible' : 'none');
-    }
-  }
-}
+//   if (layer === 'education') {
+//     educationVisible = visible;
+//     if (map) {
+//       map.setLayoutProperty(`education-2015`, 'visibility', selectedYear === 2015 && visible ? 'visible' : 'none');
+//       map.setLayoutProperty(`education-2023`, 'visibility', selectedYear === 2023 && visible ? 'visible' : 'none');
+//     }
+//   }
+// }
 
 
-function updateEducationVisibility() {
-  if (!map) return;
-  map.setLayoutProperty('education-2015', 'visibility', selectedYear === 2015 && educationVisible ? 'visible' : 'none');
-  map.setLayoutProperty('education-2023', 'visibility', selectedYear === 2023 && educationVisible ? 'visible' : 'none');
-}
-
+// function updateEducationVisibility() {
+//   if (!map) return;
+//   map.setLayoutProperty('education-2015', 'visibility', selectedYear === 2015 && educationVisible ? 'visible' : 'none');
+//   map.setLayoutProperty('education-2023', 'visibility', selectedYear === 2023 && educationVisible ? 'visible' : 'none');
+// }
 
   onMount(async () => {
     map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/light-v10',
       center: [-71.0589, 42.3601],
-      zoom: 11
+      zoom: 11,
+      pitch: 80,
+      bearing: 41
     
     });
 
     await new Promise(resolve => map.on('load', resolve));
 
-    const data2023 = await d3.json('/data/education23.geojson');
-const data2015 = await d3.json('/data/education15.geojson');
+    const data2023 = await d3.json('/data/merged2023');
+    const data2015 = await d3.json('/data/merged2015');
+    const neighborhoods = await d3.json('/data/bpda_neighborhood_boundaries.json');
 
-assignQuartiles(data2023.features, 'BachelorOrHigher2023');
-assignQuartiles(data2015.features, 'BachelorOrHigher2015');
+    ['BachelorOrHigher2015', 'MedianIncome2015', 'White2015', 'RentBurden2015'].forEach(field => assignQuartiles(data2015.features, field));
+    ['BachelorOrHigher2023', 'MedianIncome2023', 'White2023', 'RentBurden2023'].forEach(field => assignQuartiles(data2023.features, field));
+    ['reqs_per_1000', 'viol_per_1000'].forEach(field => assignExtrudeHeights(data2015.features, field, 100));
+    ['reqs_per_1000', 'viol_per_1000'].forEach(field => assignExtrudeHeights(data2023.features, field, 100));
+
+    map.addSource('merged2015', { type: 'geojson', data: data2015 });
+    map.addSource('merged2023', { type: 'geojson', data: data2023 });
+    map.addSource('neighborhoods', { type: 'geojson', data: neighborhoods });
+
+    const variables = {
+      education: { key: 'BachelorOrHigher' },
+      income: { key: 'MedianIncome' },
+      race: { key: 'White' },
+      rentBurden: { key: 'RentBurden' }
+    };
+
+    const quartileColors = [
+      '#E6E8F1', // Q1
+      '#A6A7C4', // Q2
+      '#666792', // Q3
+      '#1A1841'  // Q4
+    ];
+
+    function getFillColorExpression(fieldName) {
+      return [
+        'match',
+        ['get', `${fieldName}_quartile`],
+        1, quartileColors[0],
+        2, quartileColors[1],
+        3, quartileColors[2],
+        4, quartileColors[3],
+        '#ccc' // fallback
+      ];
+    }
 
 
-    map.addSource('education23', {
-      type: 'geojson',
-      data: data2023
-    });
 
-    map.addSource('education15', {
-      type: 'geojson',
-      data: data2015
-    });
-
-    map.addLayer({
-      id: 'education-2023',
-      type: 'fill',
-      source: 'education23',
-      paint: {
-'fill-color': [
-  'match',
-  ['get', 'quartile'],
-  1, '#E6E8F1',
-  2, '#A6A7C4',
-  3, '#666792',
-  4, '#1A1841',
-  '#ccc' // fallback
-],
-        'fill-opacity': 0.7,
-        'fill-outline-color': '#ffffff'
-      },
-      layout: {
-        visibility: selectedYear === 2023 ? 'visible' : 'none'
+    for (const [layer, { key }] of Object.entries(variables)) {
+      for (const year of [2015, 2023]) {
+        const fullKey = `${key}${year}`;
+        const id = `${layer}-${year}`;
+        map.addLayer({
+          id,
+          type: 'fill-extrusion',
+          source: `merged${year}`,
+          paint: {
+            'fill-extrusion-color': getFillColorExpression(fullKey), // Use the quartile color expression
+            'fill-extrusion-opacity': 0.7,
+            'fill-extrusion-height': ['get', `viol_per_1000_extrude`]
+          },
+          layout: {
+            visibility: visibleLayers[layer] && selectedYear === year ? 'visible' : 'none'
+          }
+        });
       }
-    });
+    }
 
     map.addLayer({
-      id: 'education-2015',
-      type: 'fill',
-      source: 'education15',
+      id: 'neighborhoods-boundaries',
+      type: 'line',
+      source: 'neighborhoods',
       paint: {
-'fill-color': [
-  'match',
-  ['get', 'quartile'],
-  1, '#E6E8F1',
-  2, '#A6A7C4',
-  3, '#666792',
-  4, '#1A1841',
-  '#ccc' // fallback
-],
-        'fill-opacity': 0.7,
-        'fill-outline-color': '#ffffff'
-      },
-      layout: {
-        visibility: selectedYear === 2015 ? 'visible' : 'none'
+        "line-color": "gray",
+        "line-width": 2,
+        "line-opacity": 0.7
       }
     });
 
     map.on('click', (e) => {
-  const features = map.queryRenderedFeatures(e.point, {
-    layers: selectedYear === 2023 ? ['education-2023'] : ['education-2015']
-  });
+      const layers = Object.keys(visibleLayers)
+        .filter(layer => visibleLayers[layer])
+        .map(layer => `${layer}-${selectedYear}`);
 
-  if (features.length > 0) {
-    selectedFeature = features[0];
-  } else {
-    selectedFeature = null;
-  }
+      const features = map.queryRenderedFeatures(e.point, { layers });
+
+      if (features.length > 0) {
+        selectedFeature = features[0];
+      } else {
+        selectedFeature = null;
+      }
+    });
+
+    const geocoder = new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    mapboxgl: mapboxgl,
+    marker: {
+    color: '#A12624' // Set custom color (e.g., red)
+  },
+    placeholder: "Search for an address",
+    zoom: 14
 });
 
+map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
+
   });
-
-
-  
 </script>
 
 
@@ -174,19 +254,17 @@ assignQuartiles(data2015.features, 'BachelorOrHigher2015');
       <h2>By Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, Zoe Voss Lee</h2>
     </div>
 
-    <!-- Map + Sidebar layout -->
     <div class="map-layout">
       <div class="sidebar-panel">
         <h3>Select Data</h3>
         <div class="year-toggle-wrapper">
           <YearToggle {selectedYear} onChange={handleYearChange} />
         </div>
-        <LayerSidebar on:toggleLayer={handleLayerToggle} />
+        <LayerSidebar on:toggleLayer={handleLayerToggle} on:togglePoliceInd={handlePoliceIndToggle} />
       </div>
 
       <div class="map-wrapper">
         <div id="map"></div>
-
         {#if selectedFeature}
           <FeatureInfoPanel class="floating-panel" feature={selectedFeature} year={selectedYear} />
         {/if}
@@ -258,8 +336,8 @@ assignQuartiles(data2015.features, 'BachelorOrHigher2015');
 /* Floating info panel */
 :global(.floating-panel) {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 54px;
+  right: 10px;
   background: rgba(255, 255, 255, 0.85);  /* white with 90% opacity */
   padding: 1rem;
   border-radius: 8px;
