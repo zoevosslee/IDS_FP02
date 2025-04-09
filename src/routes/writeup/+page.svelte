@@ -1,0 +1,19 @@
+<svelte:head>
+  <title>Rent is a Trap!</title>
+</svelte:head>
+
+<div id="plan-page">
+  <div class="container">
+    <div class="text-content">
+      <h4>Rent is a Trap!</h4>
+      <h2>By Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, Zoe Voss Lee</h2>
+    </div>
+    <div class = "writeup">
+        <h3>Write Up</h3>
+
+        <p>
+            this is where our write up goes
+        </p>
+    </div>
+    </div>  
+    </div>

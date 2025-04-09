@@ -7,6 +7,9 @@
   import { onMount } from "svelte";
   import * as d3 from "d3";
   import FeatureInfoPanel from '$lib/FeatureInfoPanel.svelte';
+  import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+  import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+
 
   let selectedYear = 2015;
   let selectedFeature = null; // Initialize selectedFeature to null
@@ -19,6 +22,7 @@
     race: false,
     rentBurden: false
   };
+  let policeInd = 'reqs';
 
 
   function assignQuartiles(features, fieldName) {
@@ -41,6 +45,16 @@
     f.properties[`${fieldName}_quartile`] = quartile;
   }
 }
+
+  function assignExtrudeHeights(features, fieldName, amplitude) {
+    const values = features.map(f => f.properties[fieldName]).filter(v => typeof v === 'number' && !isNaN(v));
+
+    for (let f of features) {
+      const val = f.properties[fieldName];
+
+      f.properties[`${fieldName}_extrude`] = val*amplitude;
+    }
+  }
  
   function handleYearChange(year) {
     selectedYear = year;
@@ -54,6 +68,12 @@
     updateLayerVisibility();
     console.log(layer, visible);
   }
+  function handlePoliceIndToggle(event) {
+    const { ind } = event.detail;
+    policeInd = ind;
+    updateLayerVisibility();
+    console.log(ind);
+  }
 
   function updateLayerVisibility() {
     if (!map) return;
@@ -65,6 +85,16 @@
         const visible = visibleLayers[layer] && selectedYear === year;
         if (map.getLayer(id)) {
           map.setLayoutProperty(id, 'visibility', visible ? 'visible' : 'none');
+          // now setup policing indicators as height
+          if (policeInd == 'viol') {
+            map.setPaintProperty(id, 'fill-extrusion-height', ['get', `viol_per_1000_extrude`]);
+
+          } else if (policeInd == 'reqs') {
+            map.setPaintProperty(id, 'fill-extrusion-height', ['get', `reqs_per_1000_extrude`]);
+          } else {
+            map.setPaintProperty(id, 'fill-extrusion-height', 0);
+
+          }
         }
       }
     }
@@ -103,18 +133,22 @@
       container: 'map',
       style: 'mapbox://styles/mapbox/light-v10',
       center: [-71.0589, 42.3601],
-      zoom: 11
+      zoom: 11,
+      pitch: 80,
+      bearing: 41
     
     });
 
     await new Promise(resolve => map.on('load', resolve));
 
-    const data2023 = await d3.json('/data/merged2023');
-    const data2015 = await d3.json('/data/merged2015');
+    const data2023 = await d3.json('/data/merged2023_finalfinal.geojson');
+    const data2015 = await d3.json('/data/merged2015_final.geojson');
     const neighborhoods = await d3.json('/data/bpda_neighborhood_boundaries.json');
 
     ['BachelorOrHigher2015', 'MedianIncome2015', 'White2015', 'RentBurden2015'].forEach(field => assignQuartiles(data2015.features, field));
     ['BachelorOrHigher2023', 'MedianIncome2023', 'White2023', 'RentBurden2023'].forEach(field => assignQuartiles(data2023.features, field));
+    ['reqs_per_1000', 'viol_per_1000'].forEach(field => assignExtrudeHeights(data2015.features, field, 100));
+    ['reqs_per_1000', 'viol_per_1000'].forEach(field => assignExtrudeHeights(data2023.features, field, 100));
 
     map.addSource('merged2015', { type: 'geojson', data: data2015 });
     map.addSource('merged2023', { type: 'geojson', data: data2023 });
@@ -154,12 +188,12 @@
         const id = `${layer}-${year}`;
         map.addLayer({
           id,
-          type: 'fill',
+          type: 'fill-extrusion',
           source: `merged${year}`,
           paint: {
-            'fill-color': getFillColorExpression(fullKey), // Use the quartile color expression
-            'fill-opacity': 0.7,
-            'fill-outline-color': '#ffffff'
+            'fill-extrusion-color': getFillColorExpression(fullKey), // Use the quartile color expression
+            'fill-extrusion-opacity': 0.7,
+            'fill-extrusion-height': ['get', `viol_per_1000_extrude`]
           },
           layout: {
             visibility: visibleLayers[layer] && selectedYear === year ? 'visible' : 'none'
@@ -192,6 +226,19 @@
         selectedFeature = null;
       }
     });
+
+    const geocoder = new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    mapboxgl: mapboxgl,
+    marker: {
+    color: '#A12624' // Set custom color (e.g., red)
+  },
+    placeholder: "Search for an address",
+    zoom: 14
+});
+
+map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
+
   });
 </script>
 
@@ -213,7 +260,7 @@
         <div class="year-toggle-wrapper">
           <YearToggle {selectedYear} onChange={handleYearChange} />
         </div>
-        <LayerSidebar on:toggleLayer={handleLayerToggle} />
+        <LayerSidebar on:toggleLayer={handleLayerToggle} on:togglePoliceInd={handlePoliceIndToggle} />
       </div>
 
       <div class="map-wrapper">
@@ -289,8 +336,8 @@
 /* Floating info panel */
 :global(.floating-panel) {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 54px;
+  right: 10px;
   background: rgba(255, 255, 255, 0.85);  /* white with 90% opacity */
   padding: 1rem;
   border-radius: 8px;
