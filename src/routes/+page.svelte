@@ -7,8 +7,10 @@
   import { onMount } from "svelte";
   import * as d3 from "d3";
   import FeatureInfoPanel from '$lib/FeatureInfoPanel.svelte';
+  //this is for address
   import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
   import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+
 
 
   let selectedYear = 2015;
@@ -141,6 +143,37 @@
 
     await new Promise(resolve => map.on('load', resolve));
 
+    // Add custom DEM source from Mapbox (uploaded by claudiatomateo)
+    map.addSource('custom-dem', {
+      type: 'raster-dem',
+      url: 'mapbox://claudiatomateo.6f9fzqzs',
+      tileSize: 512,
+      maxzoom: 14
+    });
+
+    // Set terrain using this DEM
+    map.setTerrain({
+      source: 'custom-dem',
+      exaggeration: 0.001
+    });
+
+    map.addLayer({
+    id: 'terrain-hillshade',
+    type: 'hillshade',
+    source: 'custom-dem',
+    layout: { visibility: 'visible' },
+    paint: {
+      'hillshade-exaggeration': 0.6,  // optional, makes features pop more
+      'hillshade-shadow-color': '#CA8584',
+      'hillshade-highlight-color': '#ffffff',
+      'hillshade-accent-color': '#fbb03b', // warm tint
+      'hillshade-illumination-direction': 335,
+      'hillshade-opacity': 0.01
+    }
+  });
+
+
+
     const data2023 = await d3.json('/data/merged2023_finalfinal.geojson');
     const data2015 = await d3.json('/data/merged2015_final.geojson');
     const neighborhoods = await d3.json('/data/bpda_neighborhood_boundaries.json');
@@ -259,7 +292,7 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
         <h3>Select Data</h3>
         <div class="year-toggle-wrapper">
           <YearToggle {selectedYear} onChange={handleYearChange} />
-        </div>
+        </div>      
         <LayerSidebar on:toggleLayer={handleLayerToggle} on:togglePoliceInd={handlePoliceIndToggle} />
       </div>
 
@@ -272,6 +305,7 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
     </div>
   </div>
 </div>
+
 
 
 <style>

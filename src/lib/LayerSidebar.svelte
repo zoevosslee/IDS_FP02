@@ -6,7 +6,8 @@
     education: true,
     income: false,
     race: false,
-    rentBurden: false
+    rentBurden: false,
+    surface: false
   };
 
   let policeInds = 'reqs';
@@ -56,6 +57,17 @@
     <label for="policeInd2">DOB Violations</label><br>
     <input type="radio" id="policeInd3" name="policeInd" value='NA' on:change={() => togglePoliceInd('NA')}>
     <label for="policeInd3">NA</label><br>
+    
+  </p>
+  <p>
+    <label>
+      <input
+        type="radio"
+        checked={layers.surface}
+        on:change={() => toggleLayer('surface')}
+      />
+      311 Calls
+    </label>
   </p>
 </div>
 
