@@ -9,6 +9,7 @@
   import FeatureInfoPanel from '$lib/FeatureInfoPanel.svelte';
   import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
   import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+  import Legend from '$lib/Legend.svelte';
 
 
   let selectedYear = 2015;
@@ -254,6 +255,10 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
       <h2>By Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, Zoe Voss Lee</h2>
     </div>
 
+    <p>How is policing used to displace people in Boston? In this visualization, we map indicators of policing as vertical heights,
+      and indicators relevant to displacement as color shades. Pan and explore below!
+    </p>
+
     <div class="map-layout">
       <div class="sidebar-panel">
         <h3>Select Data</h3>
@@ -270,6 +275,20 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
         {/if}
       </div>
     </div>
+    <Legend></Legend>
+    <h4>Our Data Design Choices</h4>
+    <p>Above, you can explore 4 gentrification variables: education level (Bachelor’s Degrees or Higher), household median income, percentage of non-Hispanic white population, and percentage of rent burdened population (those who pay more than 30% of income for rent). Given the diverse scholarship on defining gentrification,
+      we leave it up to you to explore different possible variables and create your own analysis on gentrification. For instance, abolitionists such as Ruth Wilson Gilmore and Mariame Kaba would conceptualize gentrification as a carceral logic of spatial control where policing and real estate act to displace racialized and marginalized communities for wealth accumulation;
+      Black activists and scholars would define gentrification as racially driven displacement following the patterns of redlining and state violence; and Indigenous thinkers would frame gentrification as an extension of settler claims to land through aesthetics, dispossession and ownership.
+      With an interactive map, we invite you to construct your own definition of gentrification from your own positionalities.
+    </p>
+    <p>To respond to activists' needs of mapping policing in relationship to gentrification, we defined 2 variables that would describe the neighborhood-level policing: 311 calls assigned to Boston Police Department and code, building and property violations. We would have liked to include arrest data, specifically low-level arrest data which many academics have studied and proven to show high correlation with gentrification.
+      However, our Freedom of Information Law public data request was rejected by the Boston Police Department. This lack of data compelled us to reconsider our argument. Our previous work with undocumented workers teaches us that oftentimes the state may deploy non-criminal policing actors in addition to police arrests as a means of exclusionary development of a neighborhood.
+      Leaning on to these observations, we decided to focus on non-criminal policing. Like gentrification data, we also invite you to explore the data freely and create your own analysis.</p>
+    <h4>Data Sources</h4>
+    <p>Gentrification indicators are taken from the ???? census data. Individual blocks are block groups from the ???? census boundaries.
+      311 requests data was downloaded from ????. Department of Buildings violation filing data was downloaded from ????.
+    </p>
   </div>
 </div>
 
