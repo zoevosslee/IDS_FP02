@@ -52,7 +52,7 @@
   <p><label>
     <input type="radio" id="policeInd1" name="policeInd" value='reqs' on:change={() => togglePoliceInd('reqs')}>
     <label for="policeInd1">311 Calls</label><br>
-    <input type="radio" id="policeInd2" name="policeInd" value='viol' on:change={() => togglePoliceInd('viol')}>
+    <input type="radio" id="policeInd2" name="policeInd" value='viol' checked='true' on:change={() => togglePoliceInd('viol')}>
     <label for="policeInd2">Building & Property Violations</label><br>
     <input type="radio" id="policeInd3" name="policeInd" value='NA' on:change={() => togglePoliceInd('NA')}>
     <label for="policeInd3">NA</label><br>
