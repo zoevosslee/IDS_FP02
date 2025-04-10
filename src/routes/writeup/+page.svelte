@@ -64,9 +64,15 @@
         </ul>
         <p>Nicola</p>
         <ul>
-          <li><p>3D extrusion feature to show policing indicators, radio buttons control, and debugging outlier values
+          <li><p>3D extrusion feature to show policing indicators, radio buttons control
           </p></li>
+          <li><p>Debugged outlier values by exploring small-population block groups
+            </p></li>
           <li><p>Formatting of popup to include sentences, handle missing data, show policing indicators, and float below the search bar
+          </p></li>
+          <li><p>Formatted the legend and homepage text
+          </p></li>
+          <li><p>Debugged deployment issues
           </p></li>
           <li><p>Contributed to the write-up for the interactive data visualization page
           </p></li>
