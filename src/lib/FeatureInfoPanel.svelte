@@ -24,7 +24,7 @@
     {#if feature}
       <p><strong>GEOID:</strong> {props.GEOID}</p>
       <p>
-        In {year}, this block group in <strong>{props.neighborhood}</strong> had a population of 
+        In {year}, this block group in <strong>{props.blockgr2020_ctr_neighb_name}</strong> had a population of 
         {props.population ?? 'unknown'}.
       </p>
   
