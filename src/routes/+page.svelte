@@ -255,8 +255,11 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
       <h2>By Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, Zoe Voss Lee</h2>
     </div>
 
-    <p>How is policing used to displace people in Boston? In this visualization, we map indicators of policing as vertical heights,
-      and indicators relevant to displacement as color shades. Pan and explore below!
+    <p>What is the correlation between gentrification and non-criminal policing? 
+      In this visualization, we map indicators of non-criminal policing as vertical heights,
+      and indicators relevant to gentrification as color shades. This is our ground work of exploring the neighborhood trends before
+      we dive into the data analysis of speculative housing market and policing in Boston. 
+      Pan and explore below!
     </p>
 
     <div class="map-layout">
