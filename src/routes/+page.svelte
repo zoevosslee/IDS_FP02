@@ -11,6 +11,8 @@
   import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
   import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
+  import { rasterToGeoJSONGrid } from '$lib/rasterToGeojsonGrid.js';
+
 
 
   let selectedYear = 2015;
@@ -142,6 +144,10 @@
     });
 
     await new Promise(resolve => map.on('load', resolve));
+
+
+
+
 
     // Add custom DEM source from Mapbox (uploaded by claudiatomateo)
     map.addSource('custom-dem', {
@@ -301,6 +307,7 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
         {#if selectedFeature}
           <FeatureInfoPanel class="floating-panel" feature={selectedFeature} year={selectedYear} />
         {/if}
+        
       </div>
     </div>
   </div>
