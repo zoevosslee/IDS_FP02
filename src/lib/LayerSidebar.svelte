@@ -11,6 +11,7 @@
   };
 
   let policeInds = 'reqs';
+  let terrainOn = true;
 
   function toggleLayer(layer) {
     layers = { ...layers, [layer]: !layers[layer] };
@@ -20,7 +21,18 @@
     policeInds = ind;
     dispatch('togglePoliceInd', { ind });
   }
+  
+  function toggleTerrain() {
+    terrainOn = !terrainOn;
+    if (terrainOn) {
+      map.setTerrain({ source: 'custom-dem', exaggeration: 0.1 });
+    } else {
+      map.setTerrain(null);
+    }
+  }
+
 </script>
+
 
 <div class="layer-sidebar">
   <h3>Gentrification Indicators</h3>

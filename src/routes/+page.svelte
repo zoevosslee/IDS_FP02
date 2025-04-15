@@ -150,34 +150,34 @@
 
 
 
-    // Add custom DEM source from Mapbox (uploaded by claudiatomateo)
-    map.addSource('custom-dem', {
-      type: 'raster-dem',
-      url: 'mapbox://claudiatomateo.6f9fzqzs',
-      tileSize: 512,
-      maxzoom: 14
-    });
+  //   // Add custom DEM source from Mapbox (uploaded by claudiatomateo)
+  //   map.addSource('custom-dem', {
+  //     type: 'raster-dem',
+  //     url: 'mapbox://claudiatomateo.6f9fzqzs',
+  //     tileSize: 512,
+  //     maxzoom: 14
+  //   });
 
-    // Set terrain using this DEM
-    map.setTerrain({
-      source: 'custom-dem',
-      exaggeration: 0.001
-    });
+  //   // Set terrain using this DEM
+  //   map.setTerrain({
+  //     source: 'custom-dem',
+  //     exaggeration: 0.001
+  //   });
 
-    map.addLayer({
-    id: 'terrain-hillshade',
-    type: 'hillshade',
-    source: 'custom-dem',
-    layout: { visibility: 'visible' },
-    paint: {
-      'hillshade-exaggeration': 0.6,  // optional, makes features pop more
-      'hillshade-shadow-color': '#CA8584',
-      'hillshade-highlight-color': '#ffffff',
-      'hillshade-accent-color': '#fbb03b', // warm tint
-      'hillshade-illumination-direction': 335,
-      'hillshade-opacity': 0.01
-    }
-  });
+  //   map.addLayer({
+  //   id: 'terrain-hillshade',
+  //   type: 'hillshade',
+  //   source: 'custom-dem',
+  //   layout: { visibility: 'visible' },
+  //   paint: {
+  //     'hillshade-exaggeration': 0.6,  // optional, makes features pop more
+  //     'hillshade-shadow-color': '#CA8584',
+  //     'hillshade-highlight-color': '#ffffff',
+  //     'hillshade-accent-color': '#fbb03b', // warm tint
+  //     'hillshade-illumination-direction': 335,
+  //     'hillshade-opacity': 0.01
+  //   }
+  // });
 
 
 
