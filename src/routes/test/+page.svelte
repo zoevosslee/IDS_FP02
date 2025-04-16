@@ -1,6 +1,6 @@
 
 
-<!-- //SURFACE FLOATING -->
+<!-- //SURFACE FLOATING
 
 <script lang="ts">
   import mapboxgl from 'mapbox-gl';
@@ -159,12 +159,148 @@
 <div id="mapbox-container">
   <div bind:this={mapContainer} style="width: 100%; height: 100%;" />
   <canvas bind:this={threeCanvas} id="three-canvas" />
-</div>
+</div> -->
 
 
 
 
 
+
+
+<script lang="ts">
+  import * as THREE from 'three';
+  import mapboxgl from 'mapbox-gl';
+  import { fromUrl } from 'geotiff';
+  import { onMount } from 'svelte';
+  import 'mapbox-gl/dist/mapbox-gl.css';
+
+  import { browser } from '$app/environment';
+
+  if (browser) {
+    window.THREE = THREE;
+  }
+
+
+
+  let mapContainer;
+
+  function mercatorToLngLat(x, y) {
+    const lng = (x / 20037508.34) * 180;
+    const lat = (y / 20037508.34) * 180;
+    const latRad = (lat * Math.PI) / 180;
+    const latFinal = (180 / Math.PI) * (2 * Math.atan(Math.exp(latRad)) - Math.PI / 2);
+    return { lng, lat: latFinal };
+  }
+
+  onMount(async () => {
+    mapboxgl.accessToken = 'pk.eyJ1IjoiY2xhdWRpYXRvbWF0ZW8iLCJhIjoiY2prZnN5NWtuMGM1azN2bWxkNmhpeHYyYSJ9.SL5jYHvrqHpfxsZU3yE88w';
+
+    const map = new mapboxgl.Map({
+      container: mapContainer,
+      style: 'mapbox://styles/mapbox/light-v11',
+      center: [-71.0589, 42.3601],
+      zoom: 12,
+      pitch: 60,
+      bearing: 0,
+      antialias: true
+    });
+
+    map.on('load', async () => {
+      const tiff = await fromUrl('/311_2015_downsampled.tif');
+      const image = await tiff.getImage();
+      const width = image.getWidth();
+      const height = image.getHeight();
+      const data = await image.readRasters({ interleave: true });
+
+      const [west, south, east, north] = image.getBoundingBox();
+      const centerX = (west + east) / 2;
+      const centerY = (south + north) / 2;
+
+      const lngLat = mercatorToLngLat(centerX, centerY);
+      const mercCenter = mapboxgl.MercatorCoordinate.fromLngLat(lngLat, 0);
+      const mercTopLeft = mapboxgl.MercatorCoordinate.fromLngLat(mercatorToLngLat(west, north), 0);
+      const mercBottomRight = mapboxgl.MercatorCoordinate.fromLngLat(mercatorToLngLat(east, south), 0);
+
+      const scaleX = (mercBottomRight.x - mercTopLeft.x) / width;
+      const scaleY = (mercTopLeft.y - mercBottomRight.y) / height;
+      const zExaggeration = 10;
+
+      const geometry = new THREE.PlaneGeometry(width, height, width - 1, height - 1);
+      geometry.rotateX(-Math.PI / 2);
+
+      const colors = [];
+      for (let i = 0; i < geometry.attributes.position.count; i++) {
+        const val = data[i];
+        const norm = val / 255;
+        geometry.attributes.position.setZ(i, norm * zExaggeration);
+
+        const color = new THREE.Color();
+        color.setHSL(0.6 - norm * 0.5, 1.0, 0.5);
+        colors.push(color.r, color.g, color.b);
+      }
+      geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+      const material = new THREE.MeshBasicMaterial({
+        vertexColors: true,
+        side: THREE.DoubleSide
+      });
+
+      const surfaceMesh = new THREE.Mesh(geometry, material);
+      surfaceMesh.scale.set(width * scaleX, 1, height * scaleY);
+      surfaceMesh.position.set(mercCenter.x, mercCenter.y, 0);
+      
+
+      const customLayer = {
+      id: 'geo-surface-layer',
+      type: 'custom',
+      renderingMode: '3d',
+
+
+      onAdd: function (map, gl) {
+      this.camera = new THREE.PerspectiveCamera(45, map.getCanvas().width / map.getCanvas().height, 0.1, 1000);
+      this.camera.position.set(mercCenter.x, mercCenter.y + 0.01, 0.02);
+      this.camera.lookAt(mercCenter.x, mercCenter.y, 0);
+
+      this.scene = new THREE.Scene();
+      console.log('WebGL Version:', gl.getParameter(gl.VERSION));
+
+      this.renderer = new THREE.WebGL1Renderer({
+      canvas: map.getCanvas(),
+      context: gl,
+      antialias: true
+    });
+
+
+      this.renderer.autoClear = false;
+      this.scene.add(surfaceMesh);
+    },
+
+
+
+      render: function (gl, matrix) {
+        const m = new THREE.Matrix4().fromArray(matrix);
+        this.camera.projectionMatrix = m;
+        this.renderer.state.reset();
+        this.renderer.render(this.scene, this.camera);
+        map.triggerRepaint();
+
+      }
+    };
+
+
+      map.addLayer(customLayer);
+    });
+  });
+</script>
+
+<style>
+  #mapbox-container {
+    width: 100%;
+    height: 100vh;
+  }
+</style>
+
+<div id="mapbox-container" bind:this={mapContainer} />
 
 
 

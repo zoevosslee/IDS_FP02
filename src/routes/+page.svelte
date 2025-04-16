@@ -20,6 +20,7 @@
   let selectedFeature = null; // Initialize selectedFeature to null
   let selectedLayer = 'education';
 
+
   let map;
   let visibleLayers = {
     education: true, // Default to showing education layer
@@ -28,6 +29,8 @@
     rentBurden: false
   };
   let policeInd = 'reqs';
+  let terrainVisible = true;
+  let terrainOpacity = 0.5; // Opacity when visible
 
 
   function assignQuartiles(features, fieldName) {
@@ -65,6 +68,67 @@
     selectedYear = year;
     updateLayerVisibility();
   }
+
+//   function toggleTerrain() {
+//   if (!map) return;
+
+//   if (terrainVisible) {
+//     map.setTerrain({ source: 'custom-dem', exaggeration: 0.001 });
+
+//     if (map.getLayer('terrain-hillshade')) {
+//       map.setPaintProperty('terrain-hillshade', 'hillshade-opacity', terrainOpacity); // e.g. 0.5
+//     }
+
+//     if (map.getLayer('terrain-tint-overlay')) {
+//       map.setPaintProperty('terrain-tint-overlay', 'fill-opacity', 0.3);
+//     }
+//   } else {
+//     map.setTerrain(null);
+
+//     if (map.getLayer('terrain-hillshade')) {
+//       map.setPaintProperty('terrain-hillshade', 'hillshade-opacity', 0); // hide hillshade
+//     }
+
+//     if (map.getLayer('terrain-tint-overlay')) {
+//       map.setPaintProperty('terrain-tint-overlay', 'fill-opacity', 0); // hide tint
+//     }
+//   }
+// }
+
+function toggleTerrain() {
+  if (!map) return;
+
+  if (terrainVisible) {
+    map.setTerrain({ source: 'custom-dem', exaggeration: 0.001 });
+
+    // Restore hillshade colors
+    map.setPaintProperty('terrain-hillshade', 'hillshade-shadow-color', '#CA8584');
+    map.setPaintProperty('terrain-hillshade', 'hillshade-highlight-color', '#ffffff');
+    map.setPaintProperty('terrain-hillshade', 'hillshade-accent-color', '#fbb03b');
+
+    // Restore tint overlay
+    map.setPaintProperty('terrain-tint-overlay', 'fill-opacity', 0.3);
+  } else {
+    map.setTerrain(null);
+
+    // Set all hillshade colors to transparent
+    map.setPaintProperty('terrain-hillshade', 'hillshade-shadow-color', 'rgba(0,0,0,0)');
+    map.setPaintProperty('terrain-hillshade', 'hillshade-highlight-color', 'rgba(0,0,0,0)');
+    map.setPaintProperty('terrain-hillshade', 'hillshade-accent-color', 'rgba(0,0,0,0)');
+
+    // Hide tint overlay
+    map.setPaintProperty('terrain-tint-overlay', 'fill-opacity', 0);
+  }
+}
+
+
+
+
+
+
+
+
+
 
   function handleLayerToggle(event) {
     const { layer, visible } = event.detail;
@@ -146,38 +210,113 @@
 
     await new Promise(resolve => map.on('load', resolve));
 
+// adding points
+map.addSource('points-311', {
+  type: 'geojson',
+  data: '/data/points_311_2015.geojson'  // adjust path if needed
+});
+
+map.addLayer({
+  id: 'points-311-layer',
+  type: 'circle',
+  source: 'points-311',
+  paint: {
+    'circle-radius': 4,
+    'circle-color': '#ff00ff',
+    'circle-opacity': 0
+  }
+});
+
+// Add hover popup
+const popup = new mapboxgl.Popup({
+  closeButton: false,
+  closeOnClick: false
+});
+
+map.on('mouseenter', 'points-311-layer', () => {
+  map.getCanvas().style.cursor = 'pointer';
+});
+
+map.on('mouseleave', 'points-311-layer', () => {
+  map.getCanvas().style.cursor = '';
+  popup.remove();
+});
+
+map.on('mousemove', 'points-311-layer', (e) => {
+  const coords = e.features[0].geometry.coordinates.slice();
+  const val = e.features[0].properties.VALUE;
+
+  popup.setLngLat(coords)
+       .setHTML(`311 calls: ${val}`)
+       .addTo(map);
+});
 
 
 
 
-  //   // Add custom DEM source from Mapbox (uploaded by claudiatomateo)
-  //   map.addSource('custom-dem', {
-  //     type: 'raster-dem',
-  //     url: 'mapbox://claudiatomateo.6f9fzqzs',
-  //     tileSize: 512,
-  //     maxzoom: 14
-  //   });
 
-  //   // Set terrain using this DEM
-  //   map.setTerrain({
-  //     source: 'custom-dem',
-  //     exaggeration: 0.001
-  //   });
+    // Add custom DEM source from Mapbox (uploaded by claudiatomateo)
+    map.addSource('custom-dem', {
+      type: 'raster-dem',
+      url: 'mapbox://claudiatomateo.6f9fzqzs',
+      tileSize: 512,
+      maxzoom: 14
+    });
 
-  //   map.addLayer({
-  //   id: 'terrain-hillshade',
-  //   type: 'hillshade',
-  //   source: 'custom-dem',
-  //   layout: { visibility: 'visible' },
-  //   paint: {
-  //     'hillshade-exaggeration': 0.6,  // optional, makes features pop more
-  //     'hillshade-shadow-color': '#CA8584',
-  //     'hillshade-highlight-color': '#ffffff',
-  //     'hillshade-accent-color': '#fbb03b', // warm tint
-  //     'hillshade-illumination-direction': 335,
-  //     'hillshade-opacity': 0.01
-  //   }
-  // });
+// Set terrain using this DEM
+map.setTerrain({
+  source: 'custom-dem',
+  exaggeration: 0.001,
+});
+
+// Add hillshade layer *first*
+map.addLayer({
+  id: 'terrain-hillshade',
+  type: 'hillshade',
+  source: 'custom-dem',
+  paint: {
+    'hillshade-exaggeration': 0.6,
+    'hillshade-shadow-color': '#CA8584',
+    'hillshade-highlight-color': '#ffffff',
+    'hillshade-accent-color': '#fbb03b',
+    'hillshade-illumination-direction': 335,
+    // 'hillshade-opacity': 1 // hardcode an initial opacity
+  }
+});
+
+
+// // Then add tint overlay
+// map.addSource('terrain-tint', {
+//   type: 'geojson',
+//   data: {
+//     type: 'FeatureCollection',
+//     features: [{
+//       type: 'Feature',
+//       geometry: {
+//         type: 'Polygon',
+//         coordinates: [[
+//           [-180, -85], [180, -85], [180, 85], [-180, 85], [-180, -85]
+//         ]]
+//       }
+//     }]
+//   }
+// });
+
+// map.addLayer({
+//   id: 'terrain-tint-overlay',
+//   type: 'fill',
+//   source: 'terrain-tint',
+//   layout: {},
+//   paint: {
+//     'fill-color': '#663399',
+//     'fill-opacity': 0.3
+//   }
+// }, 'terrain-hillshade'); // now it's safe to use this
+
+
+
+
+
 
 
 
@@ -279,6 +418,10 @@
 
 map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 
+
+
+
+
   });
 </script>
 
@@ -308,6 +451,11 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
           <YearToggle {selectedYear} onChange={handleYearChange} />
         </div>      
         <LayerSidebar on:toggleLayer={handleLayerToggle} on:togglePoliceInd={handlePoliceIndToggle} />
+        <label>
+          <input type="checkbox" bind:checked={terrainVisible} on:change={toggleTerrain} />
+          Show Terrain
+        </label>
+        
       </div>
 
       <div class="map-wrapper">
