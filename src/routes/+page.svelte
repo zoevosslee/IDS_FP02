@@ -36,6 +36,8 @@
   };
   let policeInd = 'reqs';
 
+  let scrollerMap;
+
 
   function assignQuartiles(features, fieldName) {
     const values = features.map(f => f.properties[fieldName]).filter(v => typeof v === 'number' && !isNaN(v)).sort((a, b) => a - b);
@@ -149,6 +151,13 @@
       pitch: 80,
       bearing: 41
     
+    });
+
+    scrollerMap = new mapboxgl.Map({
+      container: 'scrollerMap',
+      style: 'mapbox://styles/mapbox/light-v10',
+      center: [-71.0589, 42.3601],
+      zoom: 10    
     });
 
     await new Promise(resolve => map.on('load', resolve));
@@ -286,6 +295,8 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 
         <p>total progress</p>
         <progress value={progress || 0}></progress>
+        <div id="scrollerMap">
+        </div>
       </div>
 
       <div slot="foreground" style="padding: 0 0 0 50%;">
@@ -398,6 +409,12 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 #map {
   width: 100%;
   height: 100%;
+}
+
+#scrollerMap {
+  flex: 1;
+  width: calc(50% - 1em);
+  height: 400px;
 }
 
 /* Floating info panel */
