@@ -10,7 +10,18 @@
   import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
   import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
   import Legend from '$lib/Legend.svelte';
+  import Scroller from '@sveltejs/svelte-scroller';
 
+
+  /* vars from svelte-scroller tutorial (maybe remove some later) */
+  let count;
+	let index;
+	let offset;
+	let progress;
+	let top = 0.1;
+	let threshold = 0.5;
+	let bottom = 0.9;
+  /* end of vars from svelte-scroller tutorial */
 
   let selectedYear = 2015;
   let selectedFeature = null; // Initialize selectedFeature to null
@@ -255,6 +266,39 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
       <h2>By Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, Zoe Voss Lee</h2>
     </div>
 
+    <!-- From svelte-scroller tutorial -->
+    <div class="scroller">
+      <Scroller
+      {top}
+      {threshold}
+      {bottom}
+      bind:count
+      bind:index
+      bind:offset
+      bind:progress
+    >
+      <div slot="background">
+        <p>current section: <strong>{index + 1}/{count}</strong></p>
+        <progress value="{count ? (index + 1) / count : 0}"></progress>
+
+        <p>offset in current section</p>
+        <progress value={offset || 0}></progress>
+
+        <p>total progress</p>
+        <progress value={progress || 0}></progress>
+      </div>
+
+      <div slot="foreground" style="padding: 0 0 0 50%;">
+        <section>section 1</section>
+        <section>section 2</section>
+        <section>section 3</section>
+        <section>section 4</section>
+        <section>section 5</section>
+      </div>
+    </Scroller>
+  </div>
+  <!-- end of content from svelte-scroller tutorial -->
+
     <p>What is the correlation between gentrification and non-criminal policing? 
       In this visualization, we map indicators of non-criminal policing as vertical heights,
       and indicators relevant to gentrification as color shades. This is our ground work of exploring the neighborhood trends before
@@ -371,7 +415,39 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 }
 
 
-
+/* styling from svelte-scroller tutorial */
+.scroller {
+		padding: 0 100px 0 0;
+	}
+	
+	[slot="background"] {
+		background-color: rgba(255,62,0,0.05);
+		border-top: 2px solid #ff3e00;
+		border-bottom: 2px solid #ff3e00;
+		font-size: 1.4em;
+		overflow: hidden;
+		padding: 1em;
+	}
+	
+	[slot="background"] p {
+		margin: 0;
+	}
+	
+	[slot="foreground"] {
+		pointer-events: none;
+	}
+	
+	[slot="foreground"] section {
+		pointer-events: all;
+	}
+	
+	section {
+		height: 80vh;
+		background-color: rgba(0,0,0,0.5);
+		color: white;
+		padding: 1em;
+		margin: 0 0 2em 0;
+	}
 
 
 </style>
