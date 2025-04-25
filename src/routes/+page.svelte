@@ -37,6 +37,12 @@
   let policeInd = 'reqs';
 
   let scrollerMap;
+  let redlining = null;
+  let scrollerMapViewChanged = 0;
+
+  $: scrollerMap?.on("move", evt => scrollerMapViewChanged++);
+
+
 
 
   function assignQuartiles(features, fieldName) {
@@ -161,10 +167,12 @@
     });
 
     await new Promise(resolve => map.on('load', resolve));
+    await new Promise(resolve => scrollerMap.on('load', resolve));
 
     const data2023 = await d3.json('/data/merged2023_finalfinal.geojson');
     const data2015 = await d3.json('/data/merged2015_final.geojson');
     const neighborhoods = await d3.json('/data/bpda_neighborhood_boundaries.json');
+    redlining = await d3.json('/data/mappinginequality.json');
 
     ['BachelorOrHigher2015', 'MedianIncome2015', 'White2015', 'RentBurden2015'].forEach(field => assignQuartiles(data2015.features, field));
     ['BachelorOrHigher2023', 'MedianIncome2023', 'White2023', 'RentBurden2023'].forEach(field => assignQuartiles(data2023.features, field));
@@ -261,6 +269,43 @@
 map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 
   });
+
+  function geoJSONPolygonToPath(feature) {
+    const path = d3.path();
+    const type = feature.geometry.type;
+    const coords = feature.geometry.coordinates;
+
+    if (type === "Polygon") {
+      // A single polygon: list of rings
+      for (const ring of coords) {
+        for (let i = 0; i < ring.length; i++) {
+          const [lng, lat] = ring[i];
+          const { x, y } = scrollerMap.project([lng, lat]);
+          if (i === 0) path.moveTo(x, y);
+          else path.lineTo(x, y);
+        }
+        path.closePath();
+      }
+    } else if (type === "MultiPolygon") {
+      // A MultiPolygon: list of polygons, each containing list of rings
+      for (const polygon of coords) {
+        for (const ring of polygon) {
+          for (let i = 0; i < ring.length; i++) {
+            const [lng, lat] = ring[i];
+            const { x, y } = scrollerMap.project([lng, lat]);
+            if (i === 0) path.moveTo(x, y);
+            else path.lineTo(x, y);
+          }
+          path.closePath();
+        }
+      }
+    } else {
+      console.warn("Unsupported geometry type:", type);
+    }
+
+    return path.toString();
+  }
+
 </script>
 
 
@@ -296,11 +341,36 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
         <p>total progress</p>
         <progress value={progress || 0}></progress>
         <div id="scrollerMap">
+          <svg>
+            {#key scrollerMapViewChanged}
+              {#if redlining}
+                <script>console.log("made it");</script>
+                {#each redlining.features as feature}
+                  <path
+                    d={geoJSONPolygonToPath(feature)}
+                      fill={feature.properties.fill}
+                      fill-opacity="0.2"
+                      stroke="#000000"
+                      stroke-opacity="0.5"
+                      stroke-width="1"
+                      >
+                        <title>{feature.properties.category}</title>
+                      </path>
+                  {/each}
+              {/if}
+          {/key}
+        </svg>
         </div>
       </div>
 
       <div slot="foreground" style="padding: 0 0 0 50%;">
-        <section>section 1</section>
+        <section>Historic HOLC redlining map of Boston
+          <p>
+            Base layer: Historic HOLC redlining map of Boston from University of Richmond
+          </p>
+          <p>Overlay: Present-day neighborhood boundaries or census tracts.</p>
+          <p>Narrative: Redlining created barriers for African American and immigrant families in neighborhoods considered “hazardous,” “undesirable,” or “inharmonious” to access mortgage financing. Communities of historically redlined neighborhoods continue to live and negotiate with the long-term impacts of systemic exclusion, preserving what is precious to them.</p>
+        </section>
         <section>section 2</section>
         <section>section 3</section>
         <section>section 4</section>
@@ -415,6 +485,18 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
   flex: 1;
   width: calc(50% - 1em);
   height: 400px;
+  pointer-events: all;
+  position: relative;
+  z-index: 0;
+}
+
+#scrollerMap svg {
+  position: absolute;
+  z-index: 1;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
 /* Floating info panel */
@@ -444,6 +526,9 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 		font-size: 1.4em;
 		overflow: hidden;
 		padding: 1em;
+    pointer-events: all;
+    position: relative;
+    z-index: 1;
 	}
 	
 	[slot="background"] p {
@@ -451,11 +536,13 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 	}
 	
 	[slot="foreground"] {
+    position: relative;
+    z-index: 10;
 		pointer-events: none;
 	}
 	
 	[slot="foreground"] section {
-		pointer-events: all;
+		pointer-events: none;
 	}
 	
 	section {
@@ -465,7 +552,7 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 		padding: 1em;
 		margin: 0 0 2em 0;
 	}
-
+  
 
 </style>
 
