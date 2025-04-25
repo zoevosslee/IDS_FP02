@@ -270,6 +270,26 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 
   });
 
+  let svgEl;
+
+  $: if (svgEl && index == 0) {
+    const paths = d3.select(svgEl).selectAll('path');
+
+    if (offset > 0.8) {
+      paths.transition()
+        .duration(500)
+        .style('fill-opacity', 0);
+    } else if (offset > 0.2) {
+      paths.transition()
+        .duration(500)
+        .style('fill-opacity', 0.6);
+    } else {
+      paths.transition()
+        .duration(500)
+        .style('fill-opacity', 0.2);
+    }
+  }
+
   function geoJSONPolygonToPath(feature) {
     const path = d3.path();
     const type = feature.geometry.type;
@@ -341,7 +361,7 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
         <p>total progress</p>
         <progress value={progress || 0}></progress>
         <div id="scrollerMap">
-          <svg>
+          <svg id="redlineSvg" bind:this={svgEl}>
             {#key scrollerMapViewChanged}
               {#if redlining}
                 <script>console.log("made it");</script>
@@ -352,7 +372,7 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
                       fill-opacity="0.2"
                       stroke="#000000"
                       stroke-opacity="0.5"
-                      stroke-width="1"
+                      stroke-width="0"
                       >
                         <title>{feature.properties.category}</title>
                       </path>
