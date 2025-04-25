@@ -5,7 +5,8 @@
     let pages = [
       { url: '/', title: 'Interactive Visualization' },
       { url: '/writeup', title: 'Write Up' },
-      { url: '/plan', title: 'Project Plan' }
+      { url: '/plan', title: 'Project Plan' },
+      { url: '/chapter1', title: 'Chapter 1' }
     ];
   
     let menuOpen = false;
