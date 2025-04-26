@@ -369,7 +369,7 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
                   <path
                     d={geoJSONPolygonToPath(feature)}
                       fill={feature.properties.fill}
-                      fill-opacity="0.2"
+                      fill-opacity= {(offset > 0.2 && offset < 0.8 && index == 0)? `0.6` : `0`}
                       stroke="#000000"
                       stroke-opacity="0.5"
                       stroke-width="0"
