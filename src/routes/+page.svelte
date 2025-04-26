@@ -40,6 +40,7 @@
   let redlining = null;
   let neighborhoods = null;
   let scrollerMapViewChanged = 0;
+  let selectedNeighborhood = null;
 
   $: scrollerMap?.on("move", evt => scrollerMapViewChanged++);
 
@@ -327,6 +328,8 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
     return path.toString();
   }
 
+  $: console.log(selectedNeighborhood);
+
 </script>
 
 
@@ -387,10 +390,13 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
               {#each neighborhoods.features as feature}
                 <path
                   d={geoJSONPolygonToPath(feature)}
-                    fill-opacity="0"
+                    fill="#ffffff"
+                    fill-opacity="0.5"
                     stroke="#000000"
                     stroke-opacity="0.5"
                     stroke-width="1"
+                    class={feature?.properties.name === selectedNeighborhood?.properties.name ? "selected" : ""}
+	                    on:mousedown={() => selectedNeighborhood = selectedNeighborhood?.properties.name !== feature?.properties.name ? feature : null}
                     >
                       <title>{feature.properties.name}</title>
                 </path>
@@ -595,6 +601,24 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
   .scroller-container {
     pointer-events: none;
   }
+
+  /* #scrollerNeighborhoods path {
+    transition: opacity 0.2s ease;
+    pointer-events: auto;
+  }
+  &:has(path.selected) path:not(.selected) {
+    opacity: 0.5;
+  } */
+
+  #scrollerNeighborhoods path {
+    transition: opacity 0.2s ease;
+    pointer-events: auto;
+  }
+
+  #scrollerNeighborhoods:has(path.selected) path:not(.selected) {
+    opacity: 0.5;
+  }
+
   
   
 
