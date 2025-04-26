@@ -400,6 +400,18 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
                     >
                       <title>{feature.properties.name}</title>
                 </path>
+                <path
+                  d={geoJSONPolygonToPath(feature)}
+                    fill="#ffffff"
+                    fill-opacity="0"
+                    stroke="#0000ff"
+                    stroke-opacity="1"
+                    stroke-width="2"
+                    class={feature?.properties.name === selectedNeighborhood?.properties.name ? "outlineSelected" : "outlineNotSelected"}
+	                    on:mousedown={() => selectedNeighborhood = selectedNeighborhood?.properties.name !== feature?.properties.name ? feature : null}
+                    >
+                      <title>{feature.properties.name}</title>
+                </path>
               {/each}
             {/if}
           {/key}
@@ -615,8 +627,16 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
     pointer-events: auto;
   }
 
-  #scrollerNeighborhoods:has(path.selected) path:not(.selected) {
-    opacity: 0.5;
+  #scrollerNeighborhoods:has(path.selected) path:is(.selected) {
+    opacity: 0;
+  }
+
+  #scrollerNeighborhoods path:is(.outlineSelected) {
+    opacity: 1;
+    z-index: 999;
+  }
+  #scrollerNeighborhoods path:is(.outlineNotSelected) {
+    opacity: 0;
   }
 
   
