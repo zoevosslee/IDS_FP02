@@ -10,7 +10,18 @@
   import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
   import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
   import Legend from '$lib/Legend.svelte';
+  import Scroller from '@sveltejs/svelte-scroller';
 
+
+  /* vars from svelte-scroller tutorial (maybe remove some later) */
+  let count;
+	let index;
+	let offset;
+	let progress;
+	let top = 0.1;
+	let threshold = 0.5;
+	let bottom = 0.9;
+  /* end of vars from svelte-scroller tutorial */
 
   let selectedYear = 2015;
   let selectedFeature = null; // Initialize selectedFeature to null
@@ -24,6 +35,14 @@
     rentBurden: false
   };
   let policeInd = 'reqs';
+
+  let scrollerMap;
+  let redlining = null;
+  let scrollerMapViewChanged = 0;
+
+  $: scrollerMap?.on("move", evt => scrollerMapViewChanged++);
+
+
 
 
   function assignQuartiles(features, fieldName) {
@@ -140,11 +159,20 @@
     
     });
 
+    scrollerMap = new mapboxgl.Map({
+      container: 'scrollerMap',
+      style: 'mapbox://styles/mapbox/light-v10',
+      center: [-71.0825, 42.314],
+      zoom: 10    
+    });
+
     await new Promise(resolve => map.on('load', resolve));
+    await new Promise(resolve => scrollerMap.on('load', resolve));
 
     const data2023 = await d3.json('/data/merged2023_finalfinal.geojson');
     const data2015 = await d3.json('/data/merged2015_final.geojson');
     const neighborhoods = await d3.json('/data/bpda_neighborhood_boundaries.json');
+    redlining = await d3.json('/data/mappinginequality.json');
 
     ['BachelorOrHigher2015', 'MedianIncome2015', 'White2015', 'RentBurden2015'].forEach(field => assignQuartiles(data2015.features, field));
     ['BachelorOrHigher2023', 'MedianIncome2023', 'White2023', 'RentBurden2023'].forEach(field => assignQuartiles(data2023.features, field));
@@ -241,6 +269,63 @@
 map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 
   });
+
+  let svgEl;
+
+  $: if (svgEl && index == 0) {
+    const paths = d3.select(svgEl).selectAll('path');
+
+    if (offset > 0.8) {
+      paths.transition()
+        .duration(500)
+        .style('fill-opacity', 0);
+    } else if (offset > 0.2) {
+      paths.transition()
+        .duration(500)
+        .style('fill-opacity', 0.6);
+    } else {
+      paths.transition()
+        .duration(500)
+        .style('fill-opacity', 0.2);
+    }
+  }
+
+  function geoJSONPolygonToPath(feature) {
+    const path = d3.path();
+    const type = feature.geometry.type;
+    const coords = feature.geometry.coordinates;
+
+    if (type === "Polygon") {
+      // A single polygon: list of rings
+      for (const ring of coords) {
+        for (let i = 0; i < ring.length; i++) {
+          const [lng, lat] = ring[i];
+          const { x, y } = scrollerMap.project([lng, lat]);
+          if (i === 0) path.moveTo(x, y);
+          else path.lineTo(x, y);
+        }
+        path.closePath();
+      }
+    } else if (type === "MultiPolygon") {
+      // A MultiPolygon: list of polygons, each containing list of rings
+      for (const polygon of coords) {
+        for (const ring of polygon) {
+          for (let i = 0; i < ring.length; i++) {
+            const [lng, lat] = ring[i];
+            const { x, y } = scrollerMap.project([lng, lat]);
+            if (i === 0) path.moveTo(x, y);
+            else path.lineTo(x, y);
+          }
+          path.closePath();
+        }
+      }
+    } else {
+      console.warn("Unsupported geometry type:", type);
+    }
+
+    return path.toString();
+  }
+
 </script>
 
 
@@ -249,12 +334,73 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 </svelte:head>
 
 <div id="home-page">
-  <div class="container">
     <div class="text-content">
       <h1>Rent is a Trap!</h1>
       <h2>By Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, Zoe Voss Lee</h2>
     </div>
+  <div class="scroller-container">
 
+    <!-- From svelte-scroller tutorial -->
+    <div class="scroller">
+      <Scroller
+      {top}
+      {threshold}
+      {bottom}
+      bind:count
+      bind:index
+      bind:offset
+      bind:progress
+    >
+      <div slot="background">
+        <p style="font-size:small;">these sliders are for debug -Nicola</p>
+        <p>current section: <strong>{index + 1}/{count}</strong></p>
+        <progress value="{count ? (index + 1) / count : 0}"></progress>
+
+        <p>offset in current section</p>
+        <progress value={offset || 0}></progress>
+
+        <p>total progress</p>
+        <progress value={progress || 0}></progress>
+        <div id="scrollerMap">
+          <svg id="redlineSvg" bind:this={svgEl}>
+            {#key scrollerMapViewChanged}
+              {#if redlining}
+                {#each redlining.features as feature}
+                  <path
+                    d={geoJSONPolygonToPath(feature)}
+                      fill={feature.properties.fill}
+                      fill-opacity= {(offset > 0.2 && offset < 0.8 && index == 0)? `0.6` : `0`}
+                      stroke="#000000"
+                      stroke-opacity="0.5"
+                      stroke-width="0"
+                      >
+                        <title>{feature.properties.category}</title>
+                      </path>
+                  {/each}
+              {/if}
+          {/key}
+        </svg>
+        </div>
+      </div>
+
+      <div slot="foreground" style="padding: 0 0 0 50%;">
+        <section>Historic HOLC redlining map of Boston
+          <p>
+            Base layer: Historic HOLC redlining map of Boston from University of Richmond
+          </p>
+          <p>Overlay: Present-day neighborhood boundaries or census tracts.</p>
+          <p>Narrative: Redlining created barriers for African American and immigrant families in neighborhoods considered “hazardous,” “undesirable,” or “inharmonious” to access mortgage financing. Communities of historically redlined neighborhoods continue to live and negotiate with the long-term impacts of systemic exclusion, preserving what is precious to them.</p>
+        </section>
+        <section>section 2</section>
+        <section>section 3</section>
+        <section>section 4</section>
+        <section>section 5</section>
+      </div>
+    </Scroller>
+  </div>
+  <!-- end of content from svelte-scroller tutorial -->
+  </div>
+  <div class='FP2-container'>
     <p>What is the correlation between gentrification and non-criminal policing? 
       In this visualization, we map indicators of non-criminal policing as vertical heights,
       and indicators relevant to gentrification as color shades. This is our ground work of exploring the neighborhood trends before
@@ -356,6 +502,24 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
   height: 100%;
 }
 
+#scrollerMap {
+  flex: 1;
+  width: calc(50% - 1em);
+  height: 400px;
+  pointer-events: all;
+  position: relative;
+  z-index: 0;
+}
+
+#scrollerMap svg {
+  position: absolute;
+  z-index: 1;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
 /* Floating info panel */
 :global(.floating-panel) {
   position: absolute;
@@ -371,8 +535,50 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 }
 
 
+/* styling from svelte-scroller tutorial */
+.scroller {
+		padding: 0 100px 0 0;
+	}
+	
+	[slot="background"] {
+		background-color: rgba(255,62,0,0.05);
+		border-top: 2px solid #ff3e00;
+		border-bottom: 2px solid #ff3e00;
+		font-size: 1.4em;
+		overflow: hidden;
+		padding: 1em;
+    pointer-events: all;
+    position: relative;
+    z-index: 1;
+	}
+	
+	[slot="background"] p {
+		margin: 0;
+	}
+	
+	[slot="foreground"] {
+    position: relative;
+    z-index: 10;
+		pointer-events: none;
+	}
+	
+	[slot="foreground"] section {
+		pointer-events: none;
+	}
+	
+	section {
+		height: 80vh;
+		background-color: rgba(0,0,0,0.5);
+		color: white;
+		padding: 1em;
+		margin: 0 0 2em 0;
+	}
 
-
+  .scroller-container {
+    pointer-events: none;
+  }
+  
+  
 
 </style>
 

@@ -17,7 +17,9 @@
 	"type": "module",
 	"dependencies": {
 		"@mapbox/mapbox-gl-geocoder": "^5.0.3",
+		"@sveltejs/svelte-scroller": "^2.0.7",
 		"d3": "^7.9.0",
-		"mapbox-gl": "^3.10.0"
+		"mapbox-gl": "^3.10.0",
+		"svelte-scroller": "^1.2.2"
 	}
 }
