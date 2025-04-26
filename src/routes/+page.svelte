@@ -38,7 +38,9 @@
 
   let scrollerMap;
   let redlining = null;
+  let neighborhoods = null;
   let scrollerMapViewChanged = 0;
+  let selectedNeighborhood = null;
 
   $: scrollerMap?.on("move", evt => scrollerMapViewChanged++);
 
@@ -171,7 +173,7 @@
 
     const data2023 = await d3.json('/data/merged2023_finalfinal.geojson');
     const data2015 = await d3.json('/data/merged2015_final.geojson');
-    const neighborhoods = await d3.json('/data/bpda_neighborhood_boundaries.json');
+    neighborhoods = await d3.json('/data/bpda_neighborhood_boundaries.json');
     redlining = await d3.json('/data/mappinginequality.json');
 
     ['BachelorOrHigher2015', 'MedianIncome2015', 'White2015', 'RentBurden2015'].forEach(field => assignQuartiles(data2015.features, field));
@@ -361,28 +363,65 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 
         <p>total progress</p>
         <progress value={progress || 0}></progress>
-        <div id="scrollerMap">
-          <svg id="redlineSvg" bind:this={svgEl}>
+        <div style="position: relative; flex-grow: 1;">
+          <div id="scrollerMap">
+            <svg id="redlineSvg" bind:this={svgEl}>
+              {#key scrollerMapViewChanged}
+                {#if redlining}
+                  {#each redlining.features as feature}
+                    <path
+                      d={geoJSONPolygonToPath(feature)}
+                        fill={feature.properties.fill}
+                        fill-opacity= {(offset > 0.2 && offset < 0.8 && index == 0)? `0.6` : `0`}
+                        stroke="#000000"
+                        stroke-opacity="0.5"
+                        stroke-width="0"
+                        >
+                          <title>{feature.properties.category}</title>
+                        </path>
+                    {/each}
+                {/if}
+            {/key}
+          </svg>
+          <svg id="scrollerNeighborhoods">
             {#key scrollerMapViewChanged}
-              {#if redlining}
-                {#each redlining.features as feature}
+              {#if neighborhoods}
+                {#each neighborhoods.features as feature}
                   <path
                     d={geoJSONPolygonToPath(feature)}
-                      fill={feature.properties.fill}
-                      fill-opacity= {(offset > 0.2 && offset < 0.8 && index == 0)? `0.6` : `0`}
+                      fill="#ffffff"
+                      fill-opacity="0.5"
                       stroke="#000000"
                       stroke-opacity="0.5"
-                      stroke-width="0"
+                      stroke-width="1"
+                      class={feature?.properties.name === selectedNeighborhood?.properties.name ? "selected" : ""}
+                        on:mousedown={() => selectedNeighborhood = selectedNeighborhood?.properties.name !== feature?.properties.name ? feature : null}
                       >
-                        <title>{feature.properties.category}</title>
-                      </path>
-                  {/each}
+                        <title>{feature.properties.name}</title>
+                  </path>
+                  <path
+                    d={geoJSONPolygonToPath(feature)}
+                      fill="#ffffff"
+                      fill-opacity="0"
+                      stroke="#0000ff"
+                      stroke-opacity="1"
+                      stroke-width="2"
+                      class={feature?.properties.name === selectedNeighborhood?.properties.name ? "outlineSelected" : "outlineNotSelected"}
+                        on:mousedown={() => selectedNeighborhood = selectedNeighborhood?.properties.name !== feature?.properties.name ? feature : null}
+                      >
+                        <title>{feature.properties.name}</title>
+                  </path>
+                {/each}
               {/if}
-          {/key}
-        </svg>
+            {/key}
+          </svg>
+          </div>
+          {#if selectedNeighborhood}
+            <div class="neighborhood-label"><p>{selectedNeighborhood.properties.name}</p></div>
+          {/if}
         </div>
+      
       </div>
-
       <div slot="foreground" style="padding: 0 0 0 50%;">
         <section>Historic HOLC redlining map of Boston
           <p>
@@ -576,6 +615,44 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 
   .scroller-container {
     pointer-events: none;
+  }
+
+  /* #scrollerNeighborhoods path {
+    transition: opacity 0.2s ease;
+    pointer-events: auto;
+  }
+  &:has(path.selected) path:not(.selected) {
+    opacity: 0.5;
+  } */
+
+  #scrollerNeighborhoods path {
+    transition: opacity 0.2s ease;
+    pointer-events: auto;
+  }
+
+  #scrollerNeighborhoods:has(path.selected) path:is(.selected) {
+    opacity: 0;
+  }
+
+  #scrollerNeighborhoods path:is(.outlineSelected) {
+    opacity: 1;
+    z-index: 15;
+  }
+  #scrollerNeighborhoods path:is(.outlineNotSelected) {
+    opacity: 0;
+  }
+
+  .neighborhood-label {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: rgba(255, 255, 255, 0.85);  /* white with 90% opacity */
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+    max-width: 300px;
+    font-family: sans-serif;
   }
   
   
