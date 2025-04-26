@@ -162,7 +162,7 @@
     scrollerMap = new mapboxgl.Map({
       container: 'scrollerMap',
       style: 'mapbox://styles/mapbox/light-v10',
-      center: [-71.0589, 42.3601],
+      center: [-71.0825, 42.314],
       zoom: 10    
     });
 
