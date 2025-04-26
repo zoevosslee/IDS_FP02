@@ -352,6 +352,7 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
       bind:progress
     >
       <div slot="background">
+        <p style="font-size:small;">these sliders are for debug -Nicola</p>
         <p>current section: <strong>{index + 1}/{count}</strong></p>
         <progress value="{count ? (index + 1) / count : 0}"></progress>
 
@@ -364,7 +365,6 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
           <svg id="redlineSvg" bind:this={svgEl}>
             {#key scrollerMapViewChanged}
               {#if redlining}
-                <script>console.log("made it");</script>
                 {#each redlining.features as feature}
                   <path
                     d={geoJSONPolygonToPath(feature)}
