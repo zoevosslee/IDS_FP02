@@ -38,6 +38,7 @@
 
   let scrollerMap;
   let redlining = null;
+  let neighborhoods = null;
   let scrollerMapViewChanged = 0;
 
   $: scrollerMap?.on("move", evt => scrollerMapViewChanged++);
@@ -171,7 +172,7 @@
 
     const data2023 = await d3.json('/data/merged2023_finalfinal.geojson');
     const data2015 = await d3.json('/data/merged2015_final.geojson');
-    const neighborhoods = await d3.json('/data/bpda_neighborhood_boundaries.json');
+    neighborhoods = await d3.json('/data/bpda_neighborhood_boundaries.json');
     redlining = await d3.json('/data/mappinginequality.json');
 
     ['BachelorOrHigher2015', 'MedianIncome2015', 'White2015', 'RentBurden2015'].forEach(field => assignQuartiles(data2015.features, field));
@@ -378,6 +379,23 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
                       </path>
                   {/each}
               {/if}
+          {/key}
+        </svg>
+        <svg id="scrollerNeighborhoods">
+          {#key scrollerMapViewChanged}
+            {#if neighborhoods}
+              {#each neighborhoods.features as feature}
+                <path
+                  d={geoJSONPolygonToPath(feature)}
+                    fill-opacity="0"
+                    stroke="#000000"
+                    stroke-opacity="0.5"
+                    stroke-width="1"
+                    >
+                      <title>{feature.properties.name}</title>
+                </path>
+              {/each}
+            {/if}
           {/key}
         </svg>
         </div>
