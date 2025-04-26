@@ -3,7 +3,7 @@
     import { line, curveBasis } from "d3-shape";
     import { onMount, onDestroy } from "svelte";
 
-let width = 1000;
+let width = 800;
 let height = 4600;
 let centerX = width / 2;
 let svgElement;
@@ -60,11 +60,19 @@ onDestroy(() => {
     let flowerBoxVisible = false;
     let flowerBoxY = 0;
 
+let flower1993Visible = false;
 let flower2005Visible = false;
 let flower2015Visible = false;
 let flower2020Visible = false;
 let hoveredFlower = null;
 let currentNarrativeStep = 0; 
+let hoveredFlowerImage1 = null;
+let hoveredFlowerImage2 = null;
+let hoveredFlowerText = null;
+let suppressScrollyBox = false;
+
+
+
 // 0 = nothing yet, 1 = police budget box, 2 = rent burden box
 
 
@@ -72,45 +80,44 @@ let currentNarrativeStep = 0;
 
     
   
-    let data = [
-      { year: 1990, budget: 124214441 },
-      { year: 1991, budget: 126287040 },
-      { year: 1992, budget: 124433000 },
-      { year: 1993, budget: 125340042 },
-      { year: 1994, budget: 139489987 },
-      { year: 1995, budget: 145887066 },
-      { year: 1996, budget: 155831910 },
-      { year: 1997, budget: 166777056 },
-      { year: 1998, budget: 187164594 },
-      { year: 1999, budget: 194218469 },
-      { year: 2000, budget: 200756488 },
-      { year: 2001, budget: 214286307 },
-      { year: 2002, budget: 219548410 },
-      { year: 2003, budget: 217405619 },
-      { year: 2004, budget: 211363261 },
-      { year: 2005, budget: 234580600 },
-      { year: 2006, budget: 245221274 },
-      { year: 2007, budget: 268700987 },
-      { year: 2008, budget: 281610497 },
-      { year: 2009, budget: 288631945 },
-      { year: 2010, budget: 282413334 },
-      { year: 2011, budget: 275779004 },
-      { year: 2012, budget: 283038027 },
-      { year: 2013, budget: 290713391 },
-      { year: 2014, budget: 321000297 },
-      { year: 2015, budget: 337310895 },
-      { year: 2016, budget: 348887844 },
-      { year: 2017, budget: 364594820 },
-      { year: 2018, budget: 399924493 },
-      { year: 2019, budget: 416762373 },
-      { year: 2020, budget: 425553210 },
-      { year: 2021, budget: 422917498 },
-      { year: 2022, budget: 420411571 },
-      { year: 2023, budget: 422132054 },
-      { year: 2024, budget: 511461236 },
-      { year: 2025, budget: 475152433 }
-    ];
-
+let data = [
+  { year: 1990, budget: 275720031 },
+  { year: 1991, budget: 274314189 },
+  { year: 1992, budget: 264249060 },
+  { year: 1993, budget: 263256889 },
+  { year: 1994, budget: 286116375 },
+  { year: 1995, budget: 277185426 },
+  { year: 1996, budget: 287925561 },
+  { year: 1997, budget: 298179836 },
+  { year: 1998, budget: 319676145 },
+  { year: 1999, budget: 325920180 },
+  { year: 2000, budget: 337270901 },
+  { year: 2001, budget: 353656648 },
+  { year: 2002, budget: 356762770 },
+  { year: 2003, budget: 343422247 },
+  { year: 2004, budget: 326769991 },
+  { year: 2005, budget: 347180488 },
+  { year: 2006, budget: 352428484 },
+  { year: 2007, budget: 371344339 },
+  { year: 2008, budget: 379565876 },
+  { year: 2009, budget: 381613687 },
+  { year: 2010, budget: 372784733 },
+  { year: 2011, budget: 356628715 },
+  { year: 2012, budget: 360760340 },
+  { year: 2013, budget: 365483739 },
+  { year: 2014, budget: 390858358 },
+  { year: 2015, budget: 408147173 },
+  { year: 2016, budget: 416959294 },
+  { year: 2017, budget: 428486631 },
+  { year: 2018, budget: 456208712 },
+  { year: 2019, budget: 464768959 },
+  { year: 2020, budget: 459597466 },
+  { year: 2021, budget: 442804107 },
+  { year: 2022, budget: 429680663 },
+  { year: 2023, budget: 422132054 }, // almost no adjustment needed
+  { year: 2024, budget: 511461236 },
+  { year: 2025, budget: 475152433 }
+];
     let rentBurdenRates = {
     1990: 28.3,
     2000: 40,
@@ -171,7 +178,7 @@ let currentNarrativeStep = 0;
   let found = false;
 
   for (const { year } of yearPhases) {
-    const yTop = yScale(year) -200;
+    const yTop = year === 1990 ? yScale(year) - 100 : yScale(year) - 200;
     const yPoliceEnd = yTop + 400; // wider police window
 const yRentEnd = yPoliceEnd + 500; // wider rent window
 
@@ -192,6 +199,9 @@ const yRentEnd = yPoliceEnd + 500; // wider rent window
   }
 
   // Handle flower visibility
+  if (relativeScroll > yScale(1993) - 400) {
+    flower1993Visible = true;
+  }
   if (relativeScroll > yScale(2005) - 400) {
     flower2005Visible = true;
   }
@@ -242,19 +252,18 @@ const yRentEnd = yPoliceEnd + 500; // wider rent window
             <svg {width} {height}>
 
                 <text
-  x={centerX}
-  y="30"
-  text-anchor="middle"
-  font-size="18"
-  font-family="Utendo, sans-serif"
-  font-weight="600"
-  fill="#333"
->
-  Police Budget Size (1990–2025)
-</text>
-<div class="violin-legend">
-    Width of the shape = Boston Police Budget in that year
-  </div>
+         
+                y="80"
+                text-anchor="start"
+                font-size="24"
+                font-family="Utendo, sans-serif"
+                font-weight="600"
+                fill="#333"
+              >
+                Police Budget Size (1990–2025), Adjusted for Inflation (2024 Dollars)
+              </text>
+              
+
 
                 <!-- decade lines -->
 <line
@@ -338,6 +347,34 @@ opacity="1"
                 />
               {/each}
             </svg>
+            {#if flower1993Visible}
+            <div 
+              class="flower-box" 
+              style="top: {yScale(1993)}px; left: {centerX - 50}px; transform: translate(-50%, -50%) rotate(-60deg);"
+              on:mouseenter={() => {
+                hoveredFlower = { x: centerX - 50, y: yScale(1993) };
+                hoveredFlowerImage1 = "/parcelc2.jpeg";
+                hoveredFlowerImage2 = "/parcelc1.jpeg";
+                hoveredFlowerText = "In the early 1990s, Boston’s Chinatown community organized a historic protest against Parcel C development. Residents and activists fought against the proposed construction of a parking garage that would have increased air pollution and displacement in their neighborhood. The Parcel C protests became a landmark moment for Asian American environmental justice organizing.";
+                suppressScrollyBox = true; // 👈 hide scrolly boxes
+              }}
+              on:mouseleave={() => {
+                hoveredFlower = null;
+                hoveredFlowerImage1 = null;
+                hoveredFlowerImage2 = null;
+                hoveredFlowerText = null;
+                suppressScrollyBox = false; // 👈 bring back scrolly boxes
+              }}
+              
+              
+              
+            >
+              <img src="/flower.png" alt="Flower 1993" />
+            </div>
+          {/if}
+          
+          
+          
             {#if flower2005Visible}
             <div 
               class="flower-box" 
@@ -380,35 +417,43 @@ opacity="1"
               This is a moment of resistance
             </div>
           {/if}
-
-
-          {#if currentYearPhase?.phase === "police"}
-          <div class="scrolly-box">
-            <h5>In {currentYearPhase.year}, Boston's police budget was ${data.find(d => d.year === currentYearPhase.year)?.budget.toLocaleString()}.</h5>
+          {#if hoveredFlowerImage1}
+          <div class="side-image-box">
+            <img src={hoveredFlowerImage1} alt="First Image" />
+            {#if hoveredFlowerImage2}
+              <img src={hoveredFlowerImage2} alt="Second Image" class="overlapping-image" />
+            {/if}
+            {#if hoveredFlowerText}
+              <div class="hovered-text">
+                {hoveredFlowerText}
+              </div>
+            {/if}
           </div>
         {/if}
         
-        {#if currentYearPhase?.phase === "rent"}
-          <div class="scrolly-box rent-burden-box">
-            <h5>In that same year, {rentBurdenRates[currentYearPhase.year]}% of Boston's households were rent-burdened.</h5>
-            <div class="house-grid">
-                {#if rentBurdenRates[currentYearPhase.year]}
-                {#each Array(100) as _, index}
-                  <div class="house {index < rentBurdenRates[currentYearPhase.year] ? 'filled' : ''}"></div>
-                {/each}
-              {/if}
-            
-              
-              
 
         
-          
-          
-          </div>
-          
+        
+        
+        {#if currentYearPhase?.phase === "police" && !suppressScrollyBox}
+        <div class="scrolly-box">
+          <h5>In {currentYearPhase.year}, Boston's police budget was ${data.find(d => d.year === currentYearPhase.year)?.budget.toLocaleString()}.</h5>
         </div>
       {/if}
       
+      {#if currentYearPhase?.phase === "rent" && !suppressScrollyBox}
+        <div class="scrolly-box rent-burden-box">
+          <h5>In that same year, {rentBurdenRates[currentYearPhase.year]}% of Boston's households were rent-burdened.</h5>
+          <div class="house-grid">
+            {#each Array(100) as _, index}
+              <div class="house {index < rentBurdenRates[currentYearPhase.year] ? 'filled' : ''}"></div>
+            {/each}
+          </div>
+        </div>
+      {/if}
+      
+      
+
         
       
       
@@ -442,6 +487,45 @@ opacity="1"
   </div> <!-- #home-page -->
   
   <style>
+
+.side-image-box {
+  position: fixed;
+  top: 20%;
+  right: 5%;
+  width: 20%;
+  height: auto;
+  background: none;
+  z-index: 50;
+}
+
+.side-image-box img {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: transform 0.5s ease;
+}
+
+.overlapping-image {
+  position: absolute;
+  top: 350px; /* 👈 push it down a little bit */
+  left: 30px; /* 👈 shift it right a bit to overlap */
+  width: 85%; /* 👈 smaller than the first */
+  opacity: 0.9;
+  transform: rotate(-2deg); /* slight tilt if you want */
+  z-index: 51;
+}
+
+.hovered-text {
+  margin-top: 150px;
+  padding: 0.8rem;
+  background: rgba(255,255,255,0.85);
+  border-radius: 8px;
+  font-family: 'Utendo', sans-serif;
+  font-size: 1.2rem;
+  color: #333;
+}
+
 
 html {
   scroll-behavior: smooth;
@@ -558,7 +642,7 @@ html {
 
 .scrolly-box {
   position: fixed;
-  top: 15%;
+  top: 20%;
   left: 55%;
   transform: translateX(-50%);
   max-width: 400px;
@@ -566,9 +650,12 @@ html {
   font-family: 'Utendo, sans-serif';
   z-index: 20;
   margin-right: 10%;
+  background: rgba(255, 255, 255, 0.85); /* ✅ white with 50% opacity */
+  border-radius: 12px; /* ✅ rounded corners */
   opacity: 0; /* start hidden */
-  animation: fadeSlideUp 1s ease forwards; /* 👈 still applies */
+  animation: fadeSlideUp 1s ease forwards;
 }
+
 
 
 /* Fade-out for police budget box */
