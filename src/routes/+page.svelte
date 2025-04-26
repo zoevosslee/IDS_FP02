@@ -334,11 +334,11 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 </svelte:head>
 
 <div id="home-page">
-  <div class="container">
     <div class="text-content">
       <h1>Rent is a Trap!</h1>
       <h2>By Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, Zoe Voss Lee</h2>
     </div>
+  <div class="scroller-container">
 
     <!-- From svelte-scroller tutorial -->
     <div class="scroller">
@@ -399,7 +399,8 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
     </Scroller>
   </div>
   <!-- end of content from svelte-scroller tutorial -->
-
+  </div>
+  <div class='FP2-container'>
     <p>What is the correlation between gentrification and non-criminal policing? 
       In this visualization, we map indicators of non-criminal policing as vertical heights,
       and indicators relevant to gentrification as color shades. This is our ground work of exploring the neighborhood trends before
@@ -572,6 +573,11 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 		padding: 1em;
 		margin: 0 0 2em 0;
 	}
+
+  .scroller-container {
+    pointer-events: none;
+  }
+  
   
 
 </style>
