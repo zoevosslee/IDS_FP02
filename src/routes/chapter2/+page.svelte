@@ -21,10 +21,15 @@
     let scrollerMap;
     let redlining = null;
     let neighborhoods = null;
+    let points311 = null;
+    let pointsViolations = null;
     let scrollerMapViewChanged = 0;
     let selectedNeighborhood = null;
+    let scrollerMapLoaded = false;
   
     $: scrollerMap?.on("move", evt => scrollerMapViewChanged++);
+
+    
 
     mapboxgl.accessToken = "pk.eyJ1IjoienZsMTIxNSIsImEiOiJjbTkxZ2k3cjYwMHBhMnZwd2dneWZjeXhhIn0.KK0PwZsLffFl4_qtLg-efQ";
   
@@ -38,13 +43,91 @@
       });
   
       await new Promise(resolve => scrollerMap.on('load', resolve));
+      scrollerMapLoaded = true;
+      console.log("Map has loaded!");
   
       redlining = await d3.json('/data/mappinginequality.json');
       neighborhoods = await d3.json('/data/bpda_neighborhood_boundaries.json');
-  
+      points311 = await d3.json('/data/311_points.json');
+      console.log('loaded points311', points311);
+      pointsViolations = await d3.json('/data/violations_points.json');
+      console.log('loaded pointsViolations', pointsViolations);
+
+      scrollerMap.addSource('points311', {
+        type: 'geojson',
+        data: points311
+      });
+
+      scrollerMap.addLayer({
+        'id': 'heatmap311',
+        'type': 'heatmap',
+        'source': 'points311',
+        'paint': {
+          'heatmap-weight': 1,
+          'heatmap-intensity': 1,
+          'heatmap-radius': 3,
+          'heatmap-opacity': 0,
+          'heatmap-color': [
+            'interpolate',
+            ['linear'],
+            ['heatmap-density'],
+            0, 'rgba(0,0,255,0)',
+            0.2, 'blue',
+            0.4, 'cyan',
+            0.6, 'lime',
+            0.8, 'yellow',
+            1, 'red'
+          ]
+            }
+
+      
+      });
+
+      scrollerMap.addSource('pointsViolations', {
+        type: 'geojson',
+        data: pointsViolations
+      });
+
+      scrollerMap.addLayer({
+        'id': 'heatmapViolations',
+        'type': 'heatmap',
+        'source': 'pointsViolations',
+        'paint': {
+          'heatmap-weight': 1,
+          'heatmap-intensity': 1,
+          'heatmap-radius': 3,
+          'heatmap-opacity': 0, 
+          'heatmap-color': [
+            'interpolate',
+            ['linear'],
+            ['heatmap-density'],
+            0, 'rgba(0,0,255,0)',
+            0.2, 'purple',
+            0.4, 'magenta',
+            0.6, 'orange',
+            0.8, 'gold',
+            1, 'red'
+          ]
+        },
+      });
   
     });
-  
+
+    $: if (scrollerMapLoaded && count !== undefined && scrollerMap) {
+      if (scrollerMap.getLayer('heatmap311') && scrollerMap.getLayer('heatmapViolations')) {
+        if (index === 2) {
+          scrollerMap.setPaintProperty('heatmap311', 'heatmap-opacity', 0.8);
+          scrollerMap.setPaintProperty('heatmapViolations', 'heatmap-opacity', 0);
+        } else if (index === 3) {
+          scrollerMap.setPaintProperty('heatmap311', 'heatmap-opacity', 0);
+          scrollerMap.setPaintProperty('heatmapViolations', 'heatmap-opacity', 0.8);
+        } else {
+          scrollerMap.setPaintProperty('heatmap311', 'heatmap-opacity', 0);
+          scrollerMap.setPaintProperty('heatmapViolations', 'heatmap-opacity', 0);
+        }
+      }
+    }
+
     let svgEl;
   
     $: if (svgEl && index == 0) {
@@ -65,6 +148,7 @@
       }
     }
   
+
     function geoJSONPolygonToPath(feature) {
       const path = d3.path();
       const type = feature.geometry.type;
@@ -137,6 +221,7 @@
             <p>total progress</p>
             <progress value={progress || 0}></progress>
             <div style="position: relative; flex-grow: 1;">
+
               <div id="scrollerMap">
                 <svg id="redlineSvg" bind:this={svgEl}>
                   {#key scrollerMapViewChanged}
@@ -156,6 +241,7 @@
                     {/if}
                   {/key}
                 </svg>
+
                 <svg id="scrollerNeighborhoods">
                   {#key scrollerMapViewChanged}
                     {#if neighborhoods}
@@ -188,6 +274,7 @@
                     {/if}
                   {/key}
                 </svg>
+
               </div>
               {#if selectedNeighborhood}
                 <div class="neighborhood-label"><p>{selectedNeighborhood.properties.name}</p></div>
@@ -195,17 +282,26 @@
             </div>
           </div>
           <div slot="foreground" style="padding: 0 0 0 50%;">
-            <section>Historic HOLC redlining map of Boston
+            <section>History of Redlining in Boston
               <p>
-              Base layer: Historic HOLC redlining map of Boston from University of Richmond
-              </p>
-              <p>Overlay: Present-day neighborhood boundaries or census tracts.</p>
-              <p>Narrative: Redlining created barriers for African American and immigrant families in neighborhoods considered “hazardous,” “undesirable,” or “inharmonious” to access mortgage financing. Communities of historically redlined neighborhoods continue to live and negotiate with the long-term impacts of systemic exclusion, preserving what is precious to them.</p>
+              Redlining created barriers for African American and immigrant families in neighborhoods considered “hazardous,” “undesirable,” or “inharmonious” to access mortgage financing. Communities of historically redlined neighborhoods continue to live and negotiate with the long-term impacts of systemic exclusion, preserving what is precious to them.</p>
             </section>
-            <section>section 2</section>
-            <section>section 3</section>
-            <section>section 4</section>
-            <section>section 5</section>
+            <section>Investor Purchase & Community Rent Burden
+              <p>Yet, across Boston, we see a growing problem of rising investor purchase rate, exacerbating rent burden. This correlation is particularly true since the financial crisis in historically redlined neighborhoods such as Mattapan (2023 Rent Burden = 64%; Investor Sales 100%), South Boston Waterfront (2023 Rent Burden = 39%; Investor Sales = 31%), North End (2023 Rent Burden = 34%; Investor Sales = 26%). 
+              </p>
+              <p>Along with the increase of rent burden, we also observe significant change in the neighborhood demographics, especially with education level, a key indicator of gentrification.
+                From 2015 to 2023, there has been a 25% increase in the population that holds a Bachelor's degree or higher in the entirety of Suffolk county.
+                While housing is becoming an asset class for corporations, longtime residents are forced out.
+                </p>
+            </section>
+            <section>311 Service Requests Assigned to Police
+              <p>Scholars like Ruth Wilson Gilmore (2007) have argued that criminalization serves as a tool to justify state violence and the containment of marginalized populations. By criminalizing certain behaviors and populations, police provide real estate developers with justification for urban renewal efforts that erase community histories and identities.
+                We have noticed that, across Boston, 311 service requests for noise complaints increased drastically since 2015. The increase is particularly stark in historically redlined, currently gentrifying neighborhoods such as A, B, and C. 
+                </p>
+            </section>
+            <section>Building and Property Violations
+              <p>Buildings & property violations seem to be on the rise, showing a similar pattern. These non-criminal, auxiliary policing is more clearly associated with early-stage urban “renewal” than already wealthy neighborhoods.</p>
+            </section>
           </div>
         </Scroller>
       </div>
@@ -346,7 +442,7 @@
       }
   
     .scroller-container {
-      pointer-events: none;
+      pointer-events: all;
     }
   
     /* #scrollerNeighborhoods path {
