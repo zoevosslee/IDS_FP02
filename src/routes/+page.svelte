@@ -1,4 +1,5 @@
 <script>
+  
   import YearToggle from '$lib/YearToggle.svelte';
   import LayerSidebar from '$lib/LayerSidebar.svelte';
   import '../app.css';
@@ -14,6 +15,7 @@
   import { rasterToGeoJSONGrid } from '$lib/rasterToGeojsonGrid.js';
 
 
+  let loading = true;
 
   let selectedYear = 2015;
   let selectedFeature = null; // Initialize selectedFeature to null
@@ -202,6 +204,28 @@ function handleLayerToggle(event) {
 
   mapboxgl.accessToken = "pk.eyJ1IjoienZsMTIxNSIsImEiOiJjbTkxZ2k3cjYwMHBhMnZwd2dneWZjeXhhIn0.KK0PwZsLffFl4_qtLg-efQ";
 
+  // let educationVisible = true;
+
+//   function handleLayerToggle(event) {
+//   const { layer, visible } = event.detail;
+
+//   if (layer === 'education') {
+//     educationVisible = visible;
+//     if (map) {
+//       map.setLayoutProperty(`education-2015`, 'visibility', selectedYear === 2015 && visible ? 'visible' : 'none');
+//       map.setLayoutProperty(`education-2023`, 'visibility', selectedYear === 2023 && visible ? 'visible' : 'none');
+//     }
+//   }
+// }
+
+
+// function updateEducationVisibility() {
+//   if (!map) return;
+//   map.setLayoutProperty('education-2015', 'visibility', selectedYear === 2015 && educationVisible ? 'visible' : 'none');
+//   map.setLayoutProperty('education-2023', 'visibility', selectedYear === 2023 && educationVisible ? 'visible' : 'none');
+// }
+
+
   onMount(async () => {
     map = new mapboxgl.Map({
       container: 'map',
@@ -214,6 +238,7 @@ function handleLayerToggle(event) {
     });
 
     await new Promise(resolve => map.on('load', resolve));
+    loading = false;
 
     applySelectedTerrain();
 
@@ -350,6 +375,11 @@ map.addLayer({
   }
 });
 
+// After adding all points layers
+map.setLayoutProperty('points-311-layer', 'visibility', 'none');
+map.setLayoutProperty('points-terrain2-layer', 'visibility', 'none');
+map.setLayoutProperty('points-terrain3-layer', 'visibility', 'none');
+map.setLayoutProperty('points-terrain4-layer', 'visibility', 'none');
 
 
 // Add hover popup
@@ -407,6 +437,7 @@ for (const layerName of pointLayers) {
          .addTo(map);
   });
 }
+
 
 
 
@@ -552,6 +583,7 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 
 map.moveLayer('highlight-layer');
 
+
   });
 </script>
 
@@ -561,6 +593,8 @@ map.moveLayer('highlight-layer');
 </svelte:head>
 
 <div id="home-page">
+
+  <div class="container">
     <div class="text-content">
       <h1>Rent is a Trap!</h1>
       <h2>By Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, Zoe Voss Lee</h2>
@@ -606,6 +640,12 @@ map.moveLayer('highlight-layer');
 
       <div class="map-wrapper">
         <div id="map"></div>
+        {#if loading}
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+          <div>Loading map...</div>
+        </div>
+      {/if}
         {#if selectedFeature}
           <FeatureInfoPanel class="floating-panel" feature={selectedFeature} year={selectedYear} />
         {/if}
@@ -627,6 +667,7 @@ map.moveLayer('highlight-layer');
     <p>311 Requests: <a href=https://data.boston.gov/dataset/311-service-requests target=blank>Analyze Boston</a></p>
     <p>Building & Property Violations: <a href=https://data.boston.gov/dataset/building-and-property-violations1 target=blank>Analyze Boston</a></p>
     <p>Neighborhood Boundaries Approximated to Census Tracts: <a href=https://bostonopendata-boston.opendata.arcgis.com/datasets/boston::boston-neighborhood-boundaries-approximated-by-2020-census-block-groups/about target=blank>BostonMap</p>
+   </div>
 </div>
 
 
@@ -693,6 +734,45 @@ map.moveLayer('highlight-layer');
   max-width: 300px;
   font-family: sans-serif;
 }
+
+.loading-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  font-size: 16px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  z-index: 10;
+  text-align: center;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ffffff;
+  border-top: 4px solid #A12624; /* red */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+/* Animation keyframes */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+
+
 
 </style>
 
