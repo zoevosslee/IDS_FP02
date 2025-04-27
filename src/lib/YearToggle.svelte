@@ -41,14 +41,14 @@
     }
   
     .year-toggle button.selected {
-      background-color: var(--red-medium);
+      background-color: #A12624;
       color: white;
       box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.2);
       z-index: 1;
     }
   
     .year-toggle button:not(.selected):hover {
-      background-color: var(--red-light);
+      background-color: #A12624;
       box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.2);
 
     }

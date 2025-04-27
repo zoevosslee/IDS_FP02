@@ -213,4 +213,27 @@
     z-index: 10;
     background: transparent !important; /* ✅ force full transparency */
   }
+
+  .mapboxgl-popup .mapboxgl-popup-content {
+    background-color: #A12624 !important; /* force */
+    color: white !important;
+    font-family: sans-serif;
+    font-size: 14px;
+    padding: 8px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .sidebar-panel label:hover {
+    background-color: #eee;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .year-toggle-wrapper {
+    margin-bottom: 1.5rem;
+  }
+  
+  
+  
   
