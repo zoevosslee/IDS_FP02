@@ -1,4 +1,5 @@
 <script>
+  
   import YearToggle from '$lib/YearToggle.svelte';
   import LayerSidebar from '$lib/LayerSidebar.svelte';
   import '../app.css';
@@ -7,13 +8,23 @@
   import { onMount } from "svelte";
   import * as d3 from "d3";
   import FeatureInfoPanel from '$lib/FeatureInfoPanel.svelte';
+  //this is for address
   import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
   import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
   import Legend from '$lib/Legend.svelte';
+  import { rasterToGeoJSONGrid } from '$lib/rasterToGeojsonGrid.js';
+
+
+  let loading = true;
 
   let selectedYear = 2015;
   let selectedFeature = null; // Initialize selectedFeature to null
   let selectedLayer = 'education';
+
+  //for having different terrains
+  let selectedTerrain = ''; // default to your first terrain
+
+
 
   let map;
   let visibleLayers = {
@@ -22,7 +33,21 @@
     race: false,
     rentBurden: false
   };
+
+  const terrainSources = {
+  terrain1: {
+    2015: 'custom-dem',
+    2023: 'custom-dem-3'
+  },
+  terrain2: {
+    2015: 'custom-dem-2',
+    2023: 'custom-dem-4'
+  },
+};
+
+
   let policeInd = 'reqs';
+  let terrainVisible = true;
 
   function assignQuartiles(features, fieldName) {
     const values = features.map(f => f.properties[fieldName]).filter(v => typeof v === 'number' && !isNaN(v)).sort((a, b) => a - b);
@@ -58,15 +83,103 @@
   function handleYearChange(year) {
     selectedYear = year;
     updateLayerVisibility();
+    applySelectedTerrain();
   }
 
-  function handleLayerToggle(event) {
-    const { layer, visible } = event.detail;
-    visibleLayers[layer] = visible;
-    if (visible) selectedLayer = layer;
-    updateLayerVisibility();
-    console.log(layer, visible);
+//terrain selection function
+function applySelectedTerrain() {
+  if (!map) return;
+
+  let terrainSource = null;
+  let pointLayer = null;
+
+  if (selectedTerrain === 'terrain1') {
+    terrainSource = selectedYear === 2015 ? 'custom-dem' : 'custom-dem-3';
+    pointLayer = selectedYear === 2015 ? 'points-311-layer' : 'points-terrain3-layer';
+  } else if (selectedTerrain === 'terrain2') {
+    terrainSource = selectedYear === 2015 ? 'custom-dem-2' : 'custom-dem-4';
+    pointLayer = selectedYear === 2015 ? 'points-terrain2-layer' : 'points-terrain4-layer';
   }
+
+  if (terrainSource) {
+    map.setTerrain({ source: terrainSource, exaggeration: 0.0015 });
+
+    if (map.getLayer('terrain-hillshade')) {
+      map.setLayerSource('terrain-hillshade', terrainSource);
+    }
+
+    if (map.getLayer('terrain-tint-overlay')) {
+      map.setPaintProperty('terrain-tint-overlay', 'fill-opacity', 0.3);
+    }
+  } else {
+    map.setTerrain(null);
+    if (map.getLayer('terrain-hillshade')) {
+      map.setPaintProperty('terrain-hillshade', 'hillshade-shadow-color', 'rgba(0,0,0,0)');
+      map.setPaintProperty('terrain-hillshade', 'hillshade-highlight-color', 'rgba(0,0,0,0)');
+      map.setPaintProperty('terrain-hillshade', 'hillshade-accent-color', 'rgba(0,0,0,0)');
+    }
+    if (map.getLayer('terrain-tint-overlay')) {
+      map.setPaintProperty('terrain-tint-overlay', 'fill-opacity', 0);
+    }
+  }
+
+  // 🔥 THIS PART: update all points layers properly
+  const allPointLayers = [
+    'points-311-layer',
+    'points-terrain2-layer',
+    'points-terrain3-layer',
+    'points-terrain4-layer'
+  ];
+
+  for (const layer of allPointLayers) {
+    if (map.getLayer(layer)) {
+      map.setLayoutProperty(layer, 'visibility', layer === pointLayer ? 'visible' : 'none');
+    }
+  }
+}
+
+
+function toggleTerrain() {
+  if (!map) return;
+
+  if (terrainVisible) {
+    map.setTerrain({ source: 'custom-dem', exaggeration: 0.001 });
+
+    // Restore hillshade colors
+    map.setPaintProperty('terrain-hillshade', 'hillshade-shadow-color', '#CA8584');
+    map.setPaintProperty('terrain-hillshade', 'hillshade-highlight-color', '#ffffff');
+    map.setPaintProperty('terrain-hillshade', 'hillshade-accent-color', '#fbb03b');
+
+    // Restore tint overlay
+    map.setPaintProperty('terrain-tint-overlay', 'fill-opacity', 0.3);
+  } else {
+    map.setTerrain(null);
+
+    // Set all hillshade colors to transparent
+    map.setPaintProperty('terrain-hillshade', 'hillshade-shadow-color', 'rgba(0,0,0,0)');
+    map.setPaintProperty('terrain-hillshade', 'hillshade-highlight-color', 'rgba(0,0,0,0)');
+    map.setPaintProperty('terrain-hillshade', 'hillshade-accent-color', 'rgba(0,0,0,0)');
+
+    // Hide tint overlay
+    map.setPaintProperty('terrain-tint-overlay', 'fill-opacity', 0);
+  }
+}
+
+
+
+function handleLayerToggle(event) {
+  const { layer } = event.detail;
+
+  for (const l of Object.keys(visibleLayers)) {
+    visibleLayers[l] = false;
+  }
+
+  visibleLayers[layer] = true;
+
+  selectedLayer = layer; 
+  updateLayerVisibility();
+}
+
   function handlePoliceIndToggle(event) {
     const { ind } = event.detail;
     policeInd = ind;
@@ -84,16 +197,6 @@
         const visible = visibleLayers[layer] && selectedYear === year;
         if (map.getLayer(id)) {
           map.setLayoutProperty(id, 'visibility', visible ? 'visible' : 'none');
-          // now setup policing indicators as height
-          if (policeInd == 'viol') {
-            map.setPaintProperty(id, 'fill-extrusion-height', ['get', `viol_per_1000_extrude`]);
-
-          } else if (policeInd == 'reqs') {
-            map.setPaintProperty(id, 'fill-extrusion-height', ['get', `reqs_per_1000_extrude`]);
-          } else {
-            map.setPaintProperty(id, 'fill-extrusion-height', 0);
-
-          }
         }
       }
     }
@@ -101,18 +204,306 @@
 
   mapboxgl.accessToken = "pk.eyJ1IjoienZsMTIxNSIsImEiOiJjbTkxZ2k3cjYwMHBhMnZwd2dneWZjeXhhIn0.KK0PwZsLffFl4_qtLg-efQ";
 
+  // let educationVisible = true;
+
+//   function handleLayerToggle(event) {
+//   const { layer, visible } = event.detail;
+
+//   if (layer === 'education') {
+//     educationVisible = visible;
+//     if (map) {
+//       map.setLayoutProperty(`education-2015`, 'visibility', selectedYear === 2015 && visible ? 'visible' : 'none');
+//       map.setLayoutProperty(`education-2023`, 'visibility', selectedYear === 2023 && visible ? 'visible' : 'none');
+//     }
+//   }
+// }
+
+
+// function updateEducationVisibility() {
+//   if (!map) return;
+//   map.setLayoutProperty('education-2015', 'visibility', selectedYear === 2015 && educationVisible ? 'visible' : 'none');
+//   map.setLayoutProperty('education-2023', 'visibility', selectedYear === 2023 && educationVisible ? 'visible' : 'none');
+// }
+
+
   onMount(async () => {
     map = new mapboxgl.Map({
       container: 'map',
-      style: 'mapbox://styles/mapbox/light-v10',
+      style: 'mapbox://styles/mapbox/dark-v11',
       center: [-71.0589, 42.3601],
       zoom: 11,
-      pitch: 80,
-      bearing: 41
+      pitch: 75,
+      bearing: 19
     
     });
 
     await new Promise(resolve => map.on('load', resolve));
+    loading = false;
+
+    applySelectedTerrain();
+
+    map.addControl(new mapboxgl.NavigationControl(), 'top-left');
+
+
+    map.addLayer({
+      id: 'neighborhoods-boundaries',
+      type: 'line',
+      source: 'neighborhoods',
+      paint: {
+        "line-color": "gray",
+        "line-width": 4,
+        "line-opacity": 1
+      }
+    });
+
+    map.on('click', (e) => {
+      const layers = Object.keys(visibleLayers)
+        .filter(layer => visibleLayers[layer])
+        .map(layer => `${layer}-${selectedYear}`);
+
+      const features = map.queryRenderedFeatures(e.point, { layers });
+
+      if (features.length > 0) {
+        selectedFeature = features[0];
+
+      map.getSource('highlight-feature').setData({
+      type: 'FeatureCollection',
+      features: [selectedFeature]
+    }); 
+
+      } else {
+        selectedFeature = null;
+
+      map.getSource('highlight-feature').setData({
+      type: 'FeatureCollection',
+      features: []
+       });
+      }
+    });
+
+map.addSource('highlight-feature', {
+  type: 'geojson',
+  data: {
+    type: 'FeatureCollection',
+    features: []
+  }
+});
+
+map.addLayer({
+  id: 'highlight-layer',
+  type: 'line',
+  source: 'highlight-feature',
+  paint: {
+    'line-color': '#A12624', 
+    'line-width': 3
+  }
+});
+
+
+// adding points
+map.addSource('points-311', {
+  type: 'geojson',
+  data: '/data/points_311_2015.geojson' 
+});
+
+map.addLayer({
+  id: 'points-311-layer',
+  type: 'circle',
+  source: 'points-311',
+  paint: {
+    'circle-radius': [
+      'interpolate',
+      ['linear'],
+      ['zoom'],
+      10, 2,   // At zoom 10, radius 2
+      14, 5,   // At zoom 14, radius 5
+      18, 12   // At zoom 18, radius 12
+    ],
+    'circle-color': '#ff00ff',
+    'circle-opacity': 0
+  }
+});
+
+// Terrain 2 points
+map.addSource('points-terrain2', {
+  type: 'geojson',
+  data: '/data/points_dem2_finalfinal.geojson'
+});
+
+map.addLayer({
+  id: 'points-terrain2-layer',
+  type: 'circle',
+  source: 'points-terrain2',
+  paint: {
+    'circle-radius': 4,
+    'circle-color': '#00ff00',
+    'circle-opacity': 0
+  }
+});
+
+// Terrain 3 points
+map.addSource('points-terrain3', {
+  type: 'geojson',
+  data: '/data/points_311_2023_final.geojson'
+});
+
+map.addLayer({
+  id: 'points-terrain3-layer',
+  type: 'circle',
+  source: 'points-terrain3',
+  paint: {
+    'circle-radius': 4,
+    'circle-color': '#00ff00',
+    'circle-opacity': 0
+  }
+});
+
+// Terrain 4 points
+map.addSource('points-terrain4', {
+  type: 'geojson',
+  data: '/data/points_violations_2023_final.geojson'
+});
+
+map.addLayer({
+  id: 'points-terrain4-layer',
+  type: 'circle',
+  source: 'points-terrain4',
+  paint: {
+    'circle-radius': 4,
+    'circle-color': '#00ff00',
+    'circle-opacity': 0
+  }
+});
+
+// After adding all points layers
+map.setLayoutProperty('points-311-layer', 'visibility', 'none');
+map.setLayoutProperty('points-terrain2-layer', 'visibility', 'none');
+map.setLayoutProperty('points-terrain3-layer', 'visibility', 'none');
+map.setLayoutProperty('points-terrain4-layer', 'visibility', 'none');
+
+
+// Add hover popup
+
+const popup = new mapboxgl.Popup({
+  closeButton: false,
+  closeOnClick: false,
+  className: 'custom-popup'  // <-- Add this line
+});
+
+
+const pointLayers = [
+  'points-311-layer', 
+  'points-terrain2-layer', 
+  'points-terrain3-layer', 
+  'points-terrain4-layer'
+];
+
+// Define labels by layer ID
+const labels = {
+  'points-311-layer': 'Calls',
+  'points-terrain3-layer': 'Calls',
+  'points-terrain2-layer': 'Violations',
+  'points-terrain4-layer': 'Violations'
+};
+
+// Attach events
+for (const layerName of pointLayers) {
+  map.on('mouseenter', layerName, () => {
+    map.getCanvas().style.cursor = 'pointer';
+  });
+
+  map.on('mouseleave', layerName, () => {
+    map.getCanvas().style.cursor = '';
+    popup.remove();
+  });
+
+  map.on('mousemove', layerName, (e) => {
+    if (!e.features || !e.features.length) return;
+
+    const coords = e.features[0].geometry.coordinates.slice();
+    const val = e.features[0].properties.VALUE;
+    const layerId = e.features[0].layer.id;
+
+    let label = '';
+
+    if (layerId === 'points-311-layer' || layerId === 'points-terrain3-layer') {
+      label = 'Calls';
+    } else if (layerId === 'points-terrain2-layer' || layerId === 'points-terrain4-layer') {
+      label = 'Violations';
+    }
+
+    popup.setLngLat(coords)
+         .setHTML(`${label}: ${val}`)
+         .addTo(map);
+  });
+}
+
+
+
+
+
+
+
+    // Add custom DEM source from Mapbox (uploaded by claudiatomateo)
+    map.addSource('custom-dem', {
+      type: 'raster-dem',
+      url: 'mapbox://claudiatomateo.6f9fzqzs',
+      tileSize: 512,
+      maxzoom: 14
+    });
+
+    //adding more terrains, need to update the mapbox links
+
+    map.addSource('custom-dem-2', {
+      type: 'raster-dem',
+      url: 'mapbox://claudiatomateo.c7qq4i7t', 
+      tileSize: 512,
+      maxzoom: 14
+    });
+    map.addSource('custom-dem-3', {
+      type: 'raster-dem',
+      url: 'mapbox://claudiatomateo.7qf8d4os', 
+      tileSize: 512,
+      maxzoom: 14
+    });
+    map.addSource('custom-dem-4', {
+      type: 'raster-dem',
+      url: 'mapbox://claudiatomateo.6ja9vviq', 
+      tileSize: 512,
+      maxzoom: 14
+    });
+
+
+    function smoothExaggeration(targetExaggeration, duration = 1500) {
+  return new Promise((resolve) => {
+    const start = performance.now();
+    const initialExaggeration = map.getTerrain() ? map.getTerrain().exaggeration : 0;
+
+    function easeInOut(t) {
+      return t < 0.5 ? 2*t*t : -1 + (4 - 2*t)*t;
+    }
+
+    function frame(time) {
+      const rawProgress = (time - start) / duration;
+      const progress = Math.min(rawProgress, 1);
+      const eased = easeInOut(progress);
+      const currentExaggeration = initialExaggeration + (targetExaggeration - initialExaggeration) * eased;
+
+      map.setTerrain({ source: map.getTerrain().source, exaggeration: currentExaggeration });
+
+      if (progress < 1) {
+        requestAnimationFrame(frame);
+      } else {
+        resolve();
+      }
+    }
+
+    requestAnimationFrame(frame);
+  });
+}
+
+
+
 
     const data2023 = await d3.json('/data/merged2023_finalfinal.geojson');
     const data2015 = await d3.json('/data/merged2015_final.geojson');
@@ -134,71 +525,49 @@
       rentBurden: { key: 'RentBurden' }
     };
 
-    const quartileColors = [
-      '#E6E8F1', // Q1
-      '#A6A7C4', // Q2
-      '#666792', // Q3
-      '#1A1841'  // Q4
+    const variableColors = {
+    education: ['#f4f9fd', '#a7c4e2', '#6b91c7', '#36558f'], 
+    income:    ['#f0f8f2', '#c2e1c2', '#7fbf7f', '#3a7f3a'], 
+    race:      ['#f3f0f9', '#c9c2db', '#9d8fc0', '#6b5b8c'],
+    rentBurden: ['#fef6e7', '#f9d7a5', '#eea85c', '#ee762c']
+  };
+
+
+    function getFillColorExpression(fieldName, layerName) {
+    const colors = variableColors[layerName]; // pick correct palette
+    return [
+      'match',
+      ['get', `${fieldName}_quartile`],
+      1, colors[0],
+      2, colors[1],
+      3, colors[2],
+      4, colors[3],
+      '#ccc' // fallback
     ];
-
-    function getFillColorExpression(fieldName) {
-      return [
-        'match',
-        ['get', `${fieldName}_quartile`],
-        1, quartileColors[0],
-        2, quartileColors[1],
-        3, quartileColors[2],
-        4, quartileColors[3],
-        '#ccc' // fallback
-      ];
-    }
+  }
 
 
 
-    for (const [layer, { key }] of Object.entries(variables)) {
-      for (const year of [2015, 2023]) {
-        const fullKey = `${key}${year}`;
-        const id = `${layer}-${year}`;
-        map.addLayer({
-          id,
-          type: 'fill-extrusion',
-          source: `merged${year}`,
-          paint: {
-            'fill-extrusion-color': getFillColorExpression(fullKey), // Use the quartile color expression
-            'fill-extrusion-opacity': 0.7,
-            'fill-extrusion-height': ['get', `viol_per_1000_extrude`]
-          },
-          layout: {
-            visibility: visibleLayers[layer] && selectedYear === year ? 'visible' : 'none'
-          }
-        });
-      }
-    }
 
+  for (const [layer, { key }] of Object.entries(variables)) {
+  for (const year of [2015, 2023]) {
+    const fullKey = `${key}${year}`;
+    const id = `${layer}-${year}`;
     map.addLayer({
-      id: 'neighborhoods-boundaries',
-      type: 'line',
-      source: 'neighborhoods',
+      id,
+      type: 'fill',
+      source: `merged${year}`,
       paint: {
-        "line-color": "gray",
-        "line-width": 2,
-        "line-opacity": 0.7
+        'fill-color': getFillColorExpression(fullKey, layer), 
+        'fill-opacity': 0.8,
+      },
+      layout: {
+        visibility: visibleLayers[layer] && selectedYear === year ? 'visible' : 'none'
       }
     });
+  }
+}
 
-    map.on('click', (e) => {
-      const layers = Object.keys(visibleLayers)
-        .filter(layer => visibleLayers[layer])
-        .map(layer => `${layer}-${selectedYear}`);
-
-      const features = map.queryRenderedFeatures(e.point, { layers });
-
-      if (features.length > 0) {
-        selectedFeature = features[0];
-      } else {
-        selectedFeature = null;
-      }
-    });
 
     const geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
@@ -212,8 +581,10 @@
 
 map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 
-  });
+map.moveLayer('highlight-layer');
 
+
+  });
 </script>
 
 
@@ -222,6 +593,8 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 </svelte:head>
 
 <div id="home-page">
+
+  <div class="container">
     <div class="text-content">
       <h1>Rent is a Trap!</h1>
       <h2>By Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, Zoe Voss Lee</h2>
@@ -238,15 +611,45 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
         <h3>Select Data</h3>
         <div class="year-toggle-wrapper">
           <YearToggle {selectedYear} onChange={handleYearChange} />
-        </div>
+        </div>      
         <LayerSidebar on:toggleLayer={handleLayerToggle} on:togglePoliceInd={handlePoliceIndToggle} />
-      </div>
+
+      <h3>Policing Indicators [Surface]</h3>
+      <label>
+        <p>
+        <input type="radio" name="terrain" value="terrain1" bind:group={selectedTerrain} on:change={applySelectedTerrain}>
+        311 calls
+      </p>
+      </label>
+
+      <label>
+        <p>
+        <input type="radio" name="terrain" value="terrain2" bind:group={selectedTerrain} on:change={applySelectedTerrain}>
+        Building & Property Violations
+      </p>
+      </label>
+  
+      <label>
+        <p>
+        <input type="radio" name="terrain" value="" bind:group={selectedTerrain} on:change={applySelectedTerrain}>
+        Hide Surface
+      </p>
+      </label>
+
+    </div>
 
       <div class="map-wrapper">
         <div id="map"></div>
+        {#if loading}
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+          <div>Loading map...</div>
+        </div>
+      {/if}
         {#if selectedFeature}
           <FeatureInfoPanel class="floating-panel" feature={selectedFeature} year={selectedYear} />
         {/if}
+        
       </div>
     </div>
     <Legend></Legend>
@@ -264,7 +667,9 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
     <p>311 Requests: <a href=https://data.boston.gov/dataset/311-service-requests target=blank>Analyze Boston</a></p>
     <p>Building & Property Violations: <a href=https://data.boston.gov/dataset/building-and-property-violations1 target=blank>Analyze Boston</a></p>
     <p>Neighborhood Boundaries Approximated to Census Tracts: <a href=https://bostonopendata-boston.opendata.arcgis.com/datasets/boston::boston-neighborhood-boundaries-approximated-by-2020-census-block-groups/about target=blank>BostonMap</p>
+   </div>
 </div>
+
 
 
 <style>
@@ -279,9 +684,9 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 /* Sidebar */
 .sidebar-panel {
   width: 200px;
-  background: white;
+  background: #fafafa;
   padding: 1rem;
-  border-right: 1px solid #ddd;
+  border-right: 1px solid #ccc;
   z-index: 10;
 }
 
@@ -293,7 +698,6 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 .year-toggle-wrapper {
   margin-bottom: 1rem; /* or adjust to your liking */
 }
-
 
 .sidebar {
   background: white;
@@ -320,7 +724,7 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 /* Floating info panel */
 :global(.floating-panel) {
   position: absolute;
-  top: 54px;
+  bottom: 10px;
   right: 10px;
   background: rgba(255, 255, 255, 0.85);  /* white with 90% opacity */
   padding: 1rem;
@@ -330,6 +734,45 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
   max-width: 300px;
   font-family: sans-serif;
 }
+
+.loading-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  font-size: 16px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  z-index: 10;
+  text-align: center;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ffffff;
+  border-top: 4px solid #A12624; /* red */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+/* Animation keyframes */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+
+
 
 </style>
 
