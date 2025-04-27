@@ -19,6 +19,10 @@
   let selectedFeature = null; // Initialize selectedFeature to null
   let selectedLayer = 'education';
 
+  //for having different terrains
+  let selectedTerrain = ''; // default to your first terrain
+
+
 
   let map;
   let visibleLayers = {
@@ -27,9 +31,21 @@
     race: false,
     rentBurden: false
   };
+
+  const terrainSources = {
+  terrain1: {
+    2015: 'custom-dem',
+    2023: 'custom-dem-3'
+  },
+  terrain2: {
+    2015: 'custom-dem-2',
+    2023: 'custom-dem-4'
+  },
+};
+
+
   let policeInd = 'reqs';
   let terrainVisible = true;
-  let terrainOpacity = 0.5; // Opacity when visible
 
   function assignQuartiles(features, fieldName) {
     const values = features.map(f => f.properties[fieldName]).filter(v => typeof v === 'number' && !isNaN(v)).sort((a, b) => a - b);
@@ -65,33 +81,61 @@
   function handleYearChange(year) {
     selectedYear = year;
     updateLayerVisibility();
+    applySelectedTerrain();
   }
 
-//   function toggleTerrain() {
-//   if (!map) return;
+//terrain selection function
+function applySelectedTerrain() {
+  if (!map) return;
 
-//   if (terrainVisible) {
-//     map.setTerrain({ source: 'custom-dem', exaggeration: 0.001 });
+  let terrainSource = null;
+  let pointLayer = null;
 
-//     if (map.getLayer('terrain-hillshade')) {
-//       map.setPaintProperty('terrain-hillshade', 'hillshade-opacity', terrainOpacity); // e.g. 0.5
-//     }
+  if (selectedTerrain === 'terrain1') {
+    terrainSource = selectedYear === 2015 ? 'custom-dem' : 'custom-dem-3';
+    pointLayer = selectedYear === 2015 ? 'points-311-layer' : 'points-terrain3-layer';
+  } else if (selectedTerrain === 'terrain2') {
+    terrainSource = selectedYear === 2015 ? 'custom-dem-2' : 'custom-dem-4';
+    pointLayer = selectedYear === 2015 ? 'points-terrain2-layer' : 'points-terrain4-layer';
+  }
 
-//     if (map.getLayer('terrain-tint-overlay')) {
-//       map.setPaintProperty('terrain-tint-overlay', 'fill-opacity', 0.3);
-//     }
-//   } else {
-//     map.setTerrain(null);
+  if (terrainSource) {
+    map.setTerrain({ source: terrainSource, exaggeration: 0.0015 });
 
-//     if (map.getLayer('terrain-hillshade')) {
-//       map.setPaintProperty('terrain-hillshade', 'hillshade-opacity', 0); // hide hillshade
-//     }
+    if (map.getLayer('terrain-hillshade')) {
+      map.setLayerSource('terrain-hillshade', terrainSource);
+    }
 
-//     if (map.getLayer('terrain-tint-overlay')) {
-//       map.setPaintProperty('terrain-tint-overlay', 'fill-opacity', 0); // hide tint
-//     }
-//   }
-// }
+    if (map.getLayer('terrain-tint-overlay')) {
+      map.setPaintProperty('terrain-tint-overlay', 'fill-opacity', 0.3);
+    }
+  } else {
+    map.setTerrain(null);
+    if (map.getLayer('terrain-hillshade')) {
+      map.setPaintProperty('terrain-hillshade', 'hillshade-shadow-color', 'rgba(0,0,0,0)');
+      map.setPaintProperty('terrain-hillshade', 'hillshade-highlight-color', 'rgba(0,0,0,0)');
+      map.setPaintProperty('terrain-hillshade', 'hillshade-accent-color', 'rgba(0,0,0,0)');
+    }
+    if (map.getLayer('terrain-tint-overlay')) {
+      map.setPaintProperty('terrain-tint-overlay', 'fill-opacity', 0);
+    }
+  }
+
+  // 🔥 THIS PART: update all points layers properly
+  const allPointLayers = [
+    'points-311-layer',
+    'points-terrain2-layer',
+    'points-terrain3-layer',
+    'points-terrain4-layer'
+  ];
+
+  for (const layer of allPointLayers) {
+    if (map.getLayer(layer)) {
+      map.setLayoutProperty(layer, 'visibility', layer === pointLayer ? 'visible' : 'none');
+    }
+  }
+}
+
 
 function toggleTerrain() {
   if (!map) return;
@@ -121,20 +165,19 @@ function toggleTerrain() {
 
 
 
+function handleLayerToggle(event) {
+  const { layer } = event.detail;
 
-
-
-
-
-
-
-  function handleLayerToggle(event) {
-    const { layer, visible } = event.detail;
-    visibleLayers[layer] = visible;
-    if (visible) selectedLayer = layer;
-    updateLayerVisibility();
-    console.log(layer, visible);
+  for (const l of Object.keys(visibleLayers)) {
+    visibleLayers[l] = false;
   }
+
+  visibleLayers[layer] = true;
+
+  selectedLayer = layer; 
+  updateLayerVisibility();
+}
+
   function handlePoliceIndToggle(event) {
     const { ind } = event.detail;
     policeInd = ind;
@@ -152,16 +195,6 @@ function toggleTerrain() {
         const visible = visibleLayers[layer] && selectedYear === year;
         if (map.getLayer(id)) {
           map.setLayoutProperty(id, 'visibility', visible ? 'visible' : 'none');
-          // now setup policing indicators as height
-          if (policeInd == 'viol') {
-            map.setPaintProperty(id, 'fill-extrusion-height', ['get', `viol_per_1000_extrude`]);
-
-          } else if (policeInd == 'reqs') {
-            map.setPaintProperty(id, 'fill-extrusion-height', ['get', `reqs_per_1000_extrude`]);
-          } else {
-            map.setPaintProperty(id, 'fill-extrusion-height', 0);
-
-          }
         }
       }
     }
@@ -172,20 +205,80 @@ function toggleTerrain() {
   onMount(async () => {
     map = new mapboxgl.Map({
       container: 'map',
-      style: 'mapbox://styles/mapbox/light-v10',
+      style: 'mapbox://styles/mapbox/dark-v11',
       center: [-71.0589, 42.3601],
       zoom: 11,
-      pitch: 80,
-      bearing: 41
+      pitch: 75,
+      bearing: 19
     
     });
 
     await new Promise(resolve => map.on('load', resolve));
 
+    applySelectedTerrain();
+
+    map.addControl(new mapboxgl.NavigationControl(), 'top-left');
+
+
+    map.addLayer({
+      id: 'neighborhoods-boundaries',
+      type: 'line',
+      source: 'neighborhoods',
+      paint: {
+        "line-color": "gray",
+        "line-width": 4,
+        "line-opacity": 1
+      }
+    });
+
+    map.on('click', (e) => {
+      const layers = Object.keys(visibleLayers)
+        .filter(layer => visibleLayers[layer])
+        .map(layer => `${layer}-${selectedYear}`);
+
+      const features = map.queryRenderedFeatures(e.point, { layers });
+
+      if (features.length > 0) {
+        selectedFeature = features[0];
+
+      map.getSource('highlight-feature').setData({
+      type: 'FeatureCollection',
+      features: [selectedFeature]
+    }); 
+
+      } else {
+        selectedFeature = null;
+
+      map.getSource('highlight-feature').setData({
+      type: 'FeatureCollection',
+      features: []
+       });
+      }
+    });
+
+map.addSource('highlight-feature', {
+  type: 'geojson',
+  data: {
+    type: 'FeatureCollection',
+    features: []
+  }
+});
+
+map.addLayer({
+  id: 'highlight-layer',
+  type: 'line',
+  source: 'highlight-feature',
+  paint: {
+    'line-color': '#A12624', 
+    'line-width': 3
+  }
+});
+
+
 // adding points
 map.addSource('points-311', {
   type: 'geojson',
-  data: '/data/points_311_2015.geojson'  // adjust path if needed
+  data: '/data/points_311_2015.geojson' 
 });
 
 map.addLayer({
@@ -193,35 +286,128 @@ map.addLayer({
   type: 'circle',
   source: 'points-311',
   paint: {
-    'circle-radius': 4,
+    'circle-radius': [
+      'interpolate',
+      ['linear'],
+      ['zoom'],
+      10, 2,   // At zoom 10, radius 2
+      14, 5,   // At zoom 14, radius 5
+      18, 12   // At zoom 18, radius 12
+    ],
     'circle-color': '#ff00ff',
     'circle-opacity': 0
   }
 });
 
+// Terrain 2 points
+map.addSource('points-terrain2', {
+  type: 'geojson',
+  data: '/data/points_dem2_finalfinal.geojson'
+});
+
+map.addLayer({
+  id: 'points-terrain2-layer',
+  type: 'circle',
+  source: 'points-terrain2',
+  paint: {
+    'circle-radius': 4,
+    'circle-color': '#00ff00',
+    'circle-opacity': 0
+  }
+});
+
+// Terrain 3 points
+map.addSource('points-terrain3', {
+  type: 'geojson',
+  data: '/data/points_311_2023_final.geojson'
+});
+
+map.addLayer({
+  id: 'points-terrain3-layer',
+  type: 'circle',
+  source: 'points-terrain3',
+  paint: {
+    'circle-radius': 4,
+    'circle-color': '#00ff00',
+    'circle-opacity': 0
+  }
+});
+
+// Terrain 4 points
+map.addSource('points-terrain4', {
+  type: 'geojson',
+  data: '/data/points_violations_2023_final.geojson'
+});
+
+map.addLayer({
+  id: 'points-terrain4-layer',
+  type: 'circle',
+  source: 'points-terrain4',
+  paint: {
+    'circle-radius': 4,
+    'circle-color': '#00ff00',
+    'circle-opacity': 0
+  }
+});
+
+
+
 // Add hover popup
+
 const popup = new mapboxgl.Popup({
   closeButton: false,
-  closeOnClick: false
+  closeOnClick: false,
+  className: 'custom-popup'  // <-- Add this line
 });
 
-map.on('mouseenter', 'points-311-layer', () => {
-  map.getCanvas().style.cursor = 'pointer';
-});
 
-map.on('mouseleave', 'points-311-layer', () => {
-  map.getCanvas().style.cursor = '';
-  popup.remove();
-});
+const pointLayers = [
+  'points-311-layer', 
+  'points-terrain2-layer', 
+  'points-terrain3-layer', 
+  'points-terrain4-layer'
+];
 
-map.on('mousemove', 'points-311-layer', (e) => {
-  const coords = e.features[0].geometry.coordinates.slice();
-  const val = e.features[0].properties.VALUE;
+// Define labels by layer ID
+const labels = {
+  'points-311-layer': 'Calls',
+  'points-terrain3-layer': 'Calls',
+  'points-terrain2-layer': 'Violations',
+  'points-terrain4-layer': 'Violations'
+};
 
-  popup.setLngLat(coords)
-       .setHTML(`311 calls: ${val}`)
-       .addTo(map);
-});
+// Attach events
+for (const layerName of pointLayers) {
+  map.on('mouseenter', layerName, () => {
+    map.getCanvas().style.cursor = 'pointer';
+  });
+
+  map.on('mouseleave', layerName, () => {
+    map.getCanvas().style.cursor = '';
+    popup.remove();
+  });
+
+  map.on('mousemove', layerName, (e) => {
+    if (!e.features || !e.features.length) return;
+
+    const coords = e.features[0].geometry.coordinates.slice();
+    const val = e.features[0].properties.VALUE;
+    const layerId = e.features[0].layer.id;
+
+    let label = '';
+
+    if (layerId === 'points-311-layer' || layerId === 'points-terrain3-layer') {
+      label = 'Calls';
+    } else if (layerId === 'points-terrain2-layer' || layerId === 'points-terrain4-layer') {
+      label = 'Violations';
+    }
+
+    popup.setLngLat(coords)
+         .setHTML(`${label}: ${val}`)
+         .addTo(map);
+  });
+}
+
 
 
 
@@ -235,59 +421,55 @@ map.on('mousemove', 'points-311-layer', (e) => {
       maxzoom: 14
     });
 
-// Set terrain using this DEM
-map.setTerrain({
-  source: 'custom-dem',
-  exaggeration: 0.001,
-});
+    //adding more terrains, need to update the mapbox links
 
-// Add hillshade layer *first*
-map.addLayer({
-  id: 'terrain-hillshade',
-  type: 'hillshade',
-  source: 'custom-dem',
-  paint: {
-    'hillshade-exaggeration': 0.6,
-    'hillshade-shadow-color': '#CA8584',
-    'hillshade-highlight-color': '#ffffff',
-    'hillshade-accent-color': '#fbb03b',
-    'hillshade-illumination-direction': 335,
-    // 'hillshade-opacity': 1 // hardcode an initial opacity
-  }
-});
-
-
-// // Then add tint overlay
-// map.addSource('terrain-tint', {
-//   type: 'geojson',
-//   data: {
-//     type: 'FeatureCollection',
-//     features: [{
-//       type: 'Feature',
-//       geometry: {
-//         type: 'Polygon',
-//         coordinates: [[
-//           [-180, -85], [180, -85], [180, 85], [-180, 85], [-180, -85]
-//         ]]
-//       }
-//     }]
-//   }
-// });
-
-// map.addLayer({
-//   id: 'terrain-tint-overlay',
-//   type: 'fill',
-//   source: 'terrain-tint',
-//   layout: {},
-//   paint: {
-//     'fill-color': '#663399',
-//     'fill-opacity': 0.3
-//   }
-// }, 'terrain-hillshade'); // now it's safe to use this
+    map.addSource('custom-dem-2', {
+      type: 'raster-dem',
+      url: 'mapbox://claudiatomateo.c7qq4i7t', 
+      tileSize: 512,
+      maxzoom: 14
+    });
+    map.addSource('custom-dem-3', {
+      type: 'raster-dem',
+      url: 'mapbox://claudiatomateo.7qf8d4os', 
+      tileSize: 512,
+      maxzoom: 14
+    });
+    map.addSource('custom-dem-4', {
+      type: 'raster-dem',
+      url: 'mapbox://claudiatomateo.6ja9vviq', 
+      tileSize: 512,
+      maxzoom: 14
+    });
 
 
+    function smoothExaggeration(targetExaggeration, duration = 1500) {
+  return new Promise((resolve) => {
+    const start = performance.now();
+    const initialExaggeration = map.getTerrain() ? map.getTerrain().exaggeration : 0;
 
+    function easeInOut(t) {
+      return t < 0.5 ? 2*t*t : -1 + (4 - 2*t)*t;
+    }
 
+    function frame(time) {
+      const rawProgress = (time - start) / duration;
+      const progress = Math.min(rawProgress, 1);
+      const eased = easeInOut(progress);
+      const currentExaggeration = initialExaggeration + (targetExaggeration - initialExaggeration) * eased;
+
+      map.setTerrain({ source: map.getTerrain().source, exaggeration: currentExaggeration });
+
+      if (progress < 1) {
+        requestAnimationFrame(frame);
+      } else {
+        resolve();
+      }
+    }
+
+    requestAnimationFrame(frame);
+  });
+}
 
 
 
@@ -312,71 +494,49 @@ map.addLayer({
       rentBurden: { key: 'RentBurden' }
     };
 
-    const quartileColors = [
-      '#E6E8F1', // Q1
-      '#A6A7C4', // Q2
-      '#666792', // Q3
-      '#1A1841'  // Q4
+    const variableColors = {
+    education: ['#f4f9fd', '#a7c4e2', '#6b91c7', '#36558f'], 
+    income:    ['#f0f8f2', '#c2e1c2', '#7fbf7f', '#3a7f3a'], 
+    race:      ['#f3f0f9', '#c9c2db', '#9d8fc0', '#6b5b8c'],
+    rentBurden: ['#fef6e7', '#f9d7a5', '#eea85c', '#ee762c']
+  };
+
+
+    function getFillColorExpression(fieldName, layerName) {
+    const colors = variableColors[layerName]; // pick correct palette
+    return [
+      'match',
+      ['get', `${fieldName}_quartile`],
+      1, colors[0],
+      2, colors[1],
+      3, colors[2],
+      4, colors[3],
+      '#ccc' // fallback
     ];
-
-    function getFillColorExpression(fieldName) {
-      return [
-        'match',
-        ['get', `${fieldName}_quartile`],
-        1, quartileColors[0],
-        2, quartileColors[1],
-        3, quartileColors[2],
-        4, quartileColors[3],
-        '#ccc' // fallback
-      ];
-    }
+  }
 
 
 
-    for (const [layer, { key }] of Object.entries(variables)) {
-      for (const year of [2015, 2023]) {
-        const fullKey = `${key}${year}`;
-        const id = `${layer}-${year}`;
-        map.addLayer({
-          id,
-          type: 'fill-extrusion',
-          source: `merged${year}`,
-          paint: {
-            'fill-extrusion-color': getFillColorExpression(fullKey), // Use the quartile color expression
-            'fill-extrusion-opacity': 0.7,
-            'fill-extrusion-height': ['get', `viol_per_1000_extrude`]
-          },
-          layout: {
-            visibility: visibleLayers[layer] && selectedYear === year ? 'visible' : 'none'
-          }
-        });
-      }
-    }
 
+  for (const [layer, { key }] of Object.entries(variables)) {
+  for (const year of [2015, 2023]) {
+    const fullKey = `${key}${year}`;
+    const id = `${layer}-${year}`;
     map.addLayer({
-      id: 'neighborhoods-boundaries',
-      type: 'line',
-      source: 'neighborhoods',
+      id,
+      type: 'fill',
+      source: `merged${year}`,
       paint: {
-        "line-color": "gray",
-        "line-width": 2,
-        "line-opacity": 0.7
+        'fill-color': getFillColorExpression(fullKey, layer), 
+        'fill-opacity': 0.8,
+      },
+      layout: {
+        visibility: visibleLayers[layer] && selectedYear === year ? 'visible' : 'none'
       }
     });
+  }
+}
 
-    map.on('click', (e) => {
-      const layers = Object.keys(visibleLayers)
-        .filter(layer => visibleLayers[layer])
-        .map(layer => `${layer}-${selectedYear}`);
-
-      const features = map.queryRenderedFeatures(e.point, { layers });
-
-      if (features.length > 0) {
-        selectedFeature = features[0];
-      } else {
-        selectedFeature = null;
-      }
-    });
 
     const geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
@@ -390,12 +550,9 @@ map.addLayer({
 
 map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 
-
-
-
+map.moveLayer('highlight-layer');
 
   });
-
 </script>
 
 
@@ -422,12 +579,30 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
           <YearToggle {selectedYear} onChange={handleYearChange} />
         </div>      
         <LayerSidebar on:toggleLayer={handleLayerToggle} on:togglePoliceInd={handlePoliceIndToggle} />
-        <label>
-          <input type="checkbox" bind:checked={terrainVisible} on:change={toggleTerrain} />
-          Show Terrain
-        </label>
-        
-      </div>
+
+      <h3>Policing Indicators [Surface]</h3>
+      <label>
+        <p>
+        <input type="radio" name="terrain" value="terrain1" bind:group={selectedTerrain} on:change={applySelectedTerrain}>
+        311 calls
+      </p>
+      </label>
+
+      <label>
+        <p>
+        <input type="radio" name="terrain" value="terrain2" bind:group={selectedTerrain} on:change={applySelectedTerrain}>
+        Building & Property Violations
+      </p>
+      </label>
+  
+      <label>
+        <p>
+        <input type="radio" name="terrain" value="" bind:group={selectedTerrain} on:change={applySelectedTerrain}>
+        Hide Terrain
+      </p>
+      </label>
+
+    </div>
 
       <div class="map-wrapper">
         <div id="map"></div>
@@ -468,9 +643,9 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 /* Sidebar */
 .sidebar-panel {
   width: 200px;
-  background: white;
+  background: #fafafa;
   padding: 1rem;
-  border-right: 1px solid #ddd;
+  border-right: 1px solid #ccc;
   z-index: 10;
 }
 
@@ -482,7 +657,6 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 .year-toggle-wrapper {
   margin-bottom: 1rem; /* or adjust to your liking */
 }
-
 
 .sidebar {
   background: white;
@@ -509,7 +683,7 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 /* Floating info panel */
 :global(.floating-panel) {
   position: absolute;
-  top: 54px;
+  bottom: 10px;
   right: 10px;
   background: rgba(255, 255, 255, 0.85);  /* white with 90% opacity */
   padding: 1rem;

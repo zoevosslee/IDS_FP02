@@ -2,62 +2,40 @@
   import { createEventDispatcher } from 'svelte';
   const dispatch = createEventDispatcher();
 
-  let layers = {
-    education: true,
-    income: false,
-    race: false,
-    rentBurden: false,
-    surface: false
-  };
+  let selectedLayer = 'education';
 
-  let policeInds = 'reqs';
-  let terrainOn = true;
 
   function toggleLayer(layer) {
-    layers = { ...layers, [layer]: !layers[layer] };
-    dispatch('toggleLayer', { layer, visible: layers[layer] });
-  }
-  function togglePoliceInd(ind) {
-    policeInds = ind;
-    dispatch('togglePoliceInd', { ind });
-  }
-  
-  function toggleTerrain() {
-    terrainOn = !terrainOn;
-    if (terrainOn) {
-      map.setTerrain({ source: 'custom-dem', exaggeration: 0.1 });
-    } else {
-      map.setTerrain(null);
-    }
-  }
+  selectedLayer = layer;
+  dispatch('toggleLayer', { layer });
+}
 
+
+  function selectTerrain(terrain) {
+    dispatch('selectTerrain', { terrain });
+  }
 </script>
-
 
 <div class="layer-sidebar">
   <h3>Gentrification Indicators</h3>
   <p>
     <label>
-      <input type="checkbox" checked={layers.education} on:change={() => toggleLayer('education')} />
+      <input type="radio" name="gentrificationLayer" value="education" checked={selectedLayer === 'education'} on:change={() => toggleLayer('education')} />
       Education
     </label>
   </p>
+
   <p>
     <label>
-      <input type="checkbox" checked={layers.income} on:change={() => toggleLayer('income')} />
+      <input type="radio" name="gentrificationLayer" value="income" checked={selectedLayer === 'income'} on:change={() => toggleLayer('income')} />
       Income
     </label>
   </p>
+
   <p>
     <label>
-      <input type="checkbox" checked={layers.race} on:change={() => toggleLayer('race')} />
+      <input type="radio" name="gentrificationLayer" value="race" checked={selectedLayer === 'race'} on:change={() => toggleLayer('race')} />
       Race
-    </label>
-  </p>
-  <p>
-    <label>
-      <input type="checkbox" checked={layers.rentBurden} on:change={() => toggleLayer('rentBurden')} />
-      Rent Burden
     </label>
   </p>
 
@@ -73,16 +51,13 @@
   </p>
   <p>
     <label>
-      <input
-        type="radio"
-        checked={layers.surface}
-        on:change={() => toggleLayer('surface')}
-      />
-      311 Calls
+      <input type="radio" name="gentrificationLayer" value="rentBurden" checked={selectedLayer === 'rentBurden'} on:change={() => toggleLayer('rentBurden')} />
+      Rent Burden
     </label>
   </p>
 </div>
 
-  <style>
-  </style>
+<style>
+</style>
+
   
