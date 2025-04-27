@@ -598,7 +598,7 @@ map.moveLayer('highlight-layer');
       <label>
         <p>
         <input type="radio" name="terrain" value="" bind:group={selectedTerrain} on:change={applySelectedTerrain}>
-        Hide Terrain
+        Hide Surface
       </p>
       </label>
 
