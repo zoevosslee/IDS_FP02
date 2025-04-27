@@ -239,10 +239,11 @@ const yRentEnd = yPoliceEnd + 500; // wider rent window
   
   <div id="home-page">
     <div class="container">
-      <div class="text-content">
-        <h1>Rent is a Trap!</h1>
-        <h2>By Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, Zoe Voss Lee</h2>
-      </div>
+        <div class="text-content">
+            <h1>Rent is a Trap!</h1>
+            <h2>By Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, Zoe Voss Lee</h2>
+          </div>
+
       <div class="text-content">
         <div class="introduction">
 
@@ -673,8 +674,16 @@ html {
 .flower-box img {
   width: 100%;
   height: auto;
-  display: block;
+  display: blAock;
+  transition: transform 0.5s ease, filter 0.3s ease; /* ✅ Add smooth filter transition */
 }
+
+/* Lighten / glow effect when hovered */
+.flower-box:hover img {
+  filter: brightness(1.1) drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+  transform: scale(1.08); /* slightly pop up */
+}
+
 
 @keyframes fadeIn {
   from {
