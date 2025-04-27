@@ -3,11 +3,12 @@
     import { page } from '$app/stores';
   
     let pages = [
+      { url: '/landing', title: 'Landing' },
+      { url: '/chapter1', title: 'Chapter 1' },
+      { url: '/chapter2', title: 'Chapter 2' },
       { url: '/', title: 'Interactive Visualization' },
       { url: '/writeup', title: 'Write Up' },
-      { url: '/plan', title: 'Project Plan' },
-      { url: '/chapter1', title: 'Chapter 1' },
-      { url: '/landing', title: 'Landing' }
+      { url: '/plan', title: 'Project Plan' }
     ];
   
     let menuOpen = false;
