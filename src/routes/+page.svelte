@@ -1,4 +1,5 @@
 <script>
+  
   import YearToggle from '$lib/YearToggle.svelte';
   import LayerSidebar from '$lib/LayerSidebar.svelte';
   import '../app.css';
@@ -15,6 +16,7 @@
   import { rasterToGeoJSONGrid } from '$lib/rasterToGeojsonGrid.js';
 
 
+  let loading = true;
 
   let selectedYear = 2015;
   let selectedFeature = null; // Initialize selectedFeature to null
@@ -230,6 +232,7 @@ function handleLayerToggle(event) {
 //   map.setLayoutProperty('education-2023', 'visibility', selectedYear === 2023 && educationVisible ? 'visible' : 'none');
 // }
 
+
   onMount(async () => {
     map = new mapboxgl.Map({
       container: 'map',
@@ -242,6 +245,7 @@ function handleLayerToggle(event) {
     });
 
     await new Promise(resolve => map.on('load', resolve));
+    loading = false;
 
     applySelectedTerrain();
 
@@ -378,6 +382,11 @@ map.addLayer({
   }
 });
 
+// After adding all points layers
+map.setLayoutProperty('points-311-layer', 'visibility', 'none');
+map.setLayoutProperty('points-terrain2-layer', 'visibility', 'none');
+map.setLayoutProperty('points-terrain3-layer', 'visibility', 'none');
+map.setLayoutProperty('points-terrain4-layer', 'visibility', 'none');
 
 
 // Add hover popup
@@ -435,6 +444,7 @@ for (const layerName of pointLayers) {
          .addTo(map);
   });
 }
+
 
 
 
@@ -580,6 +590,7 @@ map.addControl(geocoder, 'top-right'); // or 'top-right', 'bottom-left', etc.
 
 map.moveLayer('highlight-layer');
 
+
   });
   
   
@@ -591,6 +602,7 @@ map.moveLayer('highlight-layer');
 </svelte:head>
 
 <div id="home-page">
+
   <div class="container">
     <div class="text-content">
       <h1>Rent is a Trap!</h1>
@@ -638,6 +650,12 @@ map.moveLayer('highlight-layer');
 
       <div class="map-wrapper">
         <div id="map"></div>
+        {#if loading}
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+          <div>Loading map...</div>
+        </div>
+      {/if}
         {#if selectedFeature}
           <FeatureInfoPanel class="floating-panel" feature={selectedFeature} year={selectedYear} />
         {/if}
@@ -735,6 +753,43 @@ map.moveLayer('highlight-layer');
   max-width: 300px;
   font-family: sans-serif;
 }
+
+.loading-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: sans-serif;
+  font-size: 16px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  z-index: 10;
+  text-align: center;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ffffff;
+  border-top: 4px solid #A12624; /* red */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+/* Animation keyframes */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
 
 
 
