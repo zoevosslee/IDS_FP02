@@ -61,8 +61,8 @@ onDestroy(() => {
     let flowerBoxY = 0;
 
 let flower1993Visible = false;
-let flower2005Visible = false;
-let flower2015Visible = false;
+let flower2011Visible = false;
+let flower2016Visible = false;
 let flower2020Visible = false;
 let hoveredFlower = null;
 let currentNarrativeStep = 0; 
@@ -202,11 +202,11 @@ const yRentEnd = yPoliceEnd + 500; // wider rent window
   if (relativeScroll > yScale(1993) - 400) {
     flower1993Visible = true;
   }
-  if (relativeScroll > yScale(2005) - 400) {
-    flower2005Visible = true;
+  if (relativeScroll > yScale(2011) - 400) {
+    flower2011Visible = true;
   }
-  if (relativeScroll > yScale(2015) - 400) {
-    flower2015Visible = true;
+  if (relativeScroll > yScale(2016) - 400) {
+    flower2016Visible = true;
   }
   if (relativeScroll > yScale(2020) - 400) {
     flower2020Visible = true;
@@ -242,6 +242,22 @@ const yRentEnd = yPoliceEnd + 500; // wider rent window
       <div class="text-content">
         <h1>Rent is a Trap!</h1>
         <h2>By Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, Zoe Voss Lee</h2>
+      </div>
+      <div class="text-content">
+        <div class="introduction">
+
+        </div>
+        <div class="chart-explainer">
+            <p>
+This chart shows Boston’s annual operational police budget, sourced from the Boston Public Library Archives (1990–2006) and the City of Boston Budget Office (2007–2025). All dollar values are adjusted for inflation and shown in today’s dollars.
+Scrolling reveals how even as Boston’s police budget has steadily grown, often in the name of “public safety”, housing affordability has become increasingly precarious— with rates of rent burden growing to affect nearly half of all renters in 2020. 
+Amidst it all, communities have been fighting back. Their fates are not just numbers, nor deficit narratives.
+Hover over a flower to discover a story of community resistance.
+
+            </p>
+        </div>
+
+
       </div>
   
       <div class="chart-wrapper">
@@ -350,12 +366,16 @@ opacity="1"
             {#if flower1993Visible}
             <div 
               class="flower-box" 
-              style="top: {yScale(1993)}px; left: {centerX - 50}px; transform: translate(-50%, -50%) rotate(-60deg);"
+              style="top: {yScale(1993)}px; left: {centerX - 50}px; --rotate: -60deg;"
               on:mouseenter={() => {
                 hoveredFlower = { x: centerX - 50, y: yScale(1993) };
                 hoveredFlowerImage1 = "/parcelc2.jpeg";
                 hoveredFlowerImage2 = "/parcelc1.jpeg";
-                hoveredFlowerText = "In the early 1990s, Boston’s Chinatown community organized a historic protest against Parcel C development. Residents and activists fought against the proposed construction of a parking garage that would have increased air pollution and displacement in their neighborhood. The Parcel C protests became a landmark moment for Asian American environmental justice organizing.";
+                hoveredFlowerText = `
+  <strong>1993: Parcel C Protests</strong><br><br>
+  In the early 1990s, Boston’s Chinatown community organized a historic protest against Parcel C development. Residents and activists fought against the proposed construction of a parking garage that would have increased air pollution and displacement in their neighborhood. The Parcel C protests became a landmark moment for Asian American environmental justice organizing.<br><br>
+  Source: <a href="https://asianamericanhistory.library.northeastern.edu/parcel-c-timeline/" target="_blank" style="color:#A12624; text-decoration: underline;">Northeastern Library</a>
+`;
                 suppressScrollyBox = true; // 👈 hide scrolly boxes
               }}
               on:mouseleave={() => {
@@ -375,61 +395,107 @@ opacity="1"
           
           
           
-            {#if flower2005Visible}
-            <div 
-              class="flower-box" 
-              style="top: {yScale(2005)}px; left: {centerX - 40}px; transform: translate(-50%, -50%) rotate(-30deg);"
-              on:mouseenter={() => hoveredFlower = { x: centerX - 40, y: yScale(2005) }}
-              on:mouseleave={() => hoveredFlower = null}
-            >
-              <img src="/flower.png" alt="Flower 2005" />
-            </div>
+          {#if flower2011Visible}
+          <div 
+            class="flower-box" 
+            style="top: {yScale(2011)}px; left: {centerX - 40}px; --rotate: -30deg;"
+            on:mouseenter={() => {
+              hoveredFlower = { x: centerX - 40, y: yScale(2011) };
+              hoveredFlowerImage1 = "/occupy1.png";
+              hoveredFlowerImage2 = "/occupy.png"; // ❗ only one image for now
+              hoveredFlowerText = `
+            <strong>2011: Occupy Boston</strong><br><br>
+            In the fall of 2011, activists, students, workers, and community members came together in Dewey Square as part of Occupy Boston—one of many local expressions of the global Occupy movement. The encampment challenged corporate power, economic inequality, and the growing unaffordability of life in the city.<br><br>
+            Sources: <a href="https://www.thecrimson.com/article/2011/11/2/occupy-boston-profs-comment/" target="_blank" style="color:#A12624; text-decoration: underline;">The Harvard Crimson</a>
+            <a href="https://sites.bu.edu/occupybostonchronicles/" target="_blank" style="color:#A12624; text-decoration: underline;">, The Boston Globe</a>
+            `;
+              suppressScrollyBox = true; 
+            }}
+            on:mouseleave={() => {
+              hoveredFlower = null;
+              hoveredFlowerImage1 = null;
+              hoveredFlowerImage2 = null;
+              hoveredFlowerText = null;
+              suppressScrollyBox = false;
+            }}
+          >
+            <img src="/flower.png" alt="Flower 2011" />
+          </div>
           {/if}
           
+          
         
-          {#if flower2015Visible}
-            <div 
-              class="flower-box" 
-              style="top: {yScale(2015)}px; left: {centerX +60}px; transform: translate(-50%, -50%) rotate(10deg);"
-              on:mouseenter={() => hoveredFlower = { x: centerX + 60, y: yScale(2015) }}
-              on:mouseleave={() => hoveredFlower = null}
-            >
-              <img src="/flower.png" alt="Flower 2015" />
-            </div>
-          {/if}
-        
-          {#if flower2020Visible}
-            <div 
-              class="flower-box" 
-              style="top: {yScale(2020)}px; left: {centerX -30}px; transform: translate(-50%, -50%) rotate(25deg);"
-              on:mouseenter={() => hoveredFlower = { x: centerX - 30, y: yScale(2020) }}
-              on:mouseleave={() => hoveredFlower = null}
-            >
-              <img src="/flower.png" alt="Flower 2020" />
-            </div>
-          {/if}
-        
-          {#if hoveredFlower}
-            <div 
-              class="flower-tooltip" 
-              style="top: {hoveredFlower.y - 80}px; left: {hoveredFlower.x + 100}px;"
-            >
-              This is a moment of resistance
-            </div>
-          {/if}
-          {#if hoveredFlowerImage1}
-          <div class="side-image-box">
-            <img src={hoveredFlowerImage1} alt="First Image" />
-            {#if hoveredFlowerImage2}
-              <img src={hoveredFlowerImage2} alt="Second Image" class="overlapping-image" />
-            {/if}
-            {#if hoveredFlowerText}
-              <div class="hovered-text">
-                {hoveredFlowerText}
-              </div>
-            {/if}
+          {#if flower2016Visible}
+          <div 
+            class="flower-box" 
+            style="top: {yScale(2016)}px; left: {centerX + 60}px; --rotate: 10deg;"
+            on:mouseenter={() => {
+              hoveredFlower = { x: centerX + 60, y: yScale(2016) };
+              hoveredFlowerImage1 = "/2016.png";
+              hoveredFlowerImage2 = null; // ❗only one image for this one
+              hoveredFlowerText = `
+                <strong>2016: Right to Remain Campaign</strong><br><br>
+                In 2016, City Life/Vida Urbana helped launch the Right to Remain campaign in Boston, fighting to protect longtime residents, especially Black, Latinx, and working-class tenants, from displacement and eviction amid the city’s intensifying housing crisis.<br><br>
+                Source: <a href="https://www.clvu.org/rda_2016" target="_blank" style="color:#A12624; text-decoration: underline;">City Life/Vida Urbana</a>
+              `;
+              suppressScrollyBox = true;
+            }}
+            on:mouseleave={() => {
+              hoveredFlower = null;
+              hoveredFlowerImage1 = null;
+              hoveredFlowerImage2 = null;
+              hoveredFlowerText = null;
+              suppressScrollyBox = false;
+            }}
+          >
+            <img src="/flower.png" alt="Flower 2016" />
           </div>
         {/if}
+        
+        
+        {#if flower2020Visible}
+        <div 
+          class="flower-box" 
+          style="top: {yScale(2020)}px; left: {centerX - 30}px; --rotate: 25deg;"
+          on:mouseenter={() => {
+            hoveredFlower = { x: centerX - 30, y: yScale(2020) };
+            hoveredFlowerImage1 = "/blm1.png";
+            hoveredFlowerImage2 = null; // ❗only one image here
+            hoveredFlowerText = `
+              <strong>2020: Black Lives Matter</strong><br><br>
+              In 2020, thousands of Bostonians took to the streets following the murder of George Floyd, Breonna Taylor, and countless other Black lives lost to police violence. Protests and marches throughout the city called for justice, divestment from policing, and investment in Black communities.<br><br>
+              Source: <a href="https://www.bostonherald.com/2020/06/03/george-floyd-protests-in-boston-this-time-is-different/" target="_blank" style="color:#A12624; text-decoration: underline;">Boston Herald</a>
+            `;
+            suppressScrollyBox = true;
+          }}
+          on:mouseleave={() => {
+            hoveredFlower = null;
+            hoveredFlowerImage1 = null;
+            hoveredFlowerImage2 = null;
+            hoveredFlowerText = null;
+            suppressScrollyBox = false;
+          }}
+        >
+          <img src="/flower.png" alt="Flower 2020" />
+        </div>
+      {/if}
+
+          {#if hoveredFlowerImage1}
+          <div class="side-image-box">
+            {#if hoveredFlowerText}
+              <div class="hovered-text">
+                {@html hoveredFlowerText}
+              </div>
+            {/if}
+            <div class="image-stack">
+              <img src={hoveredFlowerImage1} alt="First Image" />
+              {#if hoveredFlowerImage2}
+                <img src={hoveredFlowerImage2} alt="Second Image" class="overlapping-image" />
+              {/if}
+            </div>
+          </div>
+        {/if}
+        
         
 
         
@@ -490,41 +556,59 @@ opacity="1"
 
 .side-image-box {
   position: fixed;
-  top: 20%;
-  right: 5%;
-  width: 20%;
-  height: auto;
+  top: 17%;
+  bottom:10%;
+  right: 10%;
+  width: 40%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 1.5rem;
   background: none;
   z-index: 50;
 }
 
+/* Text box styling */
+.hovered-text {
+  order: -1; /* Text comes first */
+  width: 50%; /* Wider text box */
+  padding: 1rem;
+  background: rgba(255,255,255,0.85);
+  border-radius: 8px;
+  font-family: 'Utendo', sans-serif;
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Container for the images */
+.image-stack {
+  display: flex;
+  flex-direction: column; /* Stack images vertically */
+  align-items: center;
+  gap: 1rem;
+  width: 50%;
+  transform: rotate(2deg);
+}
+
+/* For the images */
 .side-image-box img {
   width: 100%;
+
   height: auto;
   border-radius: 6px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
   transition: transform 0.5s ease;
 }
 
+/* Second image slight overlap */
 .overlapping-image {
-  position: absolute;
-  top: 350px; /* 👈 push it down a little bit */
-  left: 30px; /* 👈 shift it right a bit to overlap */
-  width: 85%; /* 👈 smaller than the first */
+  margin-top: -20px; /* slight overlap upwards */
+  margin-left: -30px;
+  transform: rotate(-4deg);
   opacity: 0.9;
-  transform: rotate(-2deg); /* slight tilt if you want */
   z-index: 51;
 }
 
-.hovered-text {
-  margin-top: 150px;
-  padding: 0.8rem;
-  background: rgba(255,255,255,0.85);
-  border-radius: 8px;
-  font-family: 'Utendo', sans-serif;
-  font-size: 1.2rem;
-  color: #333;
-}
 
 
 html {
@@ -567,9 +651,7 @@ html {
   to { opacity: 1; }
 }
 
-.flower-box {
-  animation: fadeInFlower 2s forwards;
-}
+
 
 .flower-tooltip {
   animation: fadeInTooltip 0.5s forwards;
@@ -579,13 +661,14 @@ html {
 
 .flower-box {
   position: absolute;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) rotate(var(--rotate)); /* ✅ now respects --rotate */
   width: 300px;
   height: 300px;
   z-index: 15;
-  opacity: 0; /* 👈 NEED this! Start invisible */
-  animation: fadeIn 2.5s forwards;
+  opacity: 0;
+  animation: fadeIn 2.5s forwards, pulse 5s infinite ease-in-out; /* ✅ add pulse */
 }
+
 
 .flower-box img {
   width: 100%;
@@ -705,6 +788,19 @@ html {
 .step {
   height: 90vh; /* each step covers almost the full screen height */
 }
+
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) rotate(var(--rotate)) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(var(--rotate)) scale(1.07);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(var(--rotate)) scale(1);
+  }
+}
+
 
 
   </style>
