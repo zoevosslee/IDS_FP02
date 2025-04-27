@@ -5,13 +5,17 @@
     let pages = [
       { url: '/', title: 'Interactive Visualization' },
       { url: '/writeup', title: 'Write Up' },
-      { url: '/plan', title: 'Project Plan' }
+      { url: '/plan', title: 'Project Plan' },
+      { url: '/chapter1', title: 'Chapter 1' },
+      { url: '/landing', title: 'Landing' }
     ];
   
     let menuOpen = false;
   </script>
   
   <!-- DROPDOWN NAVIGATION -->
+
+
   <div class="nav-wrapper">
     <div class="menu-container">
     <button on:click={() => (menuOpen = !menuOpen)} class="menu-toggle">
