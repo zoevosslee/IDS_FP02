@@ -14,6 +14,10 @@
   import Legend from '$lib/Legend.svelte';
   import { rasterToGeoJSONGrid } from '$lib/rasterToGeojsonGrid.js';
 
+  import { rasterToGeoJSONGrid } from '$lib/rasterToGeojsonGrid.js';
+
+
+  let loading = true;
 
   let loading = true;
 
@@ -33,6 +37,20 @@
     race: false,
     rentBurden: false
   };
+
+  const terrainSources = {
+  terrain1: {
+    2015: 'custom-dem',
+    2023: 'custom-dem-3'
+  },
+  terrain2: {
+    2015: 'custom-dem-2',
+    2023: 'custom-dem-4'
+  },
+};
+
+  let policeInd = 'reqs';
+  let terrainVisible = true;
 
   const terrainSources = {
   terrain1: {
@@ -162,6 +180,7 @@ function toggleTerrain() {
 
     // Hide tint overlay
     map.setPaintProperty('terrain-tint-overlay', 'fill-opacity', 0);
+
   }
 }
 
@@ -173,6 +192,7 @@ function handleLayerToggle(event) {
   for (const l of Object.keys(visibleLayers)) {
     visibleLayers[l] = false;
   }
+
 
   visibleLayers[layer] = true;
 
@@ -585,6 +605,8 @@ map.moveLayer('highlight-layer');
 
 
   });
+  
+  
 </script>
 
 
@@ -770,7 +792,11 @@ map.moveLayer('highlight-layer');
   100% { transform: rotate(360deg); }
 }
 
-
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+}
 
 
 

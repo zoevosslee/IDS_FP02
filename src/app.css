@@ -293,6 +293,7 @@
   background: var(--red-medium);
   transform: scale(1.05);
 }
+
   #three-canvas {
     position: absolute;
     top: 0;
@@ -324,4 +325,4 @@
   
   
   
-  
+

@@ -38,6 +38,7 @@
       Race
     </label>
   </p>
+
   <p>
     <label>
       <input type="radio" name="gentrificationLayer" value="rentBurden" checked={selectedLayer === 'rentBurden'} on:change={() => toggleLayer('rentBurden')} />
