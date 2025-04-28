@@ -14,9 +14,6 @@
   import Legend from '$lib/Legend.svelte';
   import { rasterToGeoJSONGrid } from '$lib/rasterToGeojsonGrid.js';
 
-  import { rasterToGeoJSONGrid } from '$lib/rasterToGeojsonGrid.js';
-
-
   let loading = true;
 
   let loading = true;
