@@ -23,6 +23,8 @@
     let neighborhoods = null;
     let points311 = null;
     let pointsViolations = null;
+    let rentBurden = null;
+    let investorPurchases = null;
     let scrollerMapViewChanged = 0;
     let selectedNeighborhood = null;
     let scrollerMapLoaded = false;
@@ -49,13 +51,63 @@
       redlining = await d3.json('/data/mappinginequality.json');
       neighborhoods = await d3.json('/data/bpda_neighborhood_boundaries.json');
       points311 = await d3.json('/data/311_points.json');
-      console.log('loaded points311', points311);
       pointsViolations = await d3.json('/data/violations_points.json');
-      console.log('loaded pointsViolations', pointsViolations);
+      rentBurden = await d3.json('/data/rentburden_neighborhood2023.json');
+      investorPurchases = await d3.json('/data/sales_by_neighborhood_centroids.geojson');
+
+      scrollerMap.addSource('rentBurden', {
+        type: 'geojson',
+        data: rentBurden
+      });
+
+      scrollerMap.addSource('investorPurchases', {
+        type: 'geojson',
+        data: investorPurchases
+      });      
 
       scrollerMap.addSource('points311', {
         type: 'geojson',
         data: points311
+      });
+
+      scrollerMap.addLayer({
+        'id': 'choroplethRentBurden',
+        'type': 'fill',
+        'source': 'rentBurden',
+        'paint': {
+          'fill-color': [
+            'interpolate',
+            ['linear'],
+            ['get', 'Neighborhood_RentBurden'], 
+            0.25, '#E3BFBE',
+            0.35, '#D6A2A1',
+            0.45, '#CA8584',
+            0.55, '#B55554',
+            0.65, '#A12624'
+          ],
+          'fill-opacity': 0
+        }
+      });
+
+      scrollerMap.addLayer({
+        'id': 'circleInvestorPurchases',
+        'type': 'circle',
+        'source': 'investorPurchases',
+        'paint': {
+          'circle-radius': [
+            'interpolate',
+            ['linear'],
+            ['get', 'investor_sales_pct'],
+            0, 2,
+            0.05, 4,
+            0.20, 6,
+            0.30, 8,
+            0.40, 10,
+            1, 12
+          ],
+          'circle-color': '#8790BC',
+          'circle-opacity': 0
+        }
       });
 
       scrollerMap.addLayer({
@@ -79,7 +131,6 @@
             1, 'red'
           ]
             }
-
       
       });
 
@@ -124,6 +175,15 @@
         } else {
           scrollerMap.setPaintProperty('heatmap311', 'heatmap-opacity', 0);
           scrollerMap.setPaintProperty('heatmapViolations', 'heatmap-opacity', 0);
+        }
+      }
+      if (scrollerMap.getLayer('choroplethRentBurden') && scrollerMap.getLayer('circleInvestorPurchases')) {
+        if (index === 1) {
+          scrollerMap.setPaintProperty('choroplethRentBurden', 'fill-opacity', 1);
+          scrollerMap.setPaintProperty('circleInvestorPurchases', 'circle-opacity', 1);
+        } else {
+          scrollerMap.setPaintProperty('choroplethRentBurden', 'fill-opacity', 0);
+          scrollerMap.setPaintProperty('circleInvestorPurchases', 'circle-opacity', 0);
         }
       }
     }
@@ -185,6 +245,14 @@
       return path.toString();
     }
   
+  function handleNeighborhoodClick(feature) {
+    if (selectedNeighborhood?.properties.name === feature?.properties.name) {
+      selectedNeighborhood = null;
+    } else {
+      selectedNeighborhood = feature;
+    }
+  }
+
   </script>
   
   
@@ -373,7 +441,7 @@
     flex: 1;
     width: calc(50% - 1em);
     height: 400px;
-    pointer-events: all;
+    pointer-events: none;
     position: relative;
     z-index: 0;
   }
@@ -442,7 +510,7 @@
       }
   
     .scroller-container {
-      pointer-events: all;
+      pointer-events: auto;
     }
   
     /* #scrollerNeighborhoods path {
