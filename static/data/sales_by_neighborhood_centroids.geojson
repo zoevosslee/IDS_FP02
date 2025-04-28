@@ -1,0 +1,32 @@
+{
+"type": "FeatureCollection",
+"name": "sales_by_neighborhood_centroids",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "Neighborhood": "Mattapan", "investor_sales_pct": 1.0 }, "geometry": { "type": "Point", "coordinates": [ -71.091445666387415, 42.27699648296975 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": "Downtown", "investor_sales_pct": 0.3460179833012203 }, "geometry": { "type": "Point", "coordinates": [ -71.057650067390014, 42.355584505330839 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": "Allston", "investor_sales_pct": 0.33333333333333331 }, "geometry": { "type": "Point", "coordinates": [ -71.128561904394331, 42.358396609657881 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": null, "investor_sales_pct": 0.32896461336828309 }, "geometry": null },
+{ "type": "Feature", "properties": { "Neighborhood": "South Boston Waterfront", "investor_sales_pct": 0.31132075471698112 }, "geometry": { "type": "Point", "coordinates": [ -71.041726432256269, 42.346407982265475 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": "Back Bay", "investor_sales_pct": 0.29920829920829922 }, "geometry": { "type": "Point", "coordinates": [ -71.080534766934946, 42.349851852917645 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": "Chinatown", "investor_sales_pct": 0.29064039408866993 }, "geometry": { "type": "Point", "coordinates": [ -71.061661462402327, 42.349018662767378 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": "Fenway", "investor_sales_pct": 0.28769424611507771 }, "geometry": { "type": "Point", "coordinates": [ -71.096114254750304, 42.344758499140788 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": "Beacon Hill", "investor_sales_pct": 0.2713347921225383 }, "geometry": { "type": "Point", "coordinates": [ -71.068261772967588, 42.357041367750611 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": "North End", "investor_sales_pct": 0.26442762535477765 }, "geometry": { "type": "Point", "coordinates": [ -71.05385715112017, 42.365456051651037 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": "Bay Village", "investor_sales_pct": 0.24932975871313673 }, "geometry": { "type": "Point", "coordinates": [ -71.069031405234782, 42.349094573789458 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": "Leather District", "investor_sales_pct": 0.21568627450980393 }, "geometry": { "type": "Point", "coordinates": [ -71.057827504304697, 42.350974273394144 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": "South Boston", "investor_sales_pct": 0.21052631578947367 }, "geometry": { "type": "Point", "coordinates": [ -71.044643353993678, 42.334899831939744 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": "Longwood", "investor_sales_pct": 0.20967741935483872 }, "geometry": { "type": "Point", "coordinates": [ -71.10510207376042, 42.338600211871579 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": "West End", "investor_sales_pct": 0.20590163934426228 }, "geometry": { "type": "Point", "coordinates": [ -71.065589780100581, 42.364659667597955 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": "South End", "investor_sales_pct": 0.19881685186665601 }, "geometry": { "type": "Point", "coordinates": [ -71.071368701543648, 42.341341735567781 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": "Charlestown", "investor_sales_pct": 0.18181818181818182 }, "geometry": { "type": "Point", "coordinates": [ -71.063766053968251, 42.379301497248989 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": "Dorchester", "investor_sales_pct": 0.16216216216216217 }, "geometry": { "type": "Point", "coordinates": [ -71.063456233255152, 42.298453671814514 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": "Roxbury", "investor_sales_pct": 0.15873015873015872 }, "geometry": { "type": "Point", "coordinates": [ -71.086642628349097, 42.318509907546037 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": "Jamaica Plain", "investor_sales_pct": 0.03125 }, "geometry": { "type": "Point", "coordinates": [ -71.115096336812101, 42.307760841756995 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": "Brighton", "investor_sales_pct": 0.0 }, "geometry": { "type": "Point", "coordinates": [ -71.154934801206565, 42.348348034395485 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": "East Boston", "investor_sales_pct": 0.0 }, "geometry": { "type": "Point", "coordinates": [ -71.01569479858216, 42.372669892952388 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": "Hyde Park", "investor_sales_pct": 0.0 }, "geometry": { "type": "Point", "coordinates": [ -71.126298073647888, 42.255026409788059 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": "Mission Hill", "investor_sales_pct": 0.0 }, "geometry": { "type": "Point", "coordinates": [ -71.102606049598663, 42.331732821734377 ] } },
+{ "type": "Feature", "properties": { "Neighborhood": "Roslindale", "investor_sales_pct": 0.0 }, "geometry": { "type": "Point", "coordinates": [ -71.126661983926283, 42.282515280674751 ] } }
+]
+}

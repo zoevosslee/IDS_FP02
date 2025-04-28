@@ -12,9 +12,12 @@
   import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
   import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
   import Legend from '$lib/Legend.svelte';
+  import { rasterToGeoJSONGrid } from '$lib/rasterToGeojsonGrid.js';
 
   import { rasterToGeoJSONGrid } from '$lib/rasterToGeojsonGrid.js';
 
+
+  let loading = true;
 
   let loading = true;
 
@@ -46,10 +49,23 @@
   },
 };
 
-
   let policeInd = 'reqs';
   let terrainVisible = true;
 
+  const terrainSources = {
+  terrain1: {
+    2015: 'custom-dem',
+    2023: 'custom-dem-3'
+  },
+  terrain2: {
+    2015: 'custom-dem-2',
+    2023: 'custom-dem-4'
+  },
+};
+
+
+  let policeInd = 'reqs';
+  let terrainVisible = true;
 
   function assignQuartiles(features, fieldName) {
     const values = features.map(f => f.properties[fieldName]).filter(v => typeof v === 'number' && !isNaN(v)).sort((a, b) => a - b);
@@ -164,6 +180,7 @@ function toggleTerrain() {
 
     // Hide tint overlay
     map.setPaintProperty('terrain-tint-overlay', 'fill-opacity', 0);
+
   }
 }
 
@@ -175,6 +192,7 @@ function handleLayerToggle(event) {
   for (const l of Object.keys(visibleLayers)) {
     visibleLayers[l] = false;
   }
+
 
   visibleLayers[layer] = true;
 
@@ -203,11 +221,6 @@ function handleLayerToggle(event) {
       }
     }
   }
-
-  // if (map) {
-  //   map.setLayoutProperty('education-2015', 'visibility', year === 2015 && educationVisible ? 'visible' : 'none');
-  //   map.setLayoutProperty('education-2023', 'visibility', year === 2023 && educationVisible ? 'visible' : 'none');
-  // }
 
   mapboxgl.accessToken = "pk.eyJ1IjoienZsMTIxNSIsImEiOiJjbTkxZ2k3cjYwMHBhMnZwd2dneWZjeXhhIn0.KK0PwZsLffFl4_qtLg-efQ";
 
@@ -608,7 +621,6 @@ map.moveLayer('highlight-layer');
       <h1>Rent is a Trap!</h1>
       <h2>By Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, Zoe Voss Lee</h2>
     </div>
-
     <p>What is the correlation between gentrification and non-criminal policing? 
       In this visualization, we map indicators of non-criminal policing as vertical heights,
       and indicators relevant to gentrification as color shades. This is our ground work of exploring the neighborhood trends before
@@ -677,21 +689,12 @@ map.moveLayer('highlight-layer');
     <p>311 Requests: <a href=https://data.boston.gov/dataset/311-service-requests target=blank>Analyze Boston</a></p>
     <p>Building & Property Violations: <a href=https://data.boston.gov/dataset/building-and-property-violations1 target=blank>Analyze Boston</a></p>
     <p>Neighborhood Boundaries Approximated to Census Tracts: <a href=https://bostonopendata-boston.opendata.arcgis.com/datasets/boston::boston-neighborhood-boundaries-approximated-by-2020-census-block-groups/about target=blank>BostonMap</p>
-  </div>
+   </div>
 </div>
 
 
 
 <style>
-  .debug {
-  background: #f0f0f0;
-  padding: 1rem;
-  margin: 1rem;
-  border: 1px solid #ccc;
-  font-family: monospace;
-  font-size: 0.8rem;
-  overflow-x: auto;
-}
 
 .map-layout {
   display: flex;

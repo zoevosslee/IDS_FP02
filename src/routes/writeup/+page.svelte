@@ -40,7 +40,7 @@
         <p>Finally, as part of our narrative we have planned to introduce other non-geographical visualizations such as a timeline to show police budget and displacement events and moving tiles to address the issue of missing data on these matters. We find these important to situate the community challenges and it is something we will work for future iterations.
         </p>
         <p><strong>Overview of Our Development Process and Opportunities to Improve</strong></p>
-        <p>We have met around 4 times as a team to discuss ideas, data, and developments. In our first meetings we talked about ways of representing data, different elements of the map and workflow. We collectively decided that the best way to address the development of our project was to work first on the interactive map and that we will use different branches on github for version control. Collectively, we have spent 56 hours working on the project.
+        <p>We have met around 4 times as a team to discuss ideas, data, and developments. In our first meetings we talked about ways of representing data, different elements of the map and workflow. We collectively decided that the best way to address the development of our project was to work first on the interactive map and that we will use different branches on github for version control. Collectively, we have spent 64 hours working on the project.
         </p>
         <p>The components that took the most time were writing the JavaScript components to effectively connect the data to the Svelte components, and Mapbox. While some of our team members have MapBox programming development experience, working with d3 and the Svelte environment are new to our team.
         </p>
@@ -59,12 +59,22 @@
           </p></li>
           <li><p>Contributed to overall UX decisions 
           </p></li>
+          <li><p>Contributed to the Project Plan document
+          </p></li>
         </ul>
         <p>Nicola</p>
         <ul>
-          <li><p>3D extrusion feature to show policing indicators, radio buttons control, and debugging outlier values
+          <li><p>3D extrusion feature to show policing indicators, radio buttons control
           </p></li>
-          <li><p>formatting of popup to include sentences, handle missing data, show policing indicators, and float below the search bar
+          <li><p>Debugged outlier values by exploring small-population block groups
+            </p></li>
+          <li><p>Formatting of popup to include sentences, handle missing data, show policing indicators, and float below the search bar
+          </p></li>
+          <li><p>Formatted the legend and homepage text
+          </p></li>
+          <li><p>Debugged deployment issues
+          </p></li>
+          <li><p>Contributed to the write-up for the interactive data visualization page
           </p></li>
         </ul>
         <p>Yeonhoo</p>
@@ -79,6 +89,8 @@
           </p></li>
           <li><p>Contributed to project planning and collaborative discussions on data selection, communication, and visualization.
           </p></li>
+          <li><p>Contributed to the write-up for the interactive data visualization page
+          </p></li>
         </ul>
         <p>Claudia</p>
         <ul>
@@ -91,9 +103,10 @@
           <li><p>Converted 311 calls polygon layer into Geotif in QGIS
           </p></li>
           <li><p>Upload the  Geotif to tiles in Mapbox</p></li>
-          <li><p>Brought the ‘topographical’ surface into the project
+          <li><p>Brought the ‘topographical’ surface mapping 311 calls (count) into the project. We are having trouble making the toggle work because Mapbox reads it as a terrain and not as a layer. Please see the surface below.
           </p></li>
-          <li><p>Lead the write-up component of the submission
+          <img src="/images/topographical_surface.png" alt="Screenshot" style="max-width: 100%; height: auto;">
+          <li><p>Contributed to write-up and rationale for visualization components
           </p></li>
           <li><p>Contributed to overall UX decisions
           </p></li>
