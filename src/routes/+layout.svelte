@@ -6,7 +6,7 @@
       { url: '/landing', title: 'Landing' },
       { url: '/chapter1', title: 'Chapter 1' },
       { url: '/chapter2', title: 'Chapter 2' },
-      { url: '/', title: 'Chapter 3' },
+      { url: '/', title: 'Chapter 2, Part 2' },
       { url: '/missingdata', title: 'Missing Data' }
     ];
   

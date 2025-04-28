@@ -445,8 +445,8 @@
         </Scroller>
       </div>
       <div class="next-chapter-link">
-        <a href="/index">
-          ↓ Chapter 2 Continued: Data Explorer
+        <a href="/">
+          ↓ Chapter 2, Part 2: Data Explorer
         </a>
       </div>
     <!-- end of content from svelte-scroller tutorial -->
@@ -586,7 +586,7 @@
       }
   
     .scroller-container {
-      pointer-events: none;
+      pointer-events: auto;
     }
   
     /* #scrollerNeighborhoods path {

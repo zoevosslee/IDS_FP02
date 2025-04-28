@@ -1,7 +1,9 @@
 <div class="landing-page">
     <div class="background-overlay"></div>
     <div class="landing-content">
-  
+        <div class="flower-image"></div>
+        <div class="flower-image2"></div>
+
         <div class="landing-section">
             <h6>Rent is a Trap</h6>
             <p class="subtitle">Exploring the intersections of policing, displacement, and community resistance.</p>
@@ -53,6 +55,72 @@
   
 
   <style>
+
+.flower-image {
+  position: absolute;
+  top: -4%;
+  left: -2.5%;
+  width: 28vw;
+  max-width: 1000px;
+  height: auto;
+  aspect-ratio: 1/1;
+  background-image: url('/pinkflower.png'); /* ✨ this line was missing */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.7;
+  z-index: 2;
+  animation: sway 6s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+.flower-image2 {
+  position: absolute;
+  top: 50%;
+  left: 75%;
+  width: 30vw;
+  max-width: 800px;
+  height: auto;
+  aspect-ratio: 1/1;
+  background-image: url('/bunchflowers.png'); /* ✨ this line was missing */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.6;
+  z-index: 2;
+  animation: sway 6s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes sway {
+  0% { transform: rotate(-.5deg) scale(1); }
+  50% { transform: rotate(1deg) scale(1.02); }
+  100% { transform: rotate(-.5deg) scale(1); }
+}
+
+
+@media (max-width: 768px) {
+  .flower-image, .flower-image2 {
+    width: 30vw;
+    opacity: 0.5; /* softer on small screens */
+  }
+}
+
+
+.background-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.6);
+  z-index: 1; /* background */
+}
+
+.landing-content {
+  position: relative;
+  z-index: 3; /* TEXT is above flower */
+}
+
     p {
       margin-bottom: 1.5rem;
       color: var(--red);
