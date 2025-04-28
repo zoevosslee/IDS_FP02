@@ -389,8 +389,8 @@ opacity="1"
               style="top: {yScale(1993)}px; left: {centerX - 50}px; --rotate: -60deg;"
               on:mouseenter={() => {
                 hoveredFlower = { x: centerX - 50, y: yScale(1993) };
-                hoveredFlowerImage1 = "/parcelc2.jpeg";
-                hoveredFlowerImage2 = "/parcelc1.jpeg";
+                hoveredFlowerImage1 = `${base}/parcelc2.jpeg`;
+                hoveredFlowerImage2 = `${base}/parcelc1.jpeg`;
                 hoveredFlowerText = `
   <strong>1993: Parcel C Protests</strong><br><br>
   In the early 1990s, Boston’s Chinatown community organized a historic protest against Parcel C development. Residents and activists fought against the proposed construction of a parking garage that would have increased air pollution and displacement in their neighborhood. The Parcel C protests became a landmark moment for Asian American environmental justice organizing.<br><br>
