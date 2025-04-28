@@ -22,67 +22,111 @@
     <h3>Selected Block Group</h3>
   
     {#if feature}
-      <p><strong>GEOID:</strong> {props.GEOID}</p>
+      <!-- <p><strong>GEOID:</strong> <span class="highlight">{props.GEOID}</span></p> -->
+  
       <p>
-        In {year}, this block group in <strong>{props.neighborhood}</strong> had a population of 
-        {props.population ?? 'unknown'}.
+        In <span class="highlight">{year}</span>, this block group in 
+        <strong><span class="highlight">{props.blockgr2020_ctr_neighb_name}</span></strong> had a population of 
+        <span class="highlight">{props.population ?? 'unknown'}</span>.
       </p>
   
       {#if education != null}
         <p>
-          <strong>{Math.ceil(education * 100)}%</strong> of residents held a Bachelor’s degree or higher 
+          <span class="highlight">{Math.ceil(education * 100)}%</span> of residents held a Bachelor’s degree or higher 
           <span>(Quartile {educationQuartile})</span>.
         </p>
       {/if}
   
       {#if income != null}
         <p>
-          The median income was <strong>${Math.ceil(income)}</strong> 
+          The median income was <span class="highlight">${Math.ceil(income)}</span> 
           <span>(Quartile {incomeQuartile})</span>.
         </p>
       {/if}
   
       {#if race != null}
         <p>
-          <strong>{Math.ceil(race * 100)}%</strong> of residents were white 
+          <span class="highlight">{Math.ceil(race * 100)}%</span> of residents were white 
           <span>(Quartile {raceQuartile})</span>.
         </p>
       {/if}
   
       {#if rentBurden != null}
         <p>
-          <strong>{Math.ceil(rentBurden * 100)}%</strong> of households were rent-burdened 
+          <span class="highlight">{Math.ceil(rentBurden * 100)}%</span> of households were rent-burdened 
           <span>(Quartile {rentQuartile})</span>.
         </p>
       {/if}
   
-      {#if requests != null}
+      <!-- {#if requests != null}
         <p>
-          There were <strong>{requests}</strong> 311 noise complaints, about 
-          <strong>{Math.round(reqsPer1000)}</strong> per 1,000 residents.
+          There were <span class="highlight">{requests}</span> 311 noise complaints, about 
+          <span class="highlight">{Math.round(reqsPer1000)}</span> per 1,000 residents.
         </p>
       {/if}
   
       {#if violations != null}
         <p>
-          There were <strong>{violations}</strong> DOB violations, roughly 
-          <strong>{Math.round(violPer1000)}</strong> per 1,000 residents.
+          There were <span class="highlight">{violations}</span> DOB violations, roughly 
+          <span class="highlight">{Math.round(violPer1000)}</span> per 1,000 residents.
         </p>
-      {/if}
+      {/if} -->
     {:else}
       <p>No feature selected.</p>
     {/if}
   </div>
   
+  
   <style>
     .floating-panel {
-      background: white;
-      padding: 1rem;
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: #A12624;
+      color: white;
+      padding: 0.75rem;
       border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-      max-width: 300px;
-      font-size: 0.9rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      max-width: 180px;
+      max-height: 250px;
+      overflow-y: auto;
+      font-size: 0.75rem; /* base size */
+      line-height: 1.2;
       z-index: 999;
+      font-family: 'Utendo', sans-serif; /* make sure it's using your Utendo font */
     }
+  
+    .floating-panel h3,
+    .floating-panel p,
+    .floating-panel strong,
+    .floating-panel span {
+      color: #E3BFBE;
+      font-size: 1em; /* 👈 important: inherit from floating-panel */
+      font-weight: 400;
+    }
+  
+    .floating-panel h3 {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+      font-size: 1.2em; /* 20% bigger than p text */
+    }
+  
+    .floating-panel p {
+      margin: 0.3rem 0;
+      font-size: 1em; /* explicitly reset to inherit */
+    }
+
+    .floating-panel .highlight {
+    font-weight: 1000;
+    font-size: 1.4em;
+    color: white
+  }
   </style>
+  
+  
+  
+  
+  
+  
   
