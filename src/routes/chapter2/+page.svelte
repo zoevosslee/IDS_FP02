@@ -553,8 +553,7 @@
       
       [slot="background"] {
           background-color: rgba(255,62,0,0.05);
-          border-top: 2px solid #ff3e00;
-          border-bottom: 2px solid #ff3e00;
+
           font-size: 1.4em;
           overflow: hidden;
           padding: 1em;
