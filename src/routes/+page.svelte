@@ -789,7 +789,11 @@ map.moveLayer('highlight-layer');
   100% { transform: rotate(360deg); }
 }
 
-
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+}
 
 
 
