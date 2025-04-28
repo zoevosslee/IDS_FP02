@@ -1,3 +1,7 @@
+<script>
+  import { base } from '$app/paths';
+</script>
+
 <div class="landing-page">
     <div class="background-overlay"></div>
     <div class="landing-content">
@@ -46,7 +50,7 @@
       </div>
   
       <div class="next-chapter-link">
-        <a href="/chapter1">
+        <a href="{base}/chapter1">
           ↓ Chapter 1: Introduction
         </a>
       </div>

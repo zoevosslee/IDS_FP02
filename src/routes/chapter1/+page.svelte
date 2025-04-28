@@ -2,6 +2,7 @@
     import { scaleLinear } from "d3-scale";
     import { line, curveBasis } from "d3-shape";
     import { onMount, onDestroy } from "svelte";
+    import { base } from '$app/paths';
 
 let width = 800;
 let height = 4600;
@@ -579,7 +580,7 @@ opacity="1"
           
         </div> <!-- .chart -->
         <div class="next-chapter-link">
-            <a href="/chapter2">
+            <a href="{base}/chapter2">
               ↓ Chapter 2: Map Exploration
             </a>
           </div>

@@ -6,6 +6,7 @@
     import * as d3 from "d3";
     import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
     import Scroller from '@sveltejs/svelte-scroller';
+    import { base } from '$app/paths';
   
   
     /* vars from svelte-scroller tutorial (maybe remove some later) */
@@ -445,7 +446,7 @@
         </Scroller>
       </div>
       <div class="next-chapter-link">
-        <a href="/">
+        <a href="{base}/">
           ↓ Chapter 2, Part 2: Data Explorer
         </a>
       </div>

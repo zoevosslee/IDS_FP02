@@ -13,6 +13,7 @@
   import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
   import Legend from '$lib/Legend.svelte';
   import { rasterToGeoJSONGrid } from '$lib/rasterToGeojsonGrid.js';
+  import { base } from '$app/paths';
 
   let loading = true;
 
@@ -675,7 +676,7 @@ map.moveLayer('highlight-layer');
    </div>
    <div class="next-chapter-link">
     <br><br>
-    <a href="/missingdata">
+    <a href="{base}/missingdata">
       ↓ Chapter 3: Missing Data
     </a>
   </div>
