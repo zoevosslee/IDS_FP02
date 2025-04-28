@@ -292,3 +292,33 @@
   background: var(--red-medium);
   transform: scale(1.05);
 }
+
+.next-chapter-link {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-family: 'Utendo', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--red);
+  animation: bounceArrow 2s infinite;
+}
+
+.next-chapter-link a {
+  text-decoration: none;
+  color: var(--red);
+}
+
+.next-chapter-link a:hover {
+  text-decoration: underline;
+}
+
+@keyframes bounceArrow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+

@@ -178,7 +178,7 @@ let data = [
   let found = false;
 
   for (const { year } of yearPhases) {
-    const yTop = year === 1990 ? yScale(year) - 100 : yScale(year) - 200;
+    const yTop = year === 1990 ? yScale(year) + 100 : yScale(year) - 100;
     const yPoliceEnd = yTop + 400; // wider police window
 const yRentEnd = yPoliceEnd + 500; // wider rent window
 
@@ -249,14 +249,32 @@ const yRentEnd = yPoliceEnd + 500; // wider rent window
 
         </div>
         <div class="chart-explainer">
-            <p>
-This chart shows Boston’s annual operational police budget, sourced from the Boston Public Library Archives (1990–2006) and the City of Boston Budget Office (2007–2025). All dollar values are adjusted for inflation and shown in today’s dollars.
-Scrolling reveals how even as Boston’s police budget has steadily grown, often in the name of “public safety”, housing affordability has become increasingly precarious— with rates of rent burden growing to affect nearly half of all renters in 2020. 
-Amidst it all, communities have been fighting back. Their fates are not just numbers, nor deficit narratives.
-Hover over a flower to discover a story of community resistance.
 
-            </p>
-        </div>
+          
+            <div class="chart-description">
+              <p>
+                This chart shows Boston’s annual operational police budget, sourced from the Boston Public Library Archives (1990–2006) and the City of Boston Budget Office (2007–2025). All dollar values are adjusted for inflation and shown in today’s dollars. 
+                <br><br>
+                Even as Boston’s police budget has steadily grown—often in the name of "public safety"—housing affordability has become increasingly precarious, with rent burden rates affecting nearly half of all renters by 2020. 
+
+              </p>
+            </div>
+            <div class="explainer-grid">
+                <div class="explainer-item">
+                  <h3>1. Hover</h3>
+                  <p>Hover over a year to see Boston's police budget in today’s dollars.</p>
+                </div>
+                <div class="explainer-item">
+                  <h3>2. Watch for Flowers</h3>
+                  <p>Look out for flowers to discover moments of community resistance.</p>
+                </div>
+                <div class="explainer-item">
+                  <h3>3. Scroll Down</h3>
+                  <p>Scroll to see how Boston’s policing budget and rent burden have changed over time.</p>
+                </div>
+              </div>
+          </div>
+          
 
 
       </div>
@@ -546,15 +564,81 @@ opacity="1"
             <div class="step" data-year="2020" data-phase="rent"></div>
           </div>
           
+
+          
         </div> <!-- .chart -->
-
-
+        <div class="next-chapter-link">
+            <a href="/index">
+              ↓ Chapter 2: Map Exploration
+            </a>
+          </div>
       </div> <!-- .chart-wrapper -->
     </div> <!-- .container -->
+
+      
   </div> <!-- #home-page -->
   
   <style>
 
+.chart-explainer {
+  width: 100%;
+  font-family: 'Utendo', sans-serif;
+  margin-bottom: 0rem; /* tighten spacing below */
+}
+
+.explainer-grid {
+  display: flex;
+  justify-content:space-between; /* center the entire grid */
+  flex-wrap: nowrap;
+  gap: 1rem;
+  max-width: 100%; /* limit how wide it can grow */
+
+}
+
+.explainer-item {
+  flex: 1 1 0; /* flexibly grow */
+  max-width: 500px; /* don't let them get too huge */
+  min-width: 100px; /* don't let them get too small */
+  background: rgba(255, 255, 255, 0.8);
+  padding: 1.3rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+/* Small hover effect */
+.explainer-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+.explainer-item h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--red);
+  margin-bottom: 0.5rem;
+}
+
+.explainer-item p {
+  font-size: 1rem;
+  color: #333;
+  line-height: 1.3;
+}
+
+/* Expand chart-description nicely too */
+.chart-description {
+  width: 100%;
+}
+
+.chart-description p {
+  font-size: 1rem;
+  color: #333;
+  width: 100%;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.7);
+  line-height: 1.2;
+  margin-bottom:2rem;
+}
 .side-image-box {
   position: fixed;
   top: 17%;
@@ -698,11 +782,12 @@ html {
 
 .chart-wrapper {
   position: relative;
+  
 }
 
   .chart {
     width: 1000px;
-    height: 5500px;
+    height: auto;
 
   }
   
@@ -790,13 +875,6 @@ html {
   background: #A12624; /* dark red for rent burdened */
 }
 
-.steps {
-  width: 100%;
-}
-
-.step {
-  height: 90vh; /* each step covers almost the full screen height */
-}
 
 @keyframes pulse {
   0% {
