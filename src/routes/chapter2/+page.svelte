@@ -164,6 +164,15 @@
   
     });
 
+    
+    let rentBurdenLabels = [
+      { label: '25%', color: '#E3BFBE' },
+      { label: '35%', color: '#D6A2A1' },
+      { label: '45%', color: '#CA8584' },
+      { label: '55%', color: '#B55554' },
+      { label: '65%', color: '#A12624' }
+    ];
+
     $: if (scrollerMapLoaded && count !== undefined && scrollerMap) {
       if (scrollerMap.getLayer('heatmap311') && scrollerMap.getLayer('heatmapViolations')) {
         if (index === 2) {
@@ -279,7 +288,7 @@
             bind:progress
         >
           <div slot="background">
-            <p style="font-size:small;">these sliders are for debug -Nicola</p>
+            <!-- <p style="font-size:small;">these sliders are for debug -Nicola</p>
             <p>current section: <strong>{index + 1}/{count}</strong></p>
             <progress value="{count ? (index + 1) / count : 0}"></progress>
     
@@ -287,7 +296,7 @@
             <progress value={offset || 0}></progress>
     
             <p>total progress</p>
-            <progress value={progress || 0}></progress>
+            <progress value={progress || 0}></progress> -->
             <div style="position: relative; flex-grow: 1;">
 
               <div id="scrollerMap">
@@ -350,25 +359,87 @@
             </div>
           </div>
           <div slot="foreground" style="padding: 0 0 0 50%;">
-            <section>History of Redlining in Boston
+            <section><p style="font-size: 20px;">History of Redlining in Boston</p>
               <p>
               Redlining created barriers for African American and immigrant families in neighborhoods considered “hazardous,” “undesirable,” or “inharmonious” to access mortgage financing. Communities of historically redlined neighborhoods continue to live and negotiate with the long-term impacts of systemic exclusion, preserving what is precious to them.</p>
+              <div>
+                <ul class="legend">
+                  <li style="--color: #76a865; opacity: 0.5">
+                    <span class="swatch"></span>
+                    <p>"A: Best"</p>
+                  </li>
+                  <li style="--color: #7cb5bd; opacity: 0.5">
+                    <span class="swatch"></span>
+                    <p>"B: Still Desirable"</p>
+                  </li>
+                  <li style="--color: #ffff00; opacity: 0.5">
+                    <span class="swatch"></span>
+                    <p>"C: Definitely Declining"</p>
+                  </li>
+                  <li style="--color: #d9838d; opacity: 0.5">
+                    <span class="swatch"></span>
+                    <p>"D: Hazardous"</p>
+                  </li>
+                  <li style="--color: #000000; opacity: 0.5">
+                    <span class="swatch"></span>
+                    <p>"Commercial"</p>
+                  </li>
+                </ul>
+              </div>
             </section>
-            <section>Investor Purchase & Community Rent Burden
+            <section><p style="font-size: 20px;">Investor Purchase & Community Rent Burden</p>
               <p>Yet, across Boston, we see a growing problem of rising investor purchase rate, exacerbating rent burden. This correlation is particularly true since the financial crisis in historically redlined neighborhoods such as Mattapan (2023 Rent Burden = 64%; Investor Sales 100%), South Boston Waterfront (2023 Rent Burden = 39%; Investor Sales = 31%), North End (2023 Rent Burden = 34%; Investor Sales = 26%). 
               </p>
               <p>Along with the increase of rent burden, we also observe significant change in the neighborhood demographics, especially with education level, a key indicator of gentrification.
                 From 2015 to 2023, there has been a 25% increase in the population that holds a Bachelor's degree or higher in the entirety of Suffolk county.
                 While housing is becoming an asset class for corporations, longtime residents are forced out.
                 </p>
+                <div class="legend-container">
+                <ul class="legend">
+                  <p>Rent Burden</p>
+                  {#each rentBurdenLabels as d}
+                    <li style="--color: {d.color}">
+                      <span class="swatch"></span>
+                      <p>{d.label}</p>
+                    </li>
+                  {/each}
+                </ul> 
+                <ul class="legend">
+                  <p>Investor Purchases</p>
+                  <li><span class="circle-swatch" style="width:4px; height:4px;"></span><p>0%</p></li>
+                  <li><span class="circle-swatch" style="width:8px; height:8px;"></span><p>5%</p></li>
+                  <li><span class="circle-swatch" style="width:12px; height:12px;"></span><p>20%</p></li>
+                  <li><span class="circle-swatch" style="width:16px; height:16px;"></span><p>30%</p></li>
+                  <li><span class="circle-swatch" style="width:20px; height:20px;"></span><p>40%</p></li>
+                  <li><span class="circle-swatch" style="width:24px; height:24px;"></span><p>100%</p></li>
+                </ul>  
+              </div>             
             </section>
-            <section>311 Service Requests Assigned to Police
+            <section><p style="font-size: 20px;">311 Service Requests Assigned to Police</p>
               <p>Scholars like Ruth Wilson Gilmore (2007) have argued that criminalization serves as a tool to justify state violence and the containment of marginalized populations. By criminalizing certain behaviors and populations, police provide real estate developers with justification for urban renewal efforts that erase community histories and identities.
                 We have noticed that, across Boston, 311 service requests for noise complaints increased drastically since 2015. The increase is particularly stark in historically redlined, currently gentrifying neighborhoods such as A, B, and C. 
                 </p>
+                <ul class="legend">
+                  <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of 311 calls</p></li>
+                  <li style="--color: blue"><span class="swatch"></span><p></p></li>
+                  <li style="--color: cyan"><span class="swatch"></span><p></p></li>
+                  <li style="--color: lime"><span class="swatch"></span><p></p></li>
+                  <li style="--color: yellow"><span class="swatch"></span><p></p></li>
+                  <li style="--color: red"><span class="swatch"></span><p>Highest density of 311 calls</p></li>
+                </ul>
+                
             </section>
-            <section>Building and Property Violations
+            <section><p style="font-size: 20px;">Building and Property Violations</p>
               <p>Buildings & property violations seem to be on the rise, showing a similar pattern. These non-criminal, auxiliary policing is more clearly associated with early-stage urban “renewal” than already wealthy neighborhoods.</p>
+              <ul class="legend">
+                <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of violations</p></li>
+                <li style="--color: purple"><span class="swatch"></span><p></p></li>
+                <li style="--color: magenta"><span class="swatch"></span><p></p></li>
+                <li style="--color: orange"><span class="swatch"></span><p></p></li>
+                <li style="--color: gold"><span class="swatch"></span><p></p></li>
+                <li style="--color: red"><span class="swatch"></span><p>Highest density of violations</p></li>
+              </ul>
+              
             </section>
           </div>
         </Scroller>
@@ -503,7 +574,7 @@
       
       section {
           height: 80vh;
-          background-color: rgba(0,0,0,0.5);
+          /* background-color: rgba(255,62,0,0.05); */
           color: white;
           padding: 1em;
           margin: 0 0 2em 0;
@@ -550,7 +621,53 @@
       max-width: 300px;
       font-family: sans-serif;
     }
-    
+
+    /* styling from... a template... */
+    .legend {
+      list-style: none;
+      padding: 10px;
+      margin: 20px 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      /* background-color: rgba(255,62,0,0.05); */
+    }
+
+    .legend li {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 14px;
+      font-style: normal;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .legend p {
+      margin: 0;
+      font-size: 14px; /* or whatever size you like */
+    }
+
+    .swatch {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      background-color: var(--color);
+      border-radius: 4px; /* or 50% for a circle */
+      border: 1px solid #ccc;
+    }
+
+    .circle-swatch {
+      display: inline-block;
+      background-color: #8790BC;
+      border: 1px solid #666;
+      border-radius: 50%;
+    }
+
+    .legend-container {
+      display: flex;
+      gap: 16px; /* space between the two legends */
+      align-items: flex-start;
+    }
     
   
   </style>
