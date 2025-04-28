@@ -409,7 +409,7 @@ opacity="1"
               
               
             >
-              <img src="/flower.png" alt="Flower 1993" />
+              <img src="{base}/flower.png" alt="Flower 1993" />
             </div>
           {/if}
           
@@ -421,8 +421,8 @@ opacity="1"
             style="top: {yScale(2011)}px; left: {centerX - 40}px; --rotate: -30deg;"
             on:mouseenter={() => {
               hoveredFlower = { x: centerX - 40, y: yScale(2011) };
-              hoveredFlowerImage1 = "/occupy1.png";
-              hoveredFlowerImage2 = "/occupy.png"; // ❗ only one image for now
+              hoveredFlowerImage1 = `${base}/occupy1.png`;
+              hoveredFlowerImage2 = `${base}/occupy.png`; // ❗ only one image for now
               hoveredFlowerText = `
             <strong>2011: Occupy Boston</strong><br><br>
             In the fall of 2011, activists, students, workers, and community members came together in Dewey Square as part of Occupy Boston—one of many local expressions of the global Occupy movement. The encampment challenged corporate power, economic inequality, and the growing unaffordability of life in the city.<br><br>
@@ -439,7 +439,7 @@ opacity="1"
               suppressScrollyBox = false;
             }}
           >
-            <img src="/flower.png" alt="Flower 2011" />
+            <img src="{base}/flower.png" alt="Flower 2011" />
           </div>
           {/if}
           
@@ -451,7 +451,7 @@ opacity="1"
             style="top: {yScale(2016)}px; left: {centerX + 60}px; --rotate: 10deg;"
             on:mouseenter={() => {
               hoveredFlower = { x: centerX + 60, y: yScale(2016) };
-              hoveredFlowerImage1 = "/2016.png";
+              hoveredFlowerImage1 = `${base}/2016.png`;
               hoveredFlowerImage2 = null; // ❗only one image for this one
               hoveredFlowerText = `
                 <strong>2016: Right to Remain Campaign</strong><br><br>
@@ -468,7 +468,7 @@ opacity="1"
               suppressScrollyBox = false;
             }}
           >
-            <img src="/flower.png" alt="Flower 2016" />
+            <img src="{base}/flower.png" alt="Flower 2016" />
           </div>
         {/if}
         
@@ -479,7 +479,7 @@ opacity="1"
           style="top: {yScale(2020)}px; left: {centerX - 30}px; --rotate: 25deg;"
           on:mouseenter={() => {
             hoveredFlower = { x: centerX - 30, y: yScale(2020) };
-            hoveredFlowerImage1 = "/blm1.png";
+            hoveredFlowerImage1 = `${base}/blm1.png`;
             hoveredFlowerImage2 = null; // ❗only one image here
             hoveredFlowerText = `
               <strong>2020: Black Lives Matter</strong><br><br>
@@ -496,7 +496,7 @@ opacity="1"
             suppressScrollyBox = false;
           }}
         >
-          <img src="/flower.png" alt="Flower 2020" />
+          <img src="{base}/flower.png" alt="Flower 2020" />
         </div>
       {/if}
 
