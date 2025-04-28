@@ -4,10 +4,10 @@
     import { base } from '$app/paths';
   
     let pages = [
-      { url: `${base}/landing`, title: 'Landing' },
+      { url: `${base}/`, title: 'Landing' },
       { url: `${base}/chapter1`, title: 'Chapter 1' },
       { url: `${base}/chapter2`, title: 'Chapter 2' },
-      { url: `${base}/`, title: 'Chapter 2, Part 2' },
+      { url: `${base}/chapter2-2`, title: 'Chapter 2, Part 2' },
       { url: `${base}/missingdata`, title: 'Missing Data' }
     ];
   
