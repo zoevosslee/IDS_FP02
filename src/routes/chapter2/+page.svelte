@@ -270,10 +270,10 @@
   </svelte:head>
   
   <div id="home-page">
-      <div class="text-content">
-        <h1>Rent is a Trap!</h1>
-        <h2>By Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, Zoe Voss Lee</h2>
-      </div>
+    <div class="text-content">
+      <h1>Rent is a Trap!</h1>
+      <h2>By Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, Zoe Voss Lee</h2>
+    </div>
     <div class="scroller-container">
   
       <!-- From svelte-scroller tutorial -->
@@ -443,6 +443,11 @@
             </section>
           </div>
         </Scroller>
+      </div>
+      <div class="next-chapter-link">
+        <a href="/index">
+          ↓ Chapter 2 Continued: Data Explorer
+        </a>
       </div>
     <!-- end of content from svelte-scroller tutorial -->
     </div>

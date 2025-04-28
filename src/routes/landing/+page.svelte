@@ -76,7 +76,7 @@
   background: url('/protest.jpg') no-repeat center center fixed;
   background-size: cover;
   width: 100%;
-  min-height: 300vh;
+  min-height: 250vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;

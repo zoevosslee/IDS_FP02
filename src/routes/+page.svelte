@@ -673,6 +673,12 @@ map.moveLayer('highlight-layer');
     <p>Building & Property Violations: <a href=https://data.boston.gov/dataset/building-and-property-violations1 target=blank>Analyze Boston</a></p>
     <p>Neighborhood Boundaries Approximated to Census Tracts: <a href=https://bostonopendata-boston.opendata.arcgis.com/datasets/boston::boston-neighborhood-boundaries-approximated-by-2020-census-block-groups/about target=blank>BostonMap</p>
    </div>
+   <div class="next-chapter-link">
+    <br><br>
+    <a href="/missingdata">
+      ↓ Chapter 3: Missing Data
+    </a>
+  </div>
 </div>
 
 
@@ -775,11 +781,6 @@ map.moveLayer('highlight-layer');
   100% { transform: rotate(360deg); }
 }
 
-.container {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 2rem;
-}
 
 
 

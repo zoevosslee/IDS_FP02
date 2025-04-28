@@ -553,6 +553,14 @@ opacity="1"
               </div>
             {/if}
         </div>
+        <div class="final-scrolly-box">
+            <h5>
+              From 1990 to 2020, Boston’s police budget grew by over $180 million—<br>
+              even as rent burden rose from 28% to 46% of households.<br><br>
+              Whose safety is being prioritized?<br>
+              What are the stories behind these numbers?
+            </h5>
+          </div>
         <div class="steps">
             <div class="step" data-year="1990" data-phase="police"></div>
             <div class="step" data-year="1990" data-phase="rent"></div>
@@ -563,12 +571,15 @@ opacity="1"
             <div class="step" data-year="2020" data-phase="police"></div>
             <div class="step" data-year="2020" data-phase="rent"></div>
           </div>
+
+          
+          
           
 
           
         </div> <!-- .chart -->
         <div class="next-chapter-link">
-            <a href="/index">
+            <a href="/chapter2">
               ↓ Chapter 2: Map Exploration
             </a>
           </div>
@@ -579,6 +590,34 @@ opacity="1"
   </div> <!-- #home-page -->
   
   <style>
+
+.next-chapter-link{
+  margin-top: 40rem; /* 👈 Add this to push it down */
+  text-align: center;
+  font-family: 'Utendo', sans-serif;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 4rem;
+}
+
+
+.final-scrolly-box {
+  position: absolute;
+  top: 4700px; /* 👈 tweak this based on how tall your chart actually is */
+  justify-content:center;
+  transform: translateX(-50%);
+  width: 100%;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 12px;
+  font-family: 'Utendo', sans-serif;
+  font-size: 1.2rem;
+  color: #A12624;
+  text-align: center;
+  opacity: 0;
+  animation: fadeSlideUp 1.5s ease forwards;
+}
+
 
 .chart-explainer {
   width: 100%;
