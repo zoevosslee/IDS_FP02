@@ -8,7 +8,8 @@
       { url: '/chapter2', title: 'Chapter 2' },
       { url: '/', title: 'Interactive Visualization' },
       { url: '/writeup', title: 'Write Up' },
-      { url: '/plan', title: 'Project Plan' }
+      { url: '/plan', title: 'Project Plan' },
+      { url: '/missingdata', title: 'Missing Data' }
     ];
   
     let menuOpen = false;
