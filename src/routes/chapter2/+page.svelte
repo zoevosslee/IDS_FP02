@@ -49,12 +49,12 @@
       scrollerMapLoaded = true;
       console.log("Map has loaded!");
   
-      redlining = await d3.json('/data/mappinginequality.json');
-      neighborhoods = await d3.json('/data/bpda_neighborhood_boundaries.json');
-      points311 = await d3.json('/data/311_points.json');
-      pointsViolations = await d3.json('/data/violations_points.json');
-      rentBurden = await d3.json('/data/rentburden_neighborhood2023.json');
-      investorPurchases = await d3.json('/data/sales_by_neighborhood_centroids.geojson');
+      redlining = await d3.json(`${base}/data/mappinginequality.json`);
+      neighborhoods = await d3.json(`${base}/data/bpda_neighborhood_boundaries.json`);
+      points311 = await d3.json(`${base}/data/311_points.json`);
+      pointsViolations = await d3.json(`${base}/data/violations_points.json`);
+      rentBurden = await d3.json(`${base}/data/rentburden_neighborhood2023.json`);
+      investorPurchases = await d3.json(`${base}/data/sales_by_neighborhood_centroids.geojson`);
 
       scrollerMap.addSource('rentBurden', {
         type: 'geojson',

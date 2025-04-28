@@ -307,7 +307,7 @@ map.addLayer({
 // adding points
 map.addSource('points-311', {
   type: 'geojson',
-  data: '/data/points_311_2015.geojson' 
+  data: `${base}/data/points_311_2015.geojson` 
 });
 
 map.addLayer({
@@ -331,7 +331,7 @@ map.addLayer({
 // Terrain 2 points
 map.addSource('points-terrain2', {
   type: 'geojson',
-  data: '/data/points_dem2_finalfinal.geojson'
+  data: `${base}/data/points_dem2_finalfinal.geojson`
 });
 
 map.addLayer({
@@ -348,7 +348,7 @@ map.addLayer({
 // Terrain 3 points
 map.addSource('points-terrain3', {
   type: 'geojson',
-  data: '/data/points_311_2023_final.geojson'
+  data: `${base}/data/points_311_2023_final.geojson`
 });
 
 map.addLayer({
@@ -365,7 +365,7 @@ map.addLayer({
 // Terrain 4 points
 map.addSource('points-terrain4', {
   type: 'geojson',
-  data: '/data/points_violations_2023_final.geojson'
+  data: `${base}/data/points_violations_2023_final.geojson`
 });
 
 map.addLayer({
@@ -509,9 +509,9 @@ for (const layerName of pointLayers) {
 
 
 
-    const data2023 = await d3.json('/data/merged2023_finalfinal.geojson');
-    const data2015 = await d3.json('/data/merged2015_final.geojson');
-    const neighborhoods = await d3.json('/data/bpda_neighborhood_boundaries.json');
+    const data2023 = await d3.json(`${base}/data/merged2023_finalfinal.geojson`);
+    const data2015 = await d3.json(`${base}/data/merged2015_final.geojson`);
+    const neighborhoods = await d3.json(`${base}/data/bpda_neighborhood_boundaries.json`);
 
     ['BachelorOrHigher2015', 'MedianIncome2015', 'White2015', 'RentBurden2015'].forEach(field => assignQuartiles(data2015.features, field));
     ['BachelorOrHigher2023', 'MedianIncome2023', 'White2023', 'RentBurden2023'].forEach(field => assignQuartiles(data2023.features, field));
