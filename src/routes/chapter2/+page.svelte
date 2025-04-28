@@ -510,7 +510,7 @@
       }
   
     .scroller-container {
-      pointer-events: auto;
+      pointer-events: none;
     }
   
     /* #scrollerNeighborhoods path {
