@@ -16,7 +16,6 @@
 
   let loading = true;
 
-  let loading = true;
 
   let selectedYear = 2015;
   let selectedFeature = null; // Initialize selectedFeature to null
@@ -35,16 +34,6 @@
     rentBurden: false
   };
 
-  const terrainSources = {
-  terrain1: {
-    2015: 'custom-dem',
-    2023: 'custom-dem-3'
-  },
-  terrain2: {
-    2015: 'custom-dem-2',
-    2023: 'custom-dem-4'
-  },
-};
 
   let policeInd = 'reqs';
   let terrainVisible = true;
@@ -60,9 +49,6 @@
   },
 };
 
-
-  let policeInd = 'reqs';
-  let terrainVisible = true;
 
   function assignQuartiles(features, fieldName) {
     const values = features.map(f => f.properties[fieldName]).filter(v => typeof v === 'number' && !isNaN(v)).sort((a, b) => a - b);
