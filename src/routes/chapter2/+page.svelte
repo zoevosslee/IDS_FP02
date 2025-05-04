@@ -6,6 +6,7 @@
     import * as d3 from "d3";
     import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
     import Scroller from '@sveltejs/svelte-scroller';
+    import { base } from '$app/paths';
   
   
     /* vars from svelte-scroller tutorial (maybe remove some later) */
@@ -48,12 +49,12 @@
       scrollerMapLoaded = true;
       console.log("Map has loaded!");
   
-      redlining = await d3.json('/data/mappinginequality.json');
-      neighborhoods = await d3.json('/data/bpda_neighborhood_boundaries.json');
-      points311 = await d3.json('/data/311_points.json');
-      pointsViolations = await d3.json('/data/violations_points.json');
-      rentBurden = await d3.json('/data/rentburden_neighborhood2023.json');
-      investorPurchases = await d3.json('/data/sales_by_neighborhood_centroids.geojson');
+      redlining = await d3.json(`${base}/data/mappinginequality.json`);
+      neighborhoods = await d3.json(`${base}/data/bpda_neighborhood_boundaries.json`);
+      points311 = await d3.json(`${base}/data/311_points.json`);
+      pointsViolations = await d3.json(`${base}/data/violations_points.json`);
+      rentBurden = await d3.json(`${base}/data/rentburden_neighborhood2023.json`);
+      investorPurchases = await d3.json(`${base}/data/sales_by_neighborhood_centroids.geojson`);
 
       scrollerMap.addSource('rentBurden', {
         type: 'geojson',
@@ -444,12 +445,12 @@
           </div>
         </Scroller>
       </div>
-      <div class="next-chapter-link">
-        <a href="/">
-          ↓ Chapter 2, Part 2: Data Explorer
-        </a>
-      </div>
     <!-- end of content from svelte-scroller tutorial -->
+    </div>
+    <div class="next-chapter-link">
+      <a href="{base}/chapter2-2">
+        ↓ Chapter 2, Part 2: Data Explorer
+      </a>
     </div>
   </div>
   
@@ -585,7 +586,7 @@
       }
   
     .scroller-container {
-      pointer-events: auto;
+      pointer-events: none;
     }
   
     /* #scrollerNeighborhoods path {

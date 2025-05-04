@@ -1,6 +1,7 @@
 <script>
     import '../app.css';
     import { page } from '$app/stores';
+    import { base } from '$app/paths';
   
     let pages = [
       { url: '/landing', title: 'Landing' },
