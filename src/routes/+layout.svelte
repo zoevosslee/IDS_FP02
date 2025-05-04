@@ -7,7 +7,8 @@
       { url: '/chapter1', title: 'Chapter 1' },
       { url: '/chapter2', title: 'Chapter 2' },
       { url: '/', title: 'Chapter 2, Part 2' },
-      { url: '/missingdata', title: 'Missing Data' }
+      { url: '/missingdata', title: 'Missing Data' },
+      { url: '/flowchart', title: 'Flow Chart' }
     ];
   
     let menuOpen = false;

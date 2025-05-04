@@ -124,7 +124,12 @@ let data = [
     2010: 48,
     2020: 46
   };
+
+    let evictionRates = {
+      1990: 0.05,
+    }
   
+    
 
   
     let spreadScale = scaleLinear()
@@ -578,6 +583,8 @@ opacity="1"
 
           
         </div> <!-- .chart -->
+
+
         <div class="next-chapter-link">
             <a href="/chapter2">
               ↓ Chapter 2: Map Exploration

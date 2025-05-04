@@ -672,6 +672,8 @@
       gap: 16px; /* space between the two legends */
       align-items: flex-start;
     }
+
+    
     
   
   </style>
