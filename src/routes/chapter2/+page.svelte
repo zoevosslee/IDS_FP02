@@ -29,6 +29,7 @@
     let scrollerMapViewChanged = 0;
     let selectedNeighborhood = null;
     let scrollerMapLoaded = false;
+    let arrestDensity = null;
   
     $: scrollerMap?.on("move", evt => scrollerMapViewChanged++);
 
@@ -55,6 +56,7 @@
       pointsViolations = await d3.json(`${base}/data/violations_points.json`);
       rentBurden = await d3.json(`${base}/data/rentburden_neighborhood2023.json`);
       investorPurchases = await d3.json(`${base}/data/sales_by_neighborhood_centroids.geojson`);
+      arrestDensity = await d3.json(`${base}/data/arrest_density4.geojson`);
 
       scrollerMap.addSource('rentBurden', {
         type: 'geojson',
@@ -69,6 +71,11 @@
       scrollerMap.addSource('points311', {
         type: 'geojson',
         data: points311
+      });
+
+      scrollerMap.addSource('arrestDensity', {
+        type: 'geojson',
+        data: arrestDensity
       });
 
       scrollerMap.addLayer({
@@ -99,12 +106,12 @@
             'interpolate',
             ['linear'],
             ['get', 'investor_sales_pct'],
-            0, 2,
-            0.05, 4,
-            0.20, 6,
-            0.30, 8,
-            0.40, 10,
-            1, 12
+            0, 4,
+            0.05, 6,
+            0.20, 8,
+            0.30, 10,
+            0.40, 12,
+            1, 14
           ],
           'circle-color': '#8790BC',
           'circle-opacity': 0
@@ -112,13 +119,32 @@
       });
 
       scrollerMap.addLayer({
+        'id': 'choroplethArrests',
+        'type': 'fill',
+        'source': 'arrestDensity',
+        'paint': {
+          'fill-color': [
+            'interpolate',
+            ['linear'],
+            ['get', 'arrest_density'],
+            0, '#E3BFBE',
+            40, '#D6A2A1',
+            80, '#CA8584',
+            120, '#B55554',
+            160, '#A12624'
+          ],
+          'fill-opacity': 0
+        }
+      });
+      
+      scrollerMap.addLayer({
         'id': 'heatmap311',
         'type': 'heatmap',
         'source': 'points311',
         'paint': {
           'heatmap-weight': 1,
           'heatmap-intensity': 1,
-          'heatmap-radius': 3,
+          'heatmap-radius': 2,
           'heatmap-opacity': 0,
           'heatmap-color': [
             'interpolate',
@@ -147,7 +173,7 @@
         'paint': {
           'heatmap-weight': 1,
           'heatmap-intensity': 1,
-          'heatmap-radius': 3,
+          'heatmap-radius': 1,
           'heatmap-opacity': 0, 
           'heatmap-color': [
             'interpolate',
@@ -175,11 +201,18 @@
     ];
 
     $: if (scrollerMapLoaded && count !== undefined && scrollerMap) {
-      if (scrollerMap.getLayer('heatmap311') && scrollerMap.getLayer('heatmapViolations')) {
+      if (scrollerMap.getLayer('choroplethArrests')) {
         if (index === 2) {
+          scrollerMap.setPaintProperty('choroplethArrests', 'fill-opacity', 1);
+        } else {
+          scrollerMap.setPaintProperty('choroplethArrests', 'fill-opacity', 0);
+        }
+      }
+      if (scrollerMap.getLayer('heatmap311') && scrollerMap.getLayer('heatmapViolations')) {
+        if (index === 3) {
           scrollerMap.setPaintProperty('heatmap311', 'heatmap-opacity', 0.8);
           scrollerMap.setPaintProperty('heatmapViolations', 'heatmap-opacity', 0);
-        } else if (index === 3) {
+        } else if (index === 4) {
           scrollerMap.setPaintProperty('heatmap311', 'heatmap-opacity', 0);
           scrollerMap.setPaintProperty('heatmapViolations', 'heatmap-opacity', 0.8);
         } else {
@@ -416,9 +449,25 @@
                 </ul>  
               </div>             
             </section>
-            <section><p style="font-size: 20px;">311 Service Requests Assigned to Police</p>
-              <p>Scholars like Ruth Wilson Gilmore (2007) have argued that criminalization serves as a tool to justify state violence and the containment of marginalized populations. By criminalizing certain behaviors and populations, police provide real estate developers with justification for urban renewal efforts that erase community histories and identities.
-                We have noticed that, across Boston, 311 service requests for noise complaints increased drastically since 2015. The increase is particularly stark in historically redlined, currently gentrifying neighborhoods such as A, B, and C. 
+            <section><p style="font-size: 20px;">Arrests per 1000 (2020-2024))</p>
+              <p>Scholars like Ruth Wilson Gilmore (2007) have argued that criminalization serves as a tool to justify state violence and the containment of marginalized populations. 
+                By criminalizing certain behaviors and populations, police provide real estate developers with justification for urban renewal efforts that erase community histories and identities.
+                We have noticed that, across Boston, 311 service requests for noise complaints increased drastically since 2015. The increase is particularly stark in historically redlined, currently gentrifying neighborhoods such as North End. 
+                </p>
+                <ul class="legend">
+                  <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of 311 calls</p></li>
+                  <li style="--color: blue"><span class="swatch"></span><p></p></li>
+                  <li style="--color: cyan"><span class="swatch"></span><p></p></li>
+                  <li style="--color: lime"><span class="swatch"></span><p></p></li>
+                  <li style="--color: yellow"><span class="swatch"></span><p></p></li>
+                  <li style="--color: red"><span class="swatch"></span><p>Highest density of 311 calls</p></li>
+                </ul>
+                
+            </section>
+            <section><p style="font-size: 20px;">311 Service Requests Assigned to Police (2015-2024)</p>
+              <p>Scholars like Ruth Wilson Gilmore (2007) have argued that criminalization serves as a tool to justify state violence and the containment of marginalized populations. 
+                By criminalizing certain behaviors and populations, police provide real estate developers with justification for urban renewal efforts that erase community histories and identities.
+                We have noticed that, across Boston, 311 service requests for noise complaints increased drastically since 2015. The increase is particularly stark in historically redlined, currently gentrifying neighborhoods such as North End. 
                 </p>
                 <ul class="legend">
                   <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of 311 calls</p></li>
@@ -431,7 +480,7 @@
                 
             </section>
             <section><p style="font-size: 20px;">Building and Property Violations</p>
-              <p>Buildings & property violations seem to be on the rise, showing a similar pattern. These non-criminal, auxiliary policing is more clearly associated with early-stage urban “renewal” than already wealthy neighborhoods.</p>
+              <p>Buildings & property violations seem to be on the rise, showing a similar pattern. These non-criminal, auxiliary policing is more clearly associated with early-stage urban “renewal” than already wealthy neighborhoods, such as North End, East Boston, and Dorchester.</p>
               <ul class="legend">
                 <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of violations</p></li>
                 <li style="--color: purple"><span class="swatch"></span><p></p></li>
