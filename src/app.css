@@ -30,6 +30,20 @@
   
 /* importing Utendo */
 
+a {
+  color: var(--red-medium);
+  text-decoration: underline;
+}
+
+a:visited {
+  color: var(--red-medium);
+}
+
+a:hover {
+  color: var(--red); /* Optional: make it bolder red on hover */
+}
+
+
 @font-face {
     font-family: 'Utendo';
     src: url('/fonts/utendo/Utendo-Black.ttf') format('truetype');
@@ -153,7 +167,7 @@
     font-family: 'Utendo', sans-serif;
     font-size: 18px;
     font-style: normal;
-    font-weight: 700;
+    font-weight: 550;
     line-height: normal;
     margin: 0;
     padding:0;
@@ -183,7 +197,7 @@
     margin: 0;
     padding:0;
   }
-  
+
   p {
     color: #616266;
     font-family: 'Utendo', sans-serif;
@@ -294,6 +308,35 @@
   transform: scale(1.05);
 }
 
+.next-chapter-link {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-family: 'Utendo', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--red);
+  animation: bounceArrow 2s infinite;
+  z-index: 1000;
+}
+
+.next-chapter-link a {
+  text-decoration: none;
+  color: var(--red);
+}
+
+.next-chapter-link a:hover {
+  text-decoration: underline;
+}
+
+@keyframes bounceArrow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
   #three-canvas {
     position: absolute;
     top: 0;
@@ -325,4 +368,3 @@
   
   
   
-

@@ -6,6 +6,7 @@
     import * as d3 from "d3";
     import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
     import Scroller from '@sveltejs/svelte-scroller';
+    import { base } from '$app/paths';
   
   
     /* vars from svelte-scroller tutorial (maybe remove some later) */
@@ -28,6 +29,8 @@
     let scrollerMapViewChanged = 0;
     let selectedNeighborhood = null;
     let scrollerMapLoaded = false;
+    let arrestDensity = null;
+    let evictions = null;
   
     $: scrollerMap?.on("move", evt => scrollerMapViewChanged++);
 
@@ -48,12 +51,14 @@
       scrollerMapLoaded = true;
       console.log("Map has loaded!");
   
-      redlining = await d3.json('/data/mappinginequality.json');
-      neighborhoods = await d3.json('/data/bpda_neighborhood_boundaries.json');
-      points311 = await d3.json('/data/311_points.json');
-      pointsViolations = await d3.json('/data/violations_points.json');
-      rentBurden = await d3.json('/data/rentburden_neighborhood2023.json');
-      investorPurchases = await d3.json('/data/sales_by_neighborhood_centroids.geojson');
+      redlining = await d3.json(`${base}/data/mappinginequality.json`);
+      neighborhoods = await d3.json(`${base}/data/bpda_neighborhood_boundaries.json`);
+      points311 = await d3.json(`${base}/data/311_points.json`);
+      pointsViolations = await d3.json(`${base}/data/violations_points.json`);
+      rentBurden = await d3.json(`${base}/data/rentburden_neighborhood2023.json`);
+      investorPurchases = await d3.json(`${base}/data/sales_by_neighborhood_centroids.geojson`);
+      arrestDensity = await d3.json(`${base}/data/arrest_density4.geojson`);
+      evictions = await d3.json(`${base}/data/eviction_points_boston.geojson`);
 
       scrollerMap.addSource('rentBurden', {
         type: 'geojson',
@@ -68,6 +73,16 @@
       scrollerMap.addSource('points311', {
         type: 'geojson',
         data: points311
+      });
+
+      scrollerMap.addSource('evictions', {
+        type: 'geojson',
+        data: evictions
+      });
+
+      scrollerMap.addSource('arrestDensity', {
+        type: 'geojson',
+        data: arrestDensity
       });
 
       scrollerMap.addLayer({
@@ -98,12 +113,12 @@
             'interpolate',
             ['linear'],
             ['get', 'investor_sales_pct'],
-            0, 2,
-            0.05, 4,
-            0.20, 6,
-            0.30, 8,
-            0.40, 10,
-            1, 12
+            0, 4,
+            0.05, 6,
+            0.20, 8,
+            0.30, 10,
+            0.40, 12,
+            1, 14
           ],
           'circle-color': '#8790BC',
           'circle-opacity': 0
@@ -111,13 +126,32 @@
       });
 
       scrollerMap.addLayer({
+        'id': 'choroplethArrests',
+        'type': 'fill',
+        'source': 'arrestDensity',
+        'paint': {
+          'fill-color': [
+            'interpolate',
+            ['linear'],
+            ['get', 'arrest_density'],
+            0, '#E3BFBE',
+            40, '#D6A2A1',
+            80, '#CA8584',
+            120, '#B55554',
+            160, '#A12624'
+          ],
+          'fill-opacity': 0
+        }
+      });
+      
+      scrollerMap.addLayer({
         'id': 'heatmap311',
         'type': 'heatmap',
         'source': 'points311',
         'paint': {
           'heatmap-weight': 1,
           'heatmap-intensity': 1,
-          'heatmap-radius': 3,
+          'heatmap-radius': ["interpolate", ['exponential', 2], ['zoom'], 10, 2, 15, 64 ],
           'heatmap-opacity': 0,
           'heatmap-color': [
             'interpolate',
@@ -146,7 +180,7 @@
         'paint': {
           'heatmap-weight': 1,
           'heatmap-intensity': 1,
-          'heatmap-radius': 3,
+          'heatmap-radius': ["interpolate", ['exponential', 2], ['zoom'], 10, 1, 15, 32 ],
           'heatmap-opacity': 0, 
           'heatmap-color': [
             'interpolate',
@@ -162,14 +196,53 @@
         },
       });
   
+
+
+    scrollerMap.addLayer({
+      'id': 'heatmapEvictions',
+      'type': 'heatmap',
+      'source': 'evictions',
+      'paint': {
+        'heatmap-weight': 1,
+        'heatmap-intensity': 1,
+        'heatmap-radius': 2,
+        'heatmap-opacity': 0, 
+        'heatmap-color': [
+          'interpolate',
+          ['linear'],
+          ['heatmap-density'],
+          0, 'rgba(0,0,255,0)',
+          0.2, 'blue',
+          0.4, 'cyan',
+          0.6, 'lime',
+          0.8, 'yellow',
+          1, 'red'
+        ]
+      },
     });
+  });
+    
+    let rentBurdenLabels = [
+      { label: '25%', color: '#E3BFBE' },
+      { label: '35%', color: '#D6A2A1' },
+      { label: '45%', color: '#CA8584' },
+      { label: '55%', color: '#B55554' },
+      { label: '65%', color: '#A12624' }
+    ];
 
     $: if (scrollerMapLoaded && count !== undefined && scrollerMap) {
-      if (scrollerMap.getLayer('heatmap311') && scrollerMap.getLayer('heatmapViolations')) {
+      if (scrollerMap.getLayer('choroplethArrests')) {
         if (index === 2) {
+          scrollerMap.setPaintProperty('choroplethArrests', 'fill-opacity', 1);
+        } else {
+          scrollerMap.setPaintProperty('choroplethArrests', 'fill-opacity', 0);
+        }
+      }
+      if (scrollerMap.getLayer('heatmap311') && scrollerMap.getLayer('heatmapViolations')) {
+        if (index === 3) {
           scrollerMap.setPaintProperty('heatmap311', 'heatmap-opacity', 0.8);
           scrollerMap.setPaintProperty('heatmapViolations', 'heatmap-opacity', 0);
-        } else if (index === 3) {
+        } else if (index === 4) {
           scrollerMap.setPaintProperty('heatmap311', 'heatmap-opacity', 0);
           scrollerMap.setPaintProperty('heatmapViolations', 'heatmap-opacity', 0.8);
         } else {
@@ -184,6 +257,13 @@
         } else {
           scrollerMap.setPaintProperty('choroplethRentBurden', 'fill-opacity', 0);
           scrollerMap.setPaintProperty('circleInvestorPurchases', 'circle-opacity', 0);
+        }
+      }
+      if (scrollerMap.getLayer('heatmapEvictions')) {
+        if (index === 5) {
+          scrollerMap.setPaintProperty('heatmapEvictions', 'heatmap-opacity', 0.8);
+        } else {
+          scrollerMap.setPaintProperty('heatmapEvictions', 'heatmap-opacity', 0);
         }
       }
     }
@@ -261,10 +341,10 @@
   </svelte:head>
   
   <div id="home-page">
-      <div class="text-content">
-        <h1>Rent is a Trap!</h1>
-        <h2>By Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, Zoe Voss Lee</h2>
-      </div>
+    <div class="text-content">
+      <h1>Rent is a Trap!</h1>
+      <h2>By Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, Zoe Voss Lee</h2>
+    </div>
     <div class="scroller-container">
   
       <!-- From svelte-scroller tutorial -->
@@ -279,7 +359,7 @@
             bind:progress
         >
           <div slot="background">
-            <p style="font-size:small;">these sliders are for debug -Nicola</p>
+            <!-- <p style="font-size:small;">these sliders are for debug -Nicola</p>
             <p>current section: <strong>{index + 1}/{count}</strong></p>
             <progress value="{count ? (index + 1) / count : 0}"></progress>
     
@@ -287,7 +367,7 @@
             <progress value={offset || 0}></progress>
     
             <p>total progress</p>
-            <progress value={progress || 0}></progress>
+            <progress value={progress || 0}></progress> -->
             <div style="position: relative; flex-grow: 1;">
 
               <div id="scrollerMap">
@@ -350,30 +430,130 @@
             </div>
           </div>
           <div slot="foreground" style="padding: 0 0 0 50%;">
-            <section>History of Redlining in Boston
+            <section><p style="font-size: 20px;">History of Redlining in Boston</p>
               <p>
               Redlining created barriers for African American and immigrant families in neighborhoods considered “hazardous,” “undesirable,” or “inharmonious” to access mortgage financing. Communities of historically redlined neighborhoods continue to live and negotiate with the long-term impacts of systemic exclusion, preserving what is precious to them.</p>
+              <div>
+                <ul class="legend">
+                  <li style="--color: #76a865; opacity: 0.5">
+                    <span class="swatch"></span>
+                    <p>"A: Best"</p>
+                  </li>
+                  <li style="--color: #7cb5bd; opacity: 0.5">
+                    <span class="swatch"></span>
+                    <p>"B: Still Desirable"</p>
+                  </li>
+                  <li style="--color: #ffff00; opacity: 0.5">
+                    <span class="swatch"></span>
+                    <p>"C: Definitely Declining"</p>
+                  </li>
+                  <li style="--color: #d9838d; opacity: 0.5">
+                    <span class="swatch"></span>
+                    <p>"D: Hazardous"</p>
+                  </li>
+                  <li style="--color: #000000; opacity: 0.5">
+                    <span class="swatch"></span>
+                    <p>"Commercial"</p>
+                  </li>
+                </ul>
+              </div>
             </section>
-            <section>Investor Purchase & Community Rent Burden
+            <section><p style="font-size: 20px;">Investor Purchase & Community Rent Burden</p>
               <p>Yet, across Boston, we see a growing problem of rising investor purchase rate, exacerbating rent burden. This correlation is particularly true since the financial crisis in historically redlined neighborhoods such as Mattapan (2023 Rent Burden = 64%; Investor Sales 100%), South Boston Waterfront (2023 Rent Burden = 39%; Investor Sales = 31%), North End (2023 Rent Burden = 34%; Investor Sales = 26%). 
               </p>
               <p>Along with the increase of rent burden, we also observe significant change in the neighborhood demographics, especially with education level, a key indicator of gentrification.
                 From 2015 to 2023, there has been a 25% increase in the population that holds a Bachelor's degree or higher in the entirety of Suffolk county.
                 While housing is becoming an asset class for corporations, longtime residents are forced out.
                 </p>
+                <div class="legend-container">
+                <ul class="legend">
+                  <p>Rent Burden</p>
+                  {#each rentBurdenLabels as d}
+                    <li style="--color: {d.color}">
+                      <span class="swatch"></span>
+                      <p>{d.label}</p>
+                    </li>
+                  {/each}
+                </ul> 
+                <ul class="legend">
+                  <p>Investor Purchases</p>
+                  <li><span class="circle-swatch" style="width:4px; height:4px;"></span><p>0%</p></li>
+                  <li><span class="circle-swatch" style="width:8px; height:8px;"></span><p>5%</p></li>
+                  <li><span class="circle-swatch" style="width:12px; height:12px;"></span><p>20%</p></li>
+                  <li><span class="circle-swatch" style="width:16px; height:16px;"></span><p>30%</p></li>
+                  <li><span class="circle-swatch" style="width:20px; height:20px;"></span><p>40%</p></li>
+                  <li><span class="circle-swatch" style="width:24px; height:24px;"></span><p>100%</p></li>
+                </ul>  
+              </div>             
             </section>
-            <section>311 Service Requests Assigned to Police
-              <p>Scholars like Ruth Wilson Gilmore (2007) have argued that criminalization serves as a tool to justify state violence and the containment of marginalized populations. By criminalizing certain behaviors and populations, police provide real estate developers with justification for urban renewal efforts that erase community histories and identities.
-                We have noticed that, across Boston, 311 service requests for noise complaints increased drastically since 2015. The increase is particularly stark in historically redlined, currently gentrifying neighborhoods such as A, B, and C. 
+            <section><p style="font-size: 20px;">Arrests per 1000 (2020-2024)</p>
+              <p>Scholars like <a href="https://www.ucpress.edu/books/golden-gulag/paper">Ruth Wilson Gilmore (2007)</a> have argued that criminalization serves as a tool to justify state violence and the containment of marginalized populations. 
+                By criminalizing certain behaviors and populations, police provide real estate developers with justification for urban renewal efforts that erase community histories and identities.
+                The disproportionate arrest density is particularly stark in neighborhoods where <a href="https://www.bostonplans.org/real-estate/urban-renewal/overview">Boston's Urban Renewal</a> plans are extended, such as Downtown, West End, and Roxbury, in addition to neighborhoods with large Black and migrant populations, such as Mattapan and Dorchester.
                 </p>
+                <ul class="legend">
+                  <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of 311 calls</p></li>
+                  <li style="--color: blue"><span class="swatch"></span><p></p></li>
+                  <li style="--color: cyan"><span class="swatch"></span><p></p></li>
+                  <li style="--color: lime"><span class="swatch"></span><p></p></li>
+                  <li style="--color: yellow"><span class="swatch"></span><p></p></li>
+                  <li style="--color: red"><span class="swatch"></span><p>Highest density of 311 calls</p></li>
+                </ul>
+                
             </section>
-            <section>Building and Property Violations
-              <p>Buildings & property violations seem to be on the rise, showing a similar pattern. These non-criminal, auxiliary policing is more clearly associated with early-stage urban “renewal” than already wealthy neighborhoods.</p>
+            <section><p style="font-size: 20px;">311 Service Requests Assigned to Police (2015-2024)</p>
+              <p>Nuisance ordinances are framed as neutral regulatory measures intended to preserve public order, yet their application disproportionately affects Black and low-income communities. 
+                By labeling properties as “nuisances” due to alleged criminal activity, excessive noise, or even repeated police calls, municipalities establish legal grounds for eviction and redevelopment. 
+                As <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/anti.12792">Terra Graziani et al. (2021)</a> argue, these laws operate as “borderland” mechanisms, defining and reshaping urban space to facilitate capital investment. 
+                </p>
+                <p>
+                We have noticed that, across Boston, 311 service requests for noise complaints increased drastically since 2015. North End, a historically redlined neighborhood currently undergoing urban renewal, demonstrates a low arrest rate, but a high density of 311 noise complaint requests. 
+                </p>
+                <ul class="legend">
+                  <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of 311 calls</p></li>
+                  <li style="--color: blue"><span class="swatch"></span><p></p></li>
+                  <li style="--color: cyan"><span class="swatch"></span><p></p></li>
+                  <li style="--color: lime"><span class="swatch"></span><p></p></li>
+                  <li style="--color: yellow"><span class="swatch"></span><p></p></li>
+                  <li style="--color: red"><span class="swatch"></span><p>Highest density of 311 calls</p></li>
+                </ul>
+                
+            </section>
+            <section><p style="font-size: 20px;">Building and Property Violations</p>
+              <p>Buildings & property violations seem to be on the rise, showing a similar pattern. These non-criminal, auxiliary policing is more clearly associated with early-stage urban “renewal” than already wealthy neighborhoods, such as North End, East Boston, and Dorchester.</p>
+              <ul class="legend">
+                <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of violations</p></li>
+                <li style="--color: purple"><span class="swatch"></span><p></p></li>
+                <li style="--color: magenta"><span class="swatch"></span><p></p></li>
+                <li style="--color: orange"><span class="swatch"></span><p></p></li>
+                <li style="--color: gold"><span class="swatch"></span><p></p></li>
+                <li style="--color: red"><span class="swatch"></span><p>Highest density of violations</p></li>
+              </ul>
+              
+            </section>
+            <section><p style="font-size: 20px;">Eviction filings (2020-2022)</p>
+              <p>We observe a correlation between arrest rate and eviction filings, in neighborhoods such as Downtown, West End, and Roxbury.
+                The eviction filings are also concentrated in neighborhoods with high rates of 311 requests and building & property violations, such as Dorchester and East Boston. 
+              </p>
+                <ul class="legend">
+                  <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of eviction filings</p></li>
+                  <li style="--color: blue"><span class="swatch"></span><p></p></li>
+                  <li style="--color: cyan"><span class="swatch"></span><p></p></li>
+                  <li style="--color: lime"><span class="swatch"></span><p></p></li>
+                  <li style="--color: yellow"><span class="swatch"></span><p></p></li>
+                  <li style="--color: red"><span class="swatch"></span><p>Highest density of eviction filings</p></li>
+                </ul>
+                
             </section>
           </div>
         </Scroller>
       </div>
     <!-- end of content from svelte-scroller tutorial -->
+    </div>
+    <div class="next-chapter-link">
+      <a href="{base}/chapter2-2">
+        ↓ Chapter 2, Part 2: Data Explorer
+      </a>
     </div>
   </div>
   
@@ -441,7 +621,7 @@
     flex: 1;
     width: calc(50% - 1em);
     height: 400px;
-    pointer-events: none;
+    pointer-events: auto;
     position: relative;
     z-index: 0;
   }
@@ -477,8 +657,7 @@
       
       [slot="background"] {
           background-color: rgba(255,62,0,0.05);
-          border-top: 2px solid #ff3e00;
-          border-bottom: 2px solid #ff3e00;
+
           font-size: 1.4em;
           overflow: hidden;
           padding: 1em;
@@ -503,14 +682,14 @@
       
       section {
           height: 80vh;
-          background-color: rgba(0,0,0,0.5);
+          /* background-color: rgba(255,62,0,0.05); */
           color: white;
           padding: 1em;
           margin: 0 0 2em 0;
       }
   
     .scroller-container {
-      pointer-events: auto;
+      pointer-events: none;
     }
   
     /* #scrollerNeighborhoods path {
@@ -550,6 +729,54 @@
       max-width: 300px;
       font-family: sans-serif;
     }
+
+    /* styling from... a template... */
+    .legend {
+      list-style: none;
+      padding: 10px;
+      margin: 20px 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      /* background-color: rgba(255,62,0,0.05); */
+    }
+
+    .legend li {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 14px;
+      font-style: normal;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .legend p {
+      margin: 0;
+      font-size: 14px; /* or whatever size you like */
+    }
+
+    .swatch {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      background-color: var(--color);
+      border-radius: 4px; /* or 50% for a circle */
+      border: 1px solid #ccc;
+    }
+
+    .circle-swatch {
+      display: inline-block;
+      background-color: #8790BC;
+      border: 1px solid #666;
+      border-radius: 50%;
+    }
+
+    .legend-container {
+      display: flex;
+      gap: 16px; /* space between the two legends */
+      align-items: flex-start;
+    }
+
     
     
   

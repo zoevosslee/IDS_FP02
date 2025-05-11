@@ -55,12 +55,13 @@
 <svelte:head>
   <title>Rent is a Trap!</title>
 </svelte:head>
+<div id="home-page">
 
 <div id="missing_data-page">
 
   <div class="container">
     <div class="text-content">
-        <h4>Rent is a Trap!</h4>
+      <h1>Rent is a Trap!</h1>
       <h2>By Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, Zoe Voss Lee</h2>
     </div>
 
@@ -91,6 +92,7 @@
       {/if}
     </div> <!-- ✅ now close .container correctly -->
   </div>
+  </div>
   
   
  <style>
@@ -105,12 +107,6 @@
         overflow-y: auto; /* allow vertical scroll! */
     }
 
-    .container {
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 2rem;
-        padding-bottom: 1.5rem;
-    }
 
     .tiles-wrapper {
         width: 100%;

@@ -2,6 +2,9 @@
     import { scaleLinear } from "d3-scale";
     import { line, curveBasis } from "d3-shape";
     import { onMount, onDestroy } from "svelte";
+    import { base } from '$app/paths';
+    import FlowchartEmbed from '$lib/FlowchartEmbed.svelte';
+
 
 let width = 800;
 let height = 4600;
@@ -124,7 +127,12 @@ let data = [
     2010: 48,
     2020: 46
   };
+
+    let evictionRates = {
+      1990: 0.05,
+    }
   
+    
 
   
     let spreadScale = scaleLinear()
@@ -178,7 +186,7 @@ let data = [
   let found = false;
 
   for (const { year } of yearPhases) {
-    const yTop = year === 1990 ? yScale(year) - 100 : yScale(year) - 200;
+    const yTop = year === 1990 ? yScale(year) + 100 : yScale(year) - 100;
     const yPoliceEnd = yTop + 400; // wider police window
 const yRentEnd = yPoliceEnd + 500; // wider rent window
 
@@ -249,14 +257,32 @@ const yRentEnd = yPoliceEnd + 500; // wider rent window
 
         </div>
         <div class="chart-explainer">
-            <p>
-This chart shows Boston’s annual operational police budget, sourced from the Boston Public Library Archives (1990–2006) and the City of Boston Budget Office (2007–2025). All dollar values are adjusted for inflation and shown in today’s dollars.
-Scrolling reveals how even as Boston’s police budget has steadily grown, often in the name of “public safety”, housing affordability has become increasingly precarious— with rates of rent burden growing to affect nearly half of all renters in 2020. 
-Amidst it all, communities have been fighting back. Their fates are not just numbers, nor deficit narratives.
-Hover over a flower to discover a story of community resistance.
 
-            </p>
-        </div>
+          
+            <div class="chart-description">
+              <p>
+                This chart shows Boston’s annual operational police budget, sourced from the Boston Public Library Archives (1990–2006) and the City of Boston Budget Office (2007–2025). All dollar values are adjusted for inflation and shown in today’s dollars. 
+                <br><br>
+                Even as Boston’s police budget has steadily grown—often in the name of "public safety"—housing affordability has become increasingly precarious, with rent burden rates affecting nearly half of all renters by 2020. 
+
+              </p>
+            </div>
+            <div class="explainer-grid">
+                <div class="explainer-item">
+                  <h3>1. Hover</h3>
+                  <p>Hover over a year to see Boston's police budget in today’s dollars.</p>
+                </div>
+                <div class="explainer-item">
+                  <h3>2. Watch for Flowers</h3>
+                  <p>Look out for flowers to discover moments of community resistance.</p>
+                </div>
+                <div class="explainer-item">
+                  <h3>3. Scroll Down</h3>
+                  <p>Scroll to see how Boston’s policing budget and rent burden have changed over time.</p>
+                </div>
+              </div>
+          </div>
+          
 
 
       </div>
@@ -363,15 +389,38 @@ opacity="1"
                   on:mouseout={() => (tooltipVisible = false)}
                 />
               {/each}
+
+
+
             </svg>
+
+            {#if hoveredFlowerImage1}
+            <div
+              class="side-image-box"
+              style="top: {hoveredFlower?.y - 40}px; left: 50%; transform: translateX(150px);"
+              >
+              {#if hoveredFlowerText}
+                <div class="hovered-text">
+                  {@html hoveredFlowerText}
+                </div>
+              {/if}
+              <div class="image-stack">
+                <img src={hoveredFlowerImage1} alt="First Image" />
+                {#if hoveredFlowerImage2}
+                  <img src={hoveredFlowerImage2} alt="Second Image" class="overlapping-image" />
+                {/if}
+              </div>
+            </div>
+          {/if}
+          
             {#if flower1993Visible}
             <div 
               class="flower-box" 
               style="top: {yScale(1993)}px; left: {centerX - 50}px; --rotate: -60deg;"
               on:mouseenter={() => {
                 hoveredFlower = { x: centerX - 50, y: yScale(1993) };
-                hoveredFlowerImage1 = "/parcelc2.jpeg";
-                hoveredFlowerImage2 = "/parcelc1.jpeg";
+                hoveredFlowerImage1 = `${base}/parcelc2.jpeg`;
+                hoveredFlowerImage2 = `${base}/parcelc1.jpeg`;
                 hoveredFlowerText = `
   <strong>1993: Parcel C Protests</strong><br><br>
   In the early 1990s, Boston’s Chinatown community organized a historic protest against Parcel C development. Residents and activists fought against the proposed construction of a parking garage that would have increased air pollution and displacement in their neighborhood. The Parcel C protests became a landmark moment for Asian American environmental justice organizing.<br><br>
@@ -390,7 +439,7 @@ opacity="1"
               
               
             >
-              <img src="/flower.png" alt="Flower 1993" />
+              <img src="{base}/flower.png" alt="Flower 1993" />
             </div>
           {/if}
           
@@ -402,8 +451,8 @@ opacity="1"
             style="top: {yScale(2011)}px; left: {centerX - 40}px; --rotate: -30deg;"
             on:mouseenter={() => {
               hoveredFlower = { x: centerX - 40, y: yScale(2011) };
-              hoveredFlowerImage1 = "/occupy1.png";
-              hoveredFlowerImage2 = "/occupy.png"; // ❗ only one image for now
+              hoveredFlowerImage1 = `${base}/occupy1.png`;
+              hoveredFlowerImage2 = `${base}/occupy.png`; // ❗ only one image for now
               hoveredFlowerText = `
             <strong>2011: Occupy Boston</strong><br><br>
             In the fall of 2011, activists, students, workers, and community members came together in Dewey Square as part of Occupy Boston—one of many local expressions of the global Occupy movement. The encampment challenged corporate power, economic inequality, and the growing unaffordability of life in the city.<br><br>
@@ -420,7 +469,7 @@ opacity="1"
               suppressScrollyBox = false;
             }}
           >
-            <img src="/flower.png" alt="Flower 2011" />
+            <img src="{base}/flower.png" alt="Flower 2011" />
           </div>
           {/if}
           
@@ -432,7 +481,7 @@ opacity="1"
             style="top: {yScale(2016)}px; left: {centerX + 60}px; --rotate: 10deg;"
             on:mouseenter={() => {
               hoveredFlower = { x: centerX + 60, y: yScale(2016) };
-              hoveredFlowerImage1 = "/2016.png";
+              hoveredFlowerImage1 = `${base}/2016.png`;
               hoveredFlowerImage2 = null; // ❗only one image for this one
               hoveredFlowerText = `
                 <strong>2016: Right to Remain Campaign</strong><br><br>
@@ -449,7 +498,7 @@ opacity="1"
               suppressScrollyBox = false;
             }}
           >
-            <img src="/flower.png" alt="Flower 2016" />
+            <img src="{base}/flower.png" alt="Flower 2016" />
           </div>
         {/if}
         
@@ -460,7 +509,7 @@ opacity="1"
           style="top: {yScale(2020)}px; left: {centerX - 30}px; --rotate: 25deg;"
           on:mouseenter={() => {
             hoveredFlower = { x: centerX - 30, y: yScale(2020) };
-            hoveredFlowerImage1 = "/blm1.png";
+            hoveredFlowerImage1 = `${base}/blm1.png`;
             hoveredFlowerImage2 = null; // ❗only one image here
             hoveredFlowerText = `
               <strong>2020: Black Lives Matter</strong><br><br>
@@ -477,25 +526,11 @@ opacity="1"
             suppressScrollyBox = false;
           }}
         >
-          <img src="/flower.png" alt="Flower 2020" />
+          <img src="{base}/flower.png" alt="Flower 2020" />
         </div>
       {/if}
 
-          {#if hoveredFlowerImage1}
-          <div class="side-image-box">
-            {#if hoveredFlowerText}
-              <div class="hovered-text">
-                {@html hoveredFlowerText}
-              </div>
-            {/if}
-            <div class="image-stack">
-              <img src={hoveredFlowerImage1} alt="First Image" />
-              {#if hoveredFlowerImage2}
-                <img src={hoveredFlowerImage2} alt="Second Image" class="overlapping-image" />
-              {/if}
-            </div>
-          </div>
-        {/if}
+
         
         
 
@@ -509,15 +544,42 @@ opacity="1"
       {/if}
       
       {#if currentYearPhase?.phase === "rent" && !suppressScrollyBox}
-        <div class="scrolly-box rent-burden-box">
-          <h5>In that same year, {rentBurdenRates[currentYearPhase.year]}% of Boston's households were rent-burdened.</h5>
+      <div class="scrolly-box rent-burden-box">
+        {#if currentYearPhase.year === 1990}
+          <h5>In 1990, 28% of Boston households were rent burdened. Housing costs were beginning to outpace wages, especially for working-class residents.</h5>
           <div class="house-grid">
             {#each Array(100) as _, index}
-              <div class="house {index < rentBurdenRates[currentYearPhase.year] ? 'filled' : ''}"></div>
+              <div class="house {index < 28 ? 'filled' : ''}"></div>
             {/each}
           </div>
-        </div>
-      {/if}
+    
+        {:else if currentYearPhase.year === 2000}
+          <h5>By 2000, rent burden had risen to 40%. This marked the beginning of a rapid increase in housing insecurity across many Boston neighborhoods.</h5>
+          <div class="house-grid">
+            {#each Array(100) as _, index}
+              <div class="house {index < 40 ? 'filled' : ''}"></div>
+            {/each}
+          </div>
+    
+        {:else if currentYearPhase.year === 2010}
+          <h5>In 2010, nearly half of renters (48%) were burdened by rent. The aftermath of the foreclosure crisis pushed many households into the rental market.</h5>
+          <div class="house-grid">
+            {#each Array(100) as _, index}
+              <div class="house {index < 48 ? 'filled' : ''}"></div>
+            {/each}
+          </div>
+    
+        {:else if currentYearPhase.year === 2020}
+          <h5>By 2020, rent burden remained high at 46%, even as wages stagnated. The pandemic further exposed deep inequities in housing access.</h5>
+          <div class="house-grid">
+            {#each Array(100) as _, index}
+              <div class="house {index < 46 ? 'filled' : ''}"></div>
+            {/each}
+          </div>
+        {/if}
+      </div>
+    {/if}
+    
       
       
 
@@ -535,6 +597,15 @@ opacity="1"
               </div>
             {/if}
         </div>
+        <div class="final-scrolly-box">
+            <h5>
+              From 1990 to 2020, Boston’s police budget grew by over $180 million—<br>
+              funding the policing of the same neighborhoods most impacted by eviction and displacement.<br><br>
+              Whose safety is being prioritized?<br>
+              What does an eviction actually look like?
+
+            </h5>
+          </div>
         <div class="steps">
             <div class="step" data-year="1990" data-phase="police"></div>
             <div class="step" data-year="1990" data-phase="rent"></div>
@@ -545,22 +616,162 @@ opacity="1"
             <div class="step" data-year="2020" data-phase="police"></div>
             <div class="step" data-year="2020" data-phase="rent"></div>
           </div>
+
+          
+          
+          
+
           
         </div> <!-- .chart -->
 
 
-      </div> <!-- .chart-wrapper -->
-    </div> <!-- .container -->
-  </div> <!-- #home-page -->
-  
+        
+
+          <div class="flowchart-wrapper">
+            <h2>
+              Eviction Flowchart 
+              <span style="font-weight: 400; font-size:1.5rem;">
+                (adapted from 
+                <a href="https://d3n8a8pro7vhmx.cloudfront.net/themes/5eee7e564445ea4f9a6f3080/attachments/original/1592786979/EvictionReport_Final_Spreads.pdf?1592786979" target="_blank" rel="noopener noreferrer">
+                  City Life/Vida Urbana’s 2020 report
+                </a>)
+              </span>
+            </h2>
+                        <div class="explainer-grid">
+              <div class="explainer-item">
+                <h3>1. Hover + Flip</h3>
+                <p>Hover over each card to flip and reveal more detail about that stage of the eviction process.</p>
+              </div>
+              <div class="explainer-item">
+                <h3>2. Follow the Arrows</h3>
+                <p>Arrows connect formal steps with possible outcomes—showing how tenants are pushed out at each phase.</p>
+              </div>
+              <div class="explainer-item">
+                <h3>3. Click to Explore Policing</h3>
+                <p>Click <em>How Policing Connects</em> to see how surveillance, law enforcement, and immigration systems intersect with eviction.</p>
+              </div>
+            </div>
+            <svelte:component this={FlowchartEmbed} />
+          </div>
+        
+        <div class="next-chapter-link">
+          <a href="{base}/chapter2">
+            ↓ Chapter 2: Map Exploration
+          </a>
+        </div>
+        </div> <!-- .chart-wrapper -->
+        </div> <!-- .container -->
+        </div> <!-- #home-page -->
   <style>
 
+.next-chapter-link{
+  margin-top: 127rem; /* 👈 Add this to push it down */
+  text-align: center;
+  font-family: 'Utendo', sans-serif;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 4rem;
+}
+
+
+.final-scrolly-box {
+  position: absolute;
+  top: 4800px; /* 👈 tweak this based on how tall your chart actually is */
+  justify-content:center;
+  transform: translateX(-50%);
+  width: 100%;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 12px;
+  font-family: 'Utendo', sans-serif;
+  font-size: 1.2rem;
+  color: #A12624;
+  text-align: center;
+  opacity: 0;
+  animation: fadeSlideUp 1.5s ease forwards;
+}
+
+.flowchart-wrapper {
+  position: absolute;
+  top: 5400px;
+  width: 100%;
+  margin: 0 auto; /* center it */
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 12px;
+}
+
+
+.chart-explainer {
+  width: 100%;
+  font-family: 'Utendo', sans-serif;
+  margin-bottom: 0rem; /* tighten spacing below */
+}
+
+.explainer-grid {
+  display: flex;
+  justify-content:space-between; /* center the entire grid */
+  flex-wrap: nowrap;
+  gap: 1rem;
+  max-width: 100%; /* limit how wide it can grow */
+  margin-bottom: 1rem; /* space below the grid */
+  margin-top:2rem;
+
+}
+
+.explainer-item {
+  flex: 1 1 0; /* flexibly grow */
+  max-width: 500px; /* don't let them get too huge */
+  min-width: 100px; /* don't let them get too small */
+  border-color: #666;
+  border-style:dashed;
+  border-width: .8px;
+  padding: 1.3rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+/* Small hover effect */
+.explainer-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+.explainer-item h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--red);
+  margin-bottom: 0.5rem;
+}
+
+.explainer-item p {
+  font-size: 1rem;
+  color: #333;
+  line-height: 1.3;
+}
+
+/* Expand chart-description nicely too */
+.chart-description {
+  width: 100%;
+}
+
+.chart-description p {
+  font-size: 1rem;
+  color: #333;
+  width: 100%;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.7);
+  line-height: 1.2;
+  margin-bottom:2rem;
+}
 .side-image-box {
-  position: fixed;
-  top: 17%;
+  position: absolute;
   bottom:10%;
   right: 10%;
-  width: 40%;
+  width: 200%;
+  max-width: 900px;
+  min-width:600px;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -572,7 +783,7 @@ opacity="1"
 /* Text box styling */
 .hovered-text {
   order: -1; /* Text comes first */
-  width: 50%; /* Wider text box */
+  width: 40%; /* Wider text box */
   padding: 1rem;
   background: rgba(255,255,255,0.85);
   border-radius: 8px;
@@ -594,7 +805,6 @@ opacity="1"
 /* For the images */
 .side-image-box img {
   width: 100%;
-
   height: auto;
   border-radius: 6px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
@@ -698,11 +908,13 @@ html {
 
 .chart-wrapper {
   position: relative;
+  
 }
 
   .chart {
+    position:relative;
     width: 1000px;
-    height: 5500px;
+    height: auto;
 
   }
   
@@ -790,13 +1002,6 @@ html {
   background: #A12624; /* dark red for rent burdened */
 }
 
-.steps {
-  width: 100%;
-}
-
-.step {
-  height: 90vh; /* each step covers almost the full screen height */
-}
 
 @keyframes pulse {
   0% {

@@ -1,15 +1,16 @@
 <script>
     import '../app.css';
     import { page } from '$app/stores';
+    import { base } from '$app/paths';
   
     let pages = [
-      { url: '/landing', title: 'Landing' },
-      { url: '/chapter1', title: 'Chapter 1' },
-      { url: '/chapter2', title: 'Chapter 2' },
-      { url: '/', title: 'Interactive Visualization' },
-      { url: '/writeup', title: 'Write Up' },
-      { url: '/plan', title: 'Project Plan' },
-      { url: '/missingdata', title: 'Missing Data' }
+      { url: `${base}/`, title: 'Landing' },
+      { url: `${base}/chapter1`, title: 'Chapter 1' },
+      { url: `${base}/chapter2`, title: 'Chapter 2' },
+      { url: `${base}/chapter2-2`, title: 'Chapter 2, Part 2' },
+      { url: `${base}/missingdata`, title: 'Missing Data' },
+      { url: `${base}/sources`, title: 'Sources' },
+
     ];
   
     let menuOpen = false;
