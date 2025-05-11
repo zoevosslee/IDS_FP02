@@ -150,7 +150,7 @@
         'paint': {
           'heatmap-weight': 1,
           'heatmap-intensity': 1,
-          'heatmap-radius': 2,
+          'heatmap-radius': ["interpolate", ['exponential', 2], ['zoom'], 10, 2, 15, 64 ],
           'heatmap-opacity': 0,
           'heatmap-color': [
             'interpolate',
@@ -179,7 +179,7 @@
         'paint': {
           'heatmap-weight': 1,
           'heatmap-intensity': 1,
-          'heatmap-radius': 1,
+          'heatmap-radius': ["interpolate", ['exponential', 2], ['zoom'], 10, 1, 15, 32 ],
           'heatmap-opacity': 0, 
           'heatmap-color': [
             'interpolate',
@@ -618,7 +618,7 @@
     flex: 1;
     width: calc(50% - 1em);
     height: 400px;
-    pointer-events: none;
+    pointer-events: auto;
     position: relative;
     z-index: 0;
   }
