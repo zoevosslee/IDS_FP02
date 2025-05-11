@@ -608,36 +608,23 @@
                 <svg id="roxburyNeighborhoodBoundary">
                   {#key roxburyMapViewChanged}
                     {#if neighborhoods}
-                      <defs>
-                        <mask id="mask">
-                          <!-- start with full visible mask (white = visible, black = transparent) -->
-                          <rect width="100%" height="100%" fill="white" />
-                
-                          {#each neighborhoods.features as feature}
-                            {#if feature.properties.name === "Roxbury"}
-                              <path
-                                d={geoJSONPolygonToPath(feature, roxburyMap)}
-                                fill="black"
-                              />
-                            {/if}
-                          {/each}
-                        </mask>
-                      </defs>
-                
-                      <!-- semi-transparent white layer, masked to reveal only Roxbury -->
-                      <rect
-                        width="100%"
-                        height="100%"
-                        fill="#ffffff"
-                        fill-opacity="0.6"
-                        mask="url(#mask)"
-                      />
                       {#each neighborhoods.features as feature}
                         {#if feature?.properties.name === "Roxbury"}
                           <path
                             d={geoJSONPolygonToPath(feature, roxburyMap)}
                             fill="#ffffff"
                             fill-opacity="0"
+                            stroke="#000000"
+                            stroke-opacity="0.5"
+                            stroke-width="2"
+                          >
+                            <title>{feature.properties.name}</title>
+                          </path>
+                        {:else}
+                          <path
+                            d={geoJSONPolygonToPath(feature, roxburyMap)}
+                            fill="#ffffff"
+                            fill-opacity="0.5"
                             stroke="#000000"
                             stroke-opacity="0.5"
                             stroke-width="2"
