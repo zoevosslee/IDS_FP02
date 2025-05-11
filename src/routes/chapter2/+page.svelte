@@ -57,6 +57,7 @@
       rentBurden = await d3.json(`${base}/data/rentburden_neighborhood2023.json`);
       investorPurchases = await d3.json(`${base}/data/sales_by_neighborhood_centroids.geojson`);
       arrestDensity = await d3.json(`${base}/data/arrest_density4.geojson`);
+      evictions = await d3.json(`${base}/data/eviction_points_boston.geojson`);
 
       scrollerMap.addSource('rentBurden', {
         type: 'geojson',
@@ -71,6 +72,11 @@
       scrollerMap.addSource('points311', {
         type: 'geojson',
         data: points311
+      });
+
+      scrollerMap.addSource('evictions', {
+        type: 'geojson',
+        data: evictions
       });
 
       scrollerMap.addSource('arrestDensity', {
@@ -191,6 +197,29 @@
   
     });
 
+    scrollerMap.addLayer({
+      'id': 'evictions',
+      'type': 'heatmap',
+      'source': 'evictions',
+      'paint': {
+        'heatmap-weight': 1,
+        'heatmap-intensity': 1,
+        'heatmap-radius': 1,
+        'heatmap-opacity': 0, 
+        'heatmap-color': [
+          'interpolate',
+          ['linear'],
+          ['heatmap-density'],
+          0, 'rgba(0,0,255,0)',
+          0.2, 'blue',
+          0.4, 'cyan',
+          0.6, 'lime',
+          0.8, 'yellow',
+          1, 'red'
+        ]
+      },
+    })
+
     
     let rentBurdenLabels = [
       { label: '25%', color: '#E3BFBE' },
@@ -227,6 +256,13 @@
         } else {
           scrollerMap.setPaintProperty('choroplethRentBurden', 'fill-opacity', 0);
           scrollerMap.setPaintProperty('circleInvestorPurchases', 'circle-opacity', 0);
+        }
+      }
+      if (scrollerMap.getLayer('evictions')) {
+        if (index === 5) {
+          scrollerMap.setPaintProperty('evictions', 'heatmap-opacity', 0.8);
+        } else {
+          scrollerMap.setPaintProperty('evictions', 'heatmap-opacity', 0);
         }
       }
     }
@@ -493,6 +529,18 @@
                 <li style="--color: red"><span class="swatch"></span><p>Highest density of violations</p></li>
               </ul>
               
+            </section>
+            <section><p style="font-size: 20px;">Eviction filings (2020-2022)</p>
+              <p></p>
+                <ul class="legend">
+                  <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of eviction filings</p></li>
+                  <li style="--color: blue"><span class="swatch"></span><p></p></li>
+                  <li style="--color: cyan"><span class="swatch"></span><p></p></li>
+                  <li style="--color: lime"><span class="swatch"></span><p></p></li>
+                  <li style="--color: yellow"><span class="swatch"></span><p></p></li>
+                  <li style="--color: red"><span class="swatch"></span><p>Highest density of eviction filings</p></li>
+                </ul>
+                
             </section>
           </div>
         </Scroller>
