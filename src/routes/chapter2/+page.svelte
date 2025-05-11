@@ -30,6 +30,7 @@
     let selectedNeighborhood = null;
     let scrollerMapLoaded = false;
     let arrestDensity = null;
+    let evictions = null;
   
     $: scrollerMap?.on("move", evt => scrollerMapViewChanged++);
 
