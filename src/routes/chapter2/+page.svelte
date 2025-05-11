@@ -532,7 +532,9 @@
               
             </section>
             <section><p style="font-size: 20px;">Eviction filings (2020-2022)</p>
-              <p></p>
+              <p>We observe a correlation between arrest rate and eviction filings, in neighborhoods such as Downtown, West End, and Roxbury.
+                The eviction filings are also concentrated in neighborhoods with high rates of 311 requests and building & property violations, such as Dorchester and East Boston. 
+              </p>
                 <ul class="legend">
                   <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of eviction filings</p></li>
                   <li style="--color: blue"><span class="swatch"></span><p></p></li>
