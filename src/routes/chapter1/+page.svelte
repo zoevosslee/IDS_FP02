@@ -600,9 +600,10 @@ opacity="1"
         <div class="final-scrolly-box">
             <h5>
               From 1990 to 2020, Boston’s police budget grew by over $180 million—<br>
-              even as rent burden rose from 28% to 46% of households.<br><br>
+              funding the policing of the same neighborhoods most impacted by eviction and displacement.<br><br>
               Whose safety is being prioritized?<br>
-              What are the stories behind these numbers?
+              What does an eviction actually look like?
+
             </h5>
           </div>
         <div class="steps">
@@ -623,7 +624,33 @@ opacity="1"
           
         </div> <!-- .chart -->
 
+
+        
+
           <div class="flowchart-wrapper">
+            <h2>
+              Eviction Flowchart 
+              <span style="font-weight: 400; font-size:1.5rem;">
+                (adapted from 
+                <a href="https://d3n8a8pro7vhmx.cloudfront.net/themes/5eee7e564445ea4f9a6f3080/attachments/original/1592786979/EvictionReport_Final_Spreads.pdf?1592786979" target="_blank" rel="noopener noreferrer">
+                  City Life/Vida Urbana’s 2020 report
+                </a>)
+              </span>
+            </h2>
+                        <div class="explainer-grid">
+              <div class="explainer-item">
+                <h3>1. Hover + Flip</h3>
+                <p>Hover over each card to flip and reveal more detail about that stage of the eviction process.</p>
+              </div>
+              <div class="explainer-item">
+                <h3>2. Follow the Arrows</h3>
+                <p>Arrows connect formal steps with possible outcomes—showing how tenants are pushed out at each phase.</p>
+              </div>
+              <div class="explainer-item">
+                <h3>3. Click to Explore Policing</h3>
+                <p>Click <em>How Policing Connects</em> to see how surveillance, law enforcement, and immigration systems intersect with eviction.</p>
+              </div>
+            </div>
             <svelte:component this={FlowchartEmbed} />
           </div>
         
@@ -672,7 +699,6 @@ opacity="1"
   padding: 2rem;
   background: rgba(255, 255, 255, 0.85);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 
@@ -688,6 +714,8 @@ opacity="1"
   flex-wrap: nowrap;
   gap: 1rem;
   max-width: 100%; /* limit how wide it can grow */
+  margin-bottom: 1rem; /* space below the grid */
+  margin-top:2rem;
 
 }
 
@@ -695,7 +723,9 @@ opacity="1"
   flex: 1 1 0; /* flexibly grow */
   max-width: 500px; /* don't let them get too huge */
   min-width: 100px; /* don't let them get too small */
-  background: rgba(255, 255, 255, 0.8);
+  border-color: #666;
+  border-style:dashed;
+  border-width: .8px;
   padding: 1.3rem;
   border-radius: 12px;
   text-align: center;

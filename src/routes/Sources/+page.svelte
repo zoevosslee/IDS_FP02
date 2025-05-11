@@ -1,14 +1,125 @@
-
-
 <svelte:head>
   <title>Rent is a Trap!</title>
 </svelte:head>
 
 <div id="home-page">
-
   <div class="container">
     <div class="text-content">
       <h1>Rent is a Trap!</h1>
       <h2>By Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, Zoe Voss Lee</h2>
+
+      <p>
+        This project was developed with guidance and feedback from the 
+        <a href="https://www.mapc.org/" target="_blank" rel="noopener noreferrer">
+          Metropolitan Area Planning Council (MAPC)
+        </a>.
+      </p>
+
+      <h2>Chapter 1: Sources</h2>
+
+      <p>
+        <strong>City Life/Vida Urbana (2020).</strong> 
+        <a href="https://d3n8a8pro7vhmx.cloudfront.net/themes/5eee7e564445ea4f9a6f3080/attachments/original/1592786979/EvictionReport_Final_Spreads.pdf?1592786979" target="_blank" rel="noopener noreferrer">
+          Evicted for Being Poor
+        </a><br>
+        • Core inspiration for the structure and framing of the eviction process chart.<br>
+        • Provided key data points on the unequal distribution of eviction filings across Boston neighborhoods.
+      </p>
+
+      <p>
+        <strong>Desmond, Matthew.</strong> <em>Evicted: Poverty and Profit in the American City</em>.<br>
+        • Informed the broader framing around evictions, particularly the role that auxiliary policing plays in eviction proceedings.<br>
+      </p>
+
+      <p>
+        <strong>NPR (2016).</strong> 
+        <a href="https://www.npr.org/2016/06/29/482615176/for-low-income-victims-nuisance-laws-force-ultimatum-silence-or-eviction" target="_blank" rel="noopener noreferrer">
+          For Low-Income Victims, Nuisance Laws Force Ultimatum: Silence Or Eviction
+        </a><br>
+        • Used to illustrate how 311 complaints and nuisance laws are weaponized against tenants.
+      </p>
+
+      <p>
+        <strong>SmartMove (n.d.).</strong> 
+        <a href="https://www.mysmartmove.com/tenant-screening-services/resident-score" target="_blank" rel="noopener noreferrer">
+          What is a Resident Score?
+        </a><br>
+        • An example of predictive tenant screening algorithms.
+      </p>
+
+      <p>
+        <strong>USC Homelessness Policy Research Institute.</strong> 
+        <a href="https://hpri.usc.edu/homeless_research/opening-the-black-box-of-tenant-screening/" target="_blank" rel="noopener noreferrer">
+          Opening the Black Box of Tenant Screening
+        </a><br>
+        • Provided context on bias and opacity in tenant screening technologies.
+      </p>
+
+      <p>
+        <strong>HUD v. Rucker.</strong> 
+        <a href="https://www.oyez.org/cases/2001/00-1770" target="_blank" rel="noopener noreferrer">
+          Case summary on Oyez
+        </a><br>
+        • Cited to show how public housing tenants can be evicted based on alleged criminal behavior.
+      </p>
+
+      <p>
+        <strong>The Appeal (2020).</strong> 
+        <a href="https://theappeal.org/the-role-of-police-igentrification-breonna-taylor/" target="_blank" rel="noopener noreferrer">
+          The Role of Police in Gentrification: Breonna Taylor
+        </a><br>
+        • Contextualized how policing and displacement intersect, especially in gentrifying neighborhoods.
+      </p>
+
+      <p>
+        <strong>Tennessee Lookout (2020).</strong> 
+        <a href="https://tennesseelookout.com/2020/12/02/immigrants-face-unique-challenges-in-staving-off-evictions/" target="_blank" rel="noopener noreferrer">
+          Immigrants Face Unique Challenges in Staving Off Evictions
+        </a><br>
+        • Informed the immigration policing section; showed how fear of ICE affects court attendance, contributing to displacement.
+      </p>
+
+      <p>
+        <strong>MALDEF (2025).</strong> 
+        <a href="https://www.maldef.org/2025/03/court-orders-landlord-to-pay-80000-for-threatening-to-call-ice-on-tenant/" target="_blank" rel="noopener noreferrer">
+          Court Orders Landlord to Pay $80,000 for Threatening to Call ICE
+        </a><br>
+        • Example of landlord harassment using immigration enforcement as a threat.
+      </p>
+
+      <p>
+        <strong>State Court Report (2024).</strong> 
+        <a href="https://statecourtreport.org/our-work/analysis-opinion/ices-new-courthouse-arrest-policy-set-them-collision-course-state-courts" target="_blank" rel="noopener noreferrer">
+          ICE’s New Courthouse Arrest Policy on Collision Course with State Courts
+        </a><br>
+        • Demonstrated the risks undocumented tenants face when entering housing court.
+      </p>
     </div>
+  <div>
+    <p>
+        Portions of code formatting and debugging were supported by OpenAI’s ChatGPT, GPT-4o version.
+    </p>
+  </div>
+  </div>
 </div>
+
+<style>
+  .text-content p {
+    margin-bottom: 1.6rem;
+    line-height: 1.7;
+    font-size: 1rem;
+  }
+
+  .text-content a {
+    color: var(--red-medium);
+    text-decoration: none;
+  }
+
+  .text-content a:hover {
+    text-decoration: underline;
+  }
+
+  h2 {
+    margin-bottom: 1rem;
+  }
+</style>

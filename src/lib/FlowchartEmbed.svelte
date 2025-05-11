@@ -638,7 +638,6 @@
   
   .glow {
     outline: 3px solid yellow !important;
-    box-shadow: 0 0 12px 6px rgba(255, 255, 0, 0.75) !important;
   }
   
 
@@ -668,6 +667,22 @@
   font-size: 0.9rem;
   line-height: 1.4;
 }
+
+.back.card-box p {
+  font-size: 0.75rem;
+  line-height: 1.3;
+}
+
+.column-label h2 {
+  font-size: 18px;
+  color:black;
+  font-weight: 600; /* or try 300 for even lighter */
+  text-decoration: underline;
+  text-decoration-thickness: 2px; /* thickness of the underline */
+  margin: 0;
+}
+
+
 
     </style>
 

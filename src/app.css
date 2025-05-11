@@ -30,6 +30,20 @@
   
 /* importing Utendo */
 
+a {
+  color: var(--red-medium);
+  text-decoration: underline;
+}
+
+a:visited {
+  color: var(--red-medium);
+}
+
+a:hover {
+  color: var(--red); /* Optional: make it bolder red on hover */
+}
+
+
 @font-face {
     font-family: 'Utendo';
     src: url('/fonts/utendo/Utendo-Black.ttf') format('truetype');
@@ -183,7 +197,7 @@
     margin: 0;
     padding:0;
   }
-  
+
   p {
     color: #616266;
     font-family: 'Utendo', sans-serif;

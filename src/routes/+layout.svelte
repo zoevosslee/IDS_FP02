@@ -9,7 +9,8 @@
       { url: `${base}/chapter2`, title: 'Chapter 2' },
       { url: `${base}/chapter2-2`, title: 'Chapter 2, Part 2' },
       { url: `${base}/missingdata`, title: 'Missing Data' },
-      { url: `${base}/flowchart`, title: 'Flow Chart' }
+      { url: `${base}/sources`, title: 'Sources' },
+
     ];
   
     let menuOpen = false;
