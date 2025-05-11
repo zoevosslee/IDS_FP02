@@ -195,10 +195,10 @@
         },
       });
   
-    });
+
 
     scrollerMap.addLayer({
-      'id': 'evictions',
+      'id': 'heatmapEvictions',
       'type': 'heatmap',
       'source': 'evictions',
       'paint': {
@@ -218,8 +218,8 @@
           1, 'red'
         ]
       },
-    })
-
+    });
+  });
     
     let rentBurdenLabels = [
       { label: '25%', color: '#E3BFBE' },
@@ -258,13 +258,13 @@
           scrollerMap.setPaintProperty('circleInvestorPurchases', 'circle-opacity', 0);
         }
       }
-      if (scrollerMap.getLayer('evictions')) {
-        if (index === 5) {
-          scrollerMap.setPaintProperty('evictions', 'heatmap-opacity', 0.8);
-        } else {
-          scrollerMap.setPaintProperty('evictions', 'heatmap-opacity', 0);
-        }
-      }
+      // if (scrollerMap.getLayer('heatmapEvictions')) {
+      //   if (index === 5) {
+      //     scrollerMap.setPaintProperty('heatmapEvictions', 'heatmap-opacity', 0.8);
+      //   } else {
+      //     scrollerMap.setPaintProperty('heatmapEvictions', 'heatmap-opacity', 0);
+      //   }
+      // }
     }
 
     let svgEl;
@@ -485,7 +485,7 @@
                 </ul>  
               </div>             
             </section>
-            <section><p style="font-size: 20px;">Arrests per 1000 (2020-2024))</p>
+            <section><p style="font-size: 20px;">Arrests per 1000 (2020-2024)</p>
               <p>Scholars like <a href="https://www.ucpress.edu/books/golden-gulag/paper">Ruth Wilson Gilmore (2007)</a> have argued that criminalization serves as a tool to justify state violence and the containment of marginalized populations. 
                 By criminalizing certain behaviors and populations, police provide real estate developers with justification for urban renewal efforts that erase community histories and identities.
                 The disproportionate arrest density is particularly stark in neighborhoods where <a href="https://www.bostonplans.org/real-estate/urban-renewal/overview">Boston's Urban Renewal</a> plans are extended, such as Downtown, West End, and Roxbury, in addition to neighborhoods with large Black and migrant populations, such as Mattapan and Dorchester.
@@ -530,7 +530,7 @@
               </ul>
               
             </section>
-            <section><p style="font-size: 20px;">Eviction filings (2020-2022)</p>
+            <!-- <section><p style="font-size: 20px;">Eviction filings (2020-2022)</p>
               <p></p>
                 <ul class="legend">
                   <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of eviction filings</p></li>
@@ -541,7 +541,7 @@
                   <li style="--color: red"><span class="swatch"></span><p>Highest density of eviction filings</p></li>
                 </ul>
                 
-            </section>
+            </section> -->
           </div>
         </Scroller>
       </div>
