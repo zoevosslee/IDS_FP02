@@ -29,6 +29,8 @@
     let scrollerMapViewChanged = 0;
     let selectedNeighborhood = null;
     let scrollerMapLoaded = false;
+    let arrestDensity = null;
+    let evictions = null;
   
     $: scrollerMap?.on("move", evt => scrollerMapViewChanged++);
 
@@ -55,6 +57,8 @@
       pointsViolations = await d3.json(`${base}/data/violations_points.json`);
       rentBurden = await d3.json(`${base}/data/rentburden_neighborhood2023.json`);
       investorPurchases = await d3.json(`${base}/data/sales_by_neighborhood_centroids.geojson`);
+      arrestDensity = await d3.json(`${base}/data/arrest_density4.geojson`);
+      evictions = await d3.json(`${base}/data/eviction_points_boston.geojson`);
 
       scrollerMap.addSource('rentBurden', {
         type: 'geojson',
@@ -69,6 +73,16 @@
       scrollerMap.addSource('points311', {
         type: 'geojson',
         data: points311
+      });
+
+      scrollerMap.addSource('evictions', {
+        type: 'geojson',
+        data: evictions
+      });
+
+      scrollerMap.addSource('arrestDensity', {
+        type: 'geojson',
+        data: arrestDensity
       });
 
       scrollerMap.addLayer({
@@ -99,12 +113,12 @@
             'interpolate',
             ['linear'],
             ['get', 'investor_sales_pct'],
-            0, 2,
-            0.05, 4,
-            0.20, 6,
-            0.30, 8,
-            0.40, 10,
-            1, 12
+            0, 4,
+            0.05, 6,
+            0.20, 8,
+            0.30, 10,
+            0.40, 12,
+            1, 14
           ],
           'circle-color': '#8790BC',
           'circle-opacity': 0
@@ -112,13 +126,32 @@
       });
 
       scrollerMap.addLayer({
+        'id': 'choroplethArrests',
+        'type': 'fill',
+        'source': 'arrestDensity',
+        'paint': {
+          'fill-color': [
+            'interpolate',
+            ['linear'],
+            ['get', 'arrest_density'],
+            0, '#E3BFBE',
+            40, '#D6A2A1',
+            80, '#CA8584',
+            120, '#B55554',
+            160, '#A12624'
+          ],
+          'fill-opacity': 0
+        }
+      });
+      
+      scrollerMap.addLayer({
         'id': 'heatmap311',
         'type': 'heatmap',
         'source': 'points311',
         'paint': {
           'heatmap-weight': 1,
           'heatmap-intensity': 1,
-          'heatmap-radius': 3,
+          'heatmap-radius': ["interpolate", ['exponential', 2], ['zoom'], 10, 2, 15, 64 ],
           'heatmap-opacity': 0,
           'heatmap-color': [
             'interpolate',
@@ -147,7 +180,7 @@
         'paint': {
           'heatmap-weight': 1,
           'heatmap-intensity': 1,
-          'heatmap-radius': 3,
+          'heatmap-radius': ["interpolate", ['exponential', 2], ['zoom'], 10, 1, 15, 32 ],
           'heatmap-opacity': 0, 
           'heatmap-color': [
             'interpolate',
@@ -163,8 +196,31 @@
         },
       });
   
-    });
 
+
+    scrollerMap.addLayer({
+      'id': 'heatmapEvictions',
+      'type': 'heatmap',
+      'source': 'evictions',
+      'paint': {
+        'heatmap-weight': 1,
+        'heatmap-intensity': 1,
+        'heatmap-radius': 2,
+        'heatmap-opacity': 0, 
+        'heatmap-color': [
+          'interpolate',
+          ['linear'],
+          ['heatmap-density'],
+          0, 'rgba(0,0,255,0)',
+          0.2, 'blue',
+          0.4, 'cyan',
+          0.6, 'lime',
+          0.8, 'yellow',
+          1, 'red'
+        ]
+      },
+    });
+  });
     
     let rentBurdenLabels = [
       { label: '25%', color: '#E3BFBE' },
@@ -175,11 +231,18 @@
     ];
 
     $: if (scrollerMapLoaded && count !== undefined && scrollerMap) {
-      if (scrollerMap.getLayer('heatmap311') && scrollerMap.getLayer('heatmapViolations')) {
+      if (scrollerMap.getLayer('choroplethArrests')) {
         if (index === 2) {
+          scrollerMap.setPaintProperty('choroplethArrests', 'fill-opacity', 1);
+        } else {
+          scrollerMap.setPaintProperty('choroplethArrests', 'fill-opacity', 0);
+        }
+      }
+      if (scrollerMap.getLayer('heatmap311') && scrollerMap.getLayer('heatmapViolations')) {
+        if (index === 3) {
           scrollerMap.setPaintProperty('heatmap311', 'heatmap-opacity', 0.8);
           scrollerMap.setPaintProperty('heatmapViolations', 'heatmap-opacity', 0);
-        } else if (index === 3) {
+        } else if (index === 4) {
           scrollerMap.setPaintProperty('heatmap311', 'heatmap-opacity', 0);
           scrollerMap.setPaintProperty('heatmapViolations', 'heatmap-opacity', 0.8);
         } else {
@@ -194,6 +257,13 @@
         } else {
           scrollerMap.setPaintProperty('choroplethRentBurden', 'fill-opacity', 0);
           scrollerMap.setPaintProperty('circleInvestorPurchases', 'circle-opacity', 0);
+        }
+      }
+      if (scrollerMap.getLayer('heatmapEvictions')) {
+        if (index === 5) {
+          scrollerMap.setPaintProperty('heatmapEvictions', 'heatmap-opacity', 0.8);
+        } else {
+          scrollerMap.setPaintProperty('heatmapEvictions', 'heatmap-opacity', 0);
         }
       }
     }
@@ -416,9 +486,28 @@
                 </ul>  
               </div>             
             </section>
-            <section><p style="font-size: 20px;">311 Service Requests Assigned to Police</p>
-              <p>Scholars like Ruth Wilson Gilmore (2007) have argued that criminalization serves as a tool to justify state violence and the containment of marginalized populations. By criminalizing certain behaviors and populations, police provide real estate developers with justification for urban renewal efforts that erase community histories and identities.
-                We have noticed that, across Boston, 311 service requests for noise complaints increased drastically since 2015. The increase is particularly stark in historically redlined, currently gentrifying neighborhoods such as A, B, and C. 
+            <section><p style="font-size: 20px;">Arrests per 1000 (2020-2024)</p>
+              <p>Scholars like <a href="https://www.ucpress.edu/books/golden-gulag/paper">Ruth Wilson Gilmore (2007)</a> have argued that criminalization serves as a tool to justify state violence and the containment of marginalized populations. 
+                By criminalizing certain behaviors and populations, police provide real estate developers with justification for urban renewal efforts that erase community histories and identities.
+                The disproportionate arrest density is particularly stark in neighborhoods where <a href="https://www.bostonplans.org/real-estate/urban-renewal/overview">Boston's Urban Renewal</a> plans are extended, such as Downtown, West End, and Roxbury, in addition to neighborhoods with large Black and migrant populations, such as Mattapan and Dorchester.
+                </p>
+                <ul class="legend">
+                  <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of 311 calls</p></li>
+                  <li style="--color: blue"><span class="swatch"></span><p></p></li>
+                  <li style="--color: cyan"><span class="swatch"></span><p></p></li>
+                  <li style="--color: lime"><span class="swatch"></span><p></p></li>
+                  <li style="--color: yellow"><span class="swatch"></span><p></p></li>
+                  <li style="--color: red"><span class="swatch"></span><p>Highest density of 311 calls</p></li>
+                </ul>
+                
+            </section>
+            <section><p style="font-size: 20px;">311 Service Requests Assigned to Police (2015-2024)</p>
+              <p>Nuisance ordinances are framed as neutral regulatory measures intended to preserve public order, yet their application disproportionately affects Black and low-income communities. 
+                By labeling properties as “nuisances” due to alleged criminal activity, excessive noise, or even repeated police calls, municipalities establish legal grounds for eviction and redevelopment. 
+                As <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/anti.12792">Terra Graziani et al. (2021)</a> argue, these laws operate as “borderland” mechanisms, defining and reshaping urban space to facilitate capital investment. 
+                </p>
+                <p>
+                We have noticed that, across Boston, 311 service requests for noise complaints increased drastically since 2015. North End, a historically redlined neighborhood currently undergoing urban renewal, demonstrates a low arrest rate, but a high density of 311 noise complaint requests. 
                 </p>
                 <ul class="legend">
                   <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of 311 calls</p></li>
@@ -431,7 +520,7 @@
                 
             </section>
             <section><p style="font-size: 20px;">Building and Property Violations</p>
-              <p>Buildings & property violations seem to be on the rise, showing a similar pattern. These non-criminal, auxiliary policing is more clearly associated with early-stage urban “renewal” than already wealthy neighborhoods.</p>
+              <p>Buildings & property violations seem to be on the rise, showing a similar pattern. These non-criminal, auxiliary policing is more clearly associated with early-stage urban “renewal” than already wealthy neighborhoods, such as North End, East Boston, and Dorchester.</p>
               <ul class="legend">
                 <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of violations</p></li>
                 <li style="--color: purple"><span class="swatch"></span><p></p></li>
@@ -441,6 +530,20 @@
                 <li style="--color: red"><span class="swatch"></span><p>Highest density of violations</p></li>
               </ul>
               
+            </section>
+            <section><p style="font-size: 20px;">Eviction filings (2020-2022)</p>
+              <p>We observe a correlation between arrest rate and eviction filings, in neighborhoods such as Downtown, West End, and Roxbury.
+                The eviction filings are also concentrated in neighborhoods with high rates of 311 requests and building & property violations, such as Dorchester and East Boston. 
+              </p>
+                <ul class="legend">
+                  <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of eviction filings</p></li>
+                  <li style="--color: blue"><span class="swatch"></span><p></p></li>
+                  <li style="--color: cyan"><span class="swatch"></span><p></p></li>
+                  <li style="--color: lime"><span class="swatch"></span><p></p></li>
+                  <li style="--color: yellow"><span class="swatch"></span><p></p></li>
+                  <li style="--color: red"><span class="swatch"></span><p>Highest density of eviction filings</p></li>
+                </ul>
+                
             </section>
           </div>
         </Scroller>
@@ -518,7 +621,7 @@
     flex: 1;
     width: calc(50% - 1em);
     height: 400px;
-    pointer-events: none;
+    pointer-events: auto;
     position: relative;
     z-index: 0;
   }

@@ -4,12 +4,12 @@
     import { base } from '$app/paths';
   
     let pages = [
-      { url: '/landing', title: 'Landing' },
-      { url: '/chapter1', title: 'Chapter 1' },
-      { url: '/chapter2', title: 'Chapter 2' },
-      { url: '/', title: 'Chapter 2, Part 2' },
-      { url: '/missingdata', title: 'Missing Data' },
-      { url: '/flowchart', title: 'Flow Chart' }
+      { url: `${base}/`, title: 'Landing' },
+      { url: `${base}/chapter1`, title: 'Chapter 1' },
+      { url: `${base}/chapter2`, title: 'Chapter 2' },
+      { url: `${base}/chapter2-2`, title: 'Chapter 2, Part 2' },
+      { url: `${base}/missingdata`, title: 'Missing Data' },
+      { url: `${base}/flowchart`, title: 'Flow Chart' }
     ];
   
     let menuOpen = false;
