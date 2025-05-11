@@ -17,9 +17,15 @@
       let top = 0.1;
       let threshold = 0.5;
       let bottom = 0.9;
+
+      let countN;
+      let indexN;
+      let offsetN;
+      let progressN;
     /* end of vars from svelte-scroller tutorial */
   
     let scrollerMap;
+    let roxburyMap;
     let redlining = null;
     let neighborhoods = null;
     let points311 = null;
@@ -27,12 +33,15 @@
     let rentBurden = null;
     let investorPurchases = null;
     let scrollerMapViewChanged = 0;
+    let roxburyMapViewChanged = 0;
     let selectedNeighborhood = null;
     let scrollerMapLoaded = false;
+    let roxburyMapLoaded = false;
     let arrestDensity = null;
     let evictions = null;
   
     $: scrollerMap?.on("move", evt => scrollerMapViewChanged++);
+    $: roxburyMap?.on("move", evt => roxburyMapViewChanged++);
 
     
 
@@ -46,9 +55,17 @@
         center: [-71.0825, 42.314],
         zoom: 10    
       });
+      roxburyMap = new mapboxgl.Map({
+        container: 'roxburyMap',
+        style: 'mapbox://styles/mapbox/light-v10',
+        center: [-71.0859, 42.317],
+        zoom: 12    
+      });
   
       await new Promise(resolve => scrollerMap.on('load', resolve));
       scrollerMapLoaded = true;
+      // await new Promise(resolve => roxburyMap.on('load', resolve));
+      // roxburyMapLoaded = true;
       console.log("Map has loaded!");
   
       redlining = await d3.json(`${base}/data/mappinginequality.json`);
@@ -289,7 +306,7 @@
     }
   
 
-    function geoJSONPolygonToPath(feature) {
+    function geoJSONPolygonToPath(feature, map) {
       const path = d3.path();
       const type = feature.geometry.type;
       const coords = feature.geometry.coordinates;
@@ -299,7 +316,7 @@
         for (const ring of coords) {
           for (let i = 0; i < ring.length; i++) {
             const [lng, lat] = ring[i];
-            const { x, y } = scrollerMap.project([lng, lat]);
+            const { x, y } = map.project([lng, lat]);
             if (i === 0) path.moveTo(x, y);
             else path.lineTo(x, y);
           }
@@ -311,7 +328,7 @@
           for (const ring of polygon) {
             for (let i = 0; i < ring.length; i++) {
               const [lng, lat] = ring[i];
-              const { x, y } = scrollerMap.project([lng, lat]);
+              const { x, y } = map.project([lng, lat]);
               if (i === 0) path.moveTo(x, y);
               else path.lineTo(x, y);
             }
@@ -376,7 +393,7 @@
                     {#if redlining}
                       {#each redlining.features as feature}
                         <path
-                        d={geoJSONPolygonToPath(feature)}
+                        d={geoJSONPolygonToPath(feature,scrollerMap)}
                         fill={feature.properties.fill}
                         fill-opacity= {(offset > 0.2 && offset < 0.8 && index == 0)? `0.6` : `0`}
                         stroke="#000000"
@@ -395,7 +412,7 @@
                     {#if neighborhoods}
                       {#each neighborhoods.features as feature}
                         <path
-                          d={geoJSONPolygonToPath(feature)}
+                          d={geoJSONPolygonToPath(feature, scrollerMap)}
                           fill="#ffffff"
                           fill-opacity="0.5"
                           stroke="#000000"
@@ -407,7 +424,7 @@
                           <title>{feature.properties.name}</title>
                         </path>
                         <path
-                          d={geoJSONPolygonToPath(feature)}
+                          d={geoJSONPolygonToPath(feature, scrollerMap)}
                           fill="#ffffff"
                           fill-opacity="0"
                           stroke="#0000ff"
@@ -547,6 +564,202 @@
             </section>
           </div>
         </Scroller>
+        <Scroller
+          {top}
+          {threshold}
+          {bottom}
+          bind:count={countN}
+          bind:index={indexN}
+          bind:offset={offsetN}
+          bind:progress={progressN}
+        >
+          <div slot="background">
+            <p style="font-size:small;">these sliders are for debug -Nicola</p>
+            <p>current section: <strong>{indexN + 1}/{countN}</strong></p>
+            <progress value="{countN ? (indexN + 1) / countN : 0}"></progress>
+    
+            <p>offset in current section</p>
+            <progress value={offsetN || 0}></progress>
+    
+            <p>total progress</p>
+            <progress value={progressN || 0}></progress>
+            <div style="position: relative; flex-grow: 1;">
+
+              <div id="roxburyMap">
+                <!-- <svg id="redlineSvg" bind:this={svgEl}>
+                  {#key scrollerMapViewChanged}
+                    {#if redlining}
+                      {#each redlining.features as feature}
+                        <path
+                        d={geoJSONPolygonToPath(feature)}
+                        fill={feature.properties.fill}
+                        fill-opacity= {(offset > 0.2 && offset < 0.8 && index == 0)? `0.6` : `0`}
+                        stroke="#000000"
+                        stroke-opacity="0.5"
+                        stroke-width="0"
+                        >
+                          <title>{feature.properties.category}</title>
+                        </path>
+                      {/each}
+                    {/if}
+                  {/key}
+                </svg> -->
+
+                <svg id="roxburyNeighborhoodBoundary">
+                  {#key roxburyMapViewChanged}
+                    {#if neighborhoods}
+                      <defs>
+                        <mask id="mask">
+                          <!-- start with full visible mask (white = visible, black = transparent) -->
+                          <rect width="100%" height="100%" fill="white" />
+                
+                          {#each neighborhoods.features as feature}
+                            {#if feature.properties.name === "Roxbury"}
+                              <path
+                                d={geoJSONPolygonToPath(feature, roxburyMap)}
+                                fill="black"
+                              />
+                            {/if}
+                          {/each}
+                        </mask>
+                      </defs>
+                
+                      <!-- semi-transparent white layer, masked to reveal only Roxbury -->
+                      <rect
+                        width="100%"
+                        height="100%"
+                        fill="#ffffff"
+                        fill-opacity="0.6"
+                        mask="url(#mask)"
+                      />
+                      {#each neighborhoods.features as feature}
+                        {#if feature?.properties.name === "Roxbury"}
+                          <path
+                            d={geoJSONPolygonToPath(feature, roxburyMap)}
+                            fill="#ffffff"
+                            fill-opacity="0"
+                            stroke="#000000"
+                            stroke-opacity="0.5"
+                            stroke-width="2"
+                          >
+                            <title>{feature.properties.name}</title>
+                          </path>
+                        {/if}
+                      {/each}
+                    {/if}
+                  {/key}
+                </svg>
+
+              </div>
+              <!-- {#if selectedNeighborhood}
+                <div class="neighborhood-label"><p>{selectedNeighborhood.properties.name}</p></div>
+              {/if} -->
+            </div>
+          </div>
+          <div slot="foreground" style="padding: 0 0 0 50%;">
+            <section><p style="font-size: 20px;">History of Redlining in Boston</p>
+              <p>
+              Redlining created barriers for African American and immigrant families in neighborhoods considered “hazardous,” “undesirable,” or “inharmonious” to access mortgage financing. Communities of historically redlined neighborhoods continue to live and negotiate with the long-term impacts of systemic exclusion, preserving what is precious to them.</p>
+              <div>
+                <ul class="legend">
+                  <li style="--color: #76a865; opacity: 0.5">
+                    <span class="swatch"></span>
+                    <p>"A: Best"</p>
+                  </li>
+                  <li style="--color: #7cb5bd; opacity: 0.5">
+                    <span class="swatch"></span>
+                    <p>"B: Still Desirable"</p>
+                  </li>
+                  <li style="--color: #ffff00; opacity: 0.5">
+                    <span class="swatch"></span>
+                    <p>"C: Definitely Declining"</p>
+                  </li>
+                  <li style="--color: #d9838d; opacity: 0.5">
+                    <span class="swatch"></span>
+                    <p>"D: Hazardous"</p>
+                  </li>
+                  <li style="--color: #000000; opacity: 0.5">
+                    <span class="swatch"></span>
+                    <p>"Commercial"</p>
+                  </li>
+                </ul>
+              </div>
+            </section>
+            <section><p style="font-size: 20px;">Investor Purchase & Community Rent Burden</p>
+              <p>Yet, across Boston, we see a growing problem of rising investor purchase rate, exacerbating rent burden. This correlation is particularly true since the financial crisis in historically redlined neighborhoods such as Mattapan (2023 Rent Burden = 64%; Investor Sales 100%), South Boston Waterfront (2023 Rent Burden = 39%; Investor Sales = 31%), North End (2023 Rent Burden = 34%; Investor Sales = 26%). 
+              </p>
+              <p>Along with the increase of rent burden, we also observe significant change in the neighborhood demographics, especially with education level, a key indicator of gentrification.
+                From 2015 to 2023, there has been a 25% increase in the population that holds a Bachelor's degree or higher in the entirety of Suffolk county.
+                While housing is becoming an asset class for corporations, longtime residents are forced out.
+                </p>
+                <div class="legend-container">
+                <ul class="legend">
+                  <p>Rent Burden</p>
+                  {#each rentBurdenLabels as d}
+                    <li style="--color: {d.color}">
+                      <span class="swatch"></span>
+                      <p>{d.label}</p>
+                    </li>
+                  {/each}
+                </ul> 
+                <ul class="legend">
+                  <p>Investor Purchases</p>
+                  <li><span class="circle-swatch" style="width:4px; height:4px;"></span><p>0%</p></li>
+                  <li><span class="circle-swatch" style="width:8px; height:8px;"></span><p>5%</p></li>
+                  <li><span class="circle-swatch" style="width:12px; height:12px;"></span><p>20%</p></li>
+                  <li><span class="circle-swatch" style="width:16px; height:16px;"></span><p>30%</p></li>
+                  <li><span class="circle-swatch" style="width:20px; height:20px;"></span><p>40%</p></li>
+                  <li><span class="circle-swatch" style="width:24px; height:24px;"></span><p>100%</p></li>
+                </ul>  
+              </div>             
+            </section>
+            <section><p style="font-size: 20px;">Arrests per 1000 (2020-2024))</p>
+              <p>Scholars like <a href="https://www.ucpress.edu/books/golden-gulag/paper">Ruth Wilson Gilmore (2007)</a> have argued that criminalization serves as a tool to justify state violence and the containment of marginalized populations. 
+                By criminalizing certain behaviors and populations, police provide real estate developers with justification for urban renewal efforts that erase community histories and identities.
+                The disproportionate arrest density is particularly stark in neighborhoods where <a href="https://www.bostonplans.org/real-estate/urban-renewal/overview">Boston's Urban Renewal</a> plans are extended, such as Downtown, West End, and Roxbury, in addition to neighborhoods with large Black and migrant populations, such as Mattapan and Dorchester.
+                </p>
+                <ul class="legend">
+                  <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of 311 calls</p></li>
+                  <li style="--color: blue"><span class="swatch"></span><p></p></li>
+                  <li style="--color: cyan"><span class="swatch"></span><p></p></li>
+                  <li style="--color: lime"><span class="swatch"></span><p></p></li>
+                  <li style="--color: yellow"><span class="swatch"></span><p></p></li>
+                  <li style="--color: red"><span class="swatch"></span><p>Highest density of 311 calls</p></li>
+                </ul>
+                
+            </section>
+            <section><p style="font-size: 20px;">311 Service Requests Assigned to Police (2015-2024)</p>
+              <p>Nuisance ordinances are framed as neutral regulatory measures intended to preserve public order, yet their application disproportionately affects Black and low-income communities. 
+                By labeling properties as “nuisances” due to alleged criminal activity, excessive noise, or even repeated police calls, municipalities establish legal grounds for eviction and redevelopment. 
+                As <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/anti.12792">Terra Graziani et al. (2021)</a> argue, these laws operate as “borderland” mechanisms, defining and reshaping urban space to facilitate capital investment. 
+                </p>
+                <p>
+                We have noticed that, across Boston, 311 service requests for noise complaints increased drastically since 2015. North End, a historically redlined neighborhood currently undergoing urban renewal, demonstrates a low arrest rate, but a high density of 311 noise complaint requests. 
+                </p>
+                <ul class="legend">
+                  <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of 311 calls</p></li>
+                  <li style="--color: blue"><span class="swatch"></span><p></p></li>
+                  <li style="--color: cyan"><span class="swatch"></span><p></p></li>
+                  <li style="--color: lime"><span class="swatch"></span><p></p></li>
+                  <li style="--color: yellow"><span class="swatch"></span><p></p></li>
+                  <li style="--color: red"><span class="swatch"></span><p>Highest density of 311 calls</p></li>
+                </ul>
+                
+            </section>
+            <section><p style="font-size: 20px;">Building and Property Violations</p>
+              <p>Buildings & property violations seem to be on the rise, showing a similar pattern. These non-criminal, auxiliary policing is more clearly associated with early-stage urban “renewal” than already wealthy neighborhoods, such as North End, East Boston, and Dorchester.</p>
+              <ul class="legend">
+                <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of violations</p></li>
+                <li style="--color: purple"><span class="swatch"></span><p></p></li>
+                <li style="--color: magenta"><span class="swatch"></span><p></p></li>
+                <li style="--color: orange"><span class="swatch"></span><p></p></li>
+                <li style="--color: gold"><span class="swatch"></span><p></p></li>
+                <li style="--color: red"><span class="swatch"></span><p>Highest density of violations</p></li>
+              </ul>
+              
+            </section>
+          </div>
+        </Scroller>
       </div>
     <!-- end of content from svelte-scroller tutorial -->
     </div>
@@ -617,7 +830,7 @@
     height: 100%;
   }
   
-  #scrollerMap {
+  #scrollerMap, #roxburyMap {
     flex: 1;
     width: calc(50% - 1em);
     height: 400px;
@@ -626,7 +839,7 @@
     z-index: 0;
   }
   
-  #scrollerMap svg {
+  #scrollerMap svg, #roxburyMap svg {
     position: absolute;
     z-index: 1;
     flex: 1;
