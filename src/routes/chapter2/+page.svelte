@@ -205,7 +205,7 @@
       'paint': {
         'heatmap-weight': 1,
         'heatmap-intensity': 1,
-        'heatmap-radius': 1,
+        'heatmap-radius': 2,
         'heatmap-opacity': 0, 
         'heatmap-color': [
           'interpolate',
@@ -259,13 +259,13 @@
           scrollerMap.setPaintProperty('circleInvestorPurchases', 'circle-opacity', 0);
         }
       }
-      // if (scrollerMap.getLayer('heatmapEvictions')) {
-      //   if (index === 5) {
-      //     scrollerMap.setPaintProperty('heatmapEvictions', 'heatmap-opacity', 0.8);
-      //   } else {
-      //     scrollerMap.setPaintProperty('heatmapEvictions', 'heatmap-opacity', 0);
-      //   }
-      // }
+      if (scrollerMap.getLayer('heatmapEvictions')) {
+        if (index === 5) {
+          scrollerMap.setPaintProperty('heatmapEvictions', 'heatmap-opacity', 0.8);
+        } else {
+          scrollerMap.setPaintProperty('heatmapEvictions', 'heatmap-opacity', 0);
+        }
+      }
     }
 
     let svgEl;
@@ -531,7 +531,7 @@
               </ul>
               
             </section>
-            <!-- <section><p style="font-size: 20px;">Eviction filings (2020-2022)</p>
+            <section><p style="font-size: 20px;">Eviction filings (2020-2022)</p>
               <p></p>
                 <ul class="legend">
                   <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of eviction filings</p></li>
@@ -542,7 +542,7 @@
                   <li style="--color: red"><span class="swatch"></span><p>Highest density of eviction filings</p></li>
                 </ul>
                 
-            </section> -->
+            </section>
           </div>
         </Scroller>
       </div>
