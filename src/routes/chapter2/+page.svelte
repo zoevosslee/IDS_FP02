@@ -286,6 +286,7 @@
     }
 
     let svgEl;
+    let svgElN;
   
     $: if (svgEl && index == 0) {
       const paths = d3.select(svgEl).selectAll('path');
@@ -295,6 +296,24 @@
           .duration(500)
           .style('fill-opacity', 0);
       } else if (offset > 0.2) {
+        paths.transition()
+          .duration(500)
+          .style('fill-opacity', 0.6);
+      } else {
+        paths.transition()
+          .duration(500)
+          .style('fill-opacity', 0.2);
+      }
+    }
+
+    $: if (svgElN && indexN == 0) {
+      const paths = d3.select(svgElN).selectAll('path');
+  
+      if (offsetN > 0.8) {
+        paths.transition()
+          .duration(500)
+          .style('fill-opacity', 0);
+      } else if (offsetN > 0.2) {
         paths.transition()
           .duration(500)
           .style('fill-opacity', 0.6);
@@ -564,6 +583,8 @@
             </section>
           </div>
         </Scroller>
+        <h4>Neighborhood Narrative: Roxbury</h4>
+        <p>Let's take a deeper look at how the forces of policing, displacement, and resistance interact in one neighborhood. Roxbury is home to a large portion of Boston’s Black community, and has long served as a site for social movements, including tenants’ organizing and civil rights advocacy. It is also the only neighborhood that is home to two Boston Police Department locations, including a district police station and the Boston Police Headquarters.</p>
         <Scroller
           {top}
           {threshold}
@@ -586,14 +607,14 @@
             <div style="position: relative; flex-grow: 1;">
 
               <div id="roxburyMap">
-                <!-- <svg id="redlineSvg" bind:this={svgEl}>
-                  {#key scrollerMapViewChanged}
+                <svg id="redlineSvg" bind:this={svgElN}>
+                  {#key roxburyMapViewChanged}
                     {#if redlining}
                       {#each redlining.features as feature}
                         <path
-                        d={geoJSONPolygonToPath(feature)}
+                        d={geoJSONPolygonToPath(feature, roxburyMap)}
                         fill={feature.properties.fill}
-                        fill-opacity= {(offset > 0.2 && offset < 0.8 && index == 0)? `0.6` : `0`}
+                        fill-opacity= {(offsetN > 0.2 && offsetN < 0.8 && indexN == 0)? `0.6` : `0`}
                         stroke="#000000"
                         stroke-opacity="0.5"
                         stroke-width="0"
@@ -603,7 +624,7 @@
                       {/each}
                     {/if}
                   {/key}
-                </svg> -->
+                </svg>
 
                 <svg id="roxburyNeighborhoodBoundary">
                   {#key roxburyMapViewChanged}
@@ -644,9 +665,9 @@
             </div>
           </div>
           <div slot="foreground" style="padding: 0 0 0 50%;">
-            <section><p style="font-size: 20px;">History of Redlining in Boston</p>
+            <section><p style="font-size: 20px;">Redlining</p>
               <p>
-              Redlining created barriers for African American and immigrant families in neighborhoods considered “hazardous,” “undesirable,” or “inharmonious” to access mortgage financing. Communities of historically redlined neighborhoods continue to live and negotiate with the long-term impacts of systemic exclusion, preserving what is precious to them.</p>
+                Roxbury was historically redlined by the federal agency Home Owner’s Loan Corporation (HOLC). The HOLC characterized Roxbury as majority foreign-born and Black, as well as “heavy traffic,” “unimproved property,” and “obsolescence.” <a href="https://dsl.richmond.edu/panorama/redlining" target="_blank" rel="noopener noreferrer">(Source)</a></p>
               <div>
                 <ul class="legend">
                   <li style="--color: #76a865; opacity: 0.5">
