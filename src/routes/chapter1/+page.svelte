@@ -3,6 +3,8 @@
     import { line, curveBasis } from "d3-shape";
     import { onMount, onDestroy } from "svelte";
     import { base } from '$app/paths';
+    import FlowchartEmbed from '$lib/FlowchartEmbed.svelte';
+
 
 let width = 800;
 let height = 4600;
@@ -387,7 +389,30 @@ opacity="1"
                   on:mouseout={() => (tooltipVisible = false)}
                 />
               {/each}
+
+
+
             </svg>
+
+            {#if hoveredFlowerImage1}
+            <div
+              class="side-image-box"
+              style="top: {hoveredFlower?.y - 40}px; left: 50%; transform: translateX(150px);"
+              >
+              {#if hoveredFlowerText}
+                <div class="hovered-text">
+                  {@html hoveredFlowerText}
+                </div>
+              {/if}
+              <div class="image-stack">
+                <img src={hoveredFlowerImage1} alt="First Image" />
+                {#if hoveredFlowerImage2}
+                  <img src={hoveredFlowerImage2} alt="Second Image" class="overlapping-image" />
+                {/if}
+              </div>
+            </div>
+          {/if}
+          
             {#if flower1993Visible}
             <div 
               class="flower-box" 
@@ -505,21 +530,7 @@ opacity="1"
         </div>
       {/if}
 
-          {#if hoveredFlowerImage1}
-          <div class="side-image-box">
-            {#if hoveredFlowerText}
-              <div class="hovered-text">
-                {@html hoveredFlowerText}
-              </div>
-            {/if}
-            <div class="image-stack">
-              <img src={hoveredFlowerImage1} alt="First Image" />
-              {#if hoveredFlowerImage2}
-                <img src={hoveredFlowerImage2} alt="Second Image" class="overlapping-image" />
-              {/if}
-            </div>
-          </div>
-        {/if}
+
         
         
 
@@ -533,15 +544,42 @@ opacity="1"
       {/if}
       
       {#if currentYearPhase?.phase === "rent" && !suppressScrollyBox}
-        <div class="scrolly-box rent-burden-box">
-          <h5>In that same year, {rentBurdenRates[currentYearPhase.year]}% of Boston's households were rent-burdened.</h5>
+      <div class="scrolly-box rent-burden-box">
+        {#if currentYearPhase.year === 1990}
+          <h5>In 1990, 28% of Boston households were rent burdened. Housing costs were beginning to outpace wages, especially for working-class residents.</h5>
           <div class="house-grid">
             {#each Array(100) as _, index}
-              <div class="house {index < rentBurdenRates[currentYearPhase.year] ? 'filled' : ''}"></div>
+              <div class="house {index < 28 ? 'filled' : ''}"></div>
             {/each}
           </div>
-        </div>
-      {/if}
+    
+        {:else if currentYearPhase.year === 2000}
+          <h5>By 2000, rent burden had risen to 40%. This marked the beginning of a rapid increase in housing insecurity across many Boston neighborhoods.</h5>
+          <div class="house-grid">
+            {#each Array(100) as _, index}
+              <div class="house {index < 40 ? 'filled' : ''}"></div>
+            {/each}
+          </div>
+    
+        {:else if currentYearPhase.year === 2010}
+          <h5>In 2010, nearly half of renters (48%) were burdened by rent. The aftermath of the foreclosure crisis pushed many households into the rental market.</h5>
+          <div class="house-grid">
+            {#each Array(100) as _, index}
+              <div class="house {index < 48 ? 'filled' : ''}"></div>
+            {/each}
+          </div>
+    
+        {:else if currentYearPhase.year === 2020}
+          <h5>By 2020, rent burden remained high at 46%, even as wages stagnated. The pandemic further exposed deep inequities in housing access.</h5>
+          <div class="house-grid">
+            {#each Array(100) as _, index}
+              <div class="house {index < 46 ? 'filled' : ''}"></div>
+            {/each}
+          </div>
+        {/if}
+      </div>
+    {/if}
+    
       
       
 
@@ -585,22 +623,22 @@ opacity="1"
           
         </div> <!-- .chart -->
 
-
-        <div class="next-chapter-link">
-            <a href="{base}/chapter2">
-              ↓ Chapter 2: Map Exploration
-            </a>
+          <div class="flowchart-wrapper">
+            <svelte:component this={FlowchartEmbed} />
           </div>
-      </div> <!-- .chart-wrapper -->
-    </div> <!-- .container -->
-
-      
-  </div> <!-- #home-page -->
-  
+        
+        <div class="next-chapter-link">
+          <a href="{base}/chapter2">
+            ↓ Chapter 2: Map Exploration
+          </a>
+        </div>
+        </div> <!-- .chart-wrapper -->
+        </div> <!-- .container -->
+        </div> <!-- #home-page -->
   <style>
 
 .next-chapter-link{
-  margin-top: 40rem; /* 👈 Add this to push it down */
+  margin-top: 127rem; /* 👈 Add this to push it down */
   text-align: center;
   font-family: 'Utendo', sans-serif;
   font-size: 1.2rem;
@@ -611,7 +649,7 @@ opacity="1"
 
 .final-scrolly-box {
   position: absolute;
-  top: 4700px; /* 👈 tweak this based on how tall your chart actually is */
+  top: 4800px; /* 👈 tweak this based on how tall your chart actually is */
   justify-content:center;
   transform: translateX(-50%);
   width: 100%;
@@ -624,6 +662,17 @@ opacity="1"
   text-align: center;
   opacity: 0;
   animation: fadeSlideUp 1.5s ease forwards;
+}
+
+.flowchart-wrapper {
+  position: absolute;
+  top: 5400px;
+  width: 100%;
+  margin: 0 auto; /* center it */
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 
@@ -687,11 +736,12 @@ opacity="1"
   margin-bottom:2rem;
 }
 .side-image-box {
-  position: fixed;
-  top: 17%;
+  position: absolute;
   bottom:10%;
   right: 10%;
-  width: 40%;
+  width: 200%;
+  max-width: 900px;
+  min-width:600px;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -703,7 +753,7 @@ opacity="1"
 /* Text box styling */
 .hovered-text {
   order: -1; /* Text comes first */
-  width: 50%; /* Wider text box */
+  width: 40%; /* Wider text box */
   padding: 1rem;
   background: rgba(255,255,255,0.85);
   border-radius: 8px;
@@ -725,7 +775,6 @@ opacity="1"
 /* For the images */
 .side-image-box img {
   width: 100%;
-
   height: auto;
   border-radius: 6px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
@@ -833,6 +882,7 @@ html {
 }
 
   .chart {
+    position:relative;
     width: 1000px;
     height: auto;
 

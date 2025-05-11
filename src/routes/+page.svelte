@@ -5,14 +5,15 @@
 <div class="landing-page">
     <div class="background-overlay"></div>
     <div class="landing-content">
-        <div class="flower-image"></div>
         <div class="flower-image2"></div>
 
         <div class="landing-section">
-            <h6>Rent is a Trap</h6>
-            <p class="subtitle">Exploring the intersections of policing, displacement, and community resistance.</p>
+            <h6>Matrix.</h6>
+            <h6>Margins. </h6>
+            <h6>Movements.</h6>
+            <p class="subtitle">Exploring the intersections of policing, displacement, and community resistance in Boston.</p>
             <p class="authors">A data story told by Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, and Zoe Voss Lee</p>
-            <p class="date">April 2025</p>
+            <p class="date">May 2025</p>
           </div>
           
   
