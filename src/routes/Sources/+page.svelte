@@ -96,12 +96,52 @@
       </p>
     </div>
   <div>
+
+    <h2>Chapter 2: Data Sources</h2>
+<p>
+  <strong>Mapping Inequality</strong>
+  <a href="https://dsl.richmond.edu/panorama/redlining" target="_blank" rel="noopener noreferrer">
+    Redlining in New Deal America
+  </a><br>
+  • Provided historical maps of redlining in Boston.
+</p>
+
+<p>
+<strong>Boston Police Department (2020)</strong> 
+  <a href="https://www.boston.gov/departments/police" target="_blank" rel="noopener noreferrer">
+    Arrest data
+  </a><br>
+  • Provided data on police arrests in Boston.
+</p>
+
+<p>
+<strong>American Community Survey (2019-2023)</strong> 
+  <a href="https://data.census.gov/" target="_blank" rel="noopener noreferrer">
+    Rent burden rate data
+  </a><br>
+  • Provided data on rent burden rates in Boston neighborhoods.
+</p>
+
+<p>
+<strong>Warren Group</strong> 
+  <br>
+  • Provided data on investor purchases of residential properties in Boston.
+</p>
+
+<p>
+<strong>MAPC</strong> 
+  <br>
+  • Eviction data.
+</p>
+
     <p>
         Portions of code formatting and debugging were supported by OpenAI’s ChatGPT, GPT-4o version.
     </p>
+
   </div>
   </div>
 </div>
+
 
 <style>
   .text-content p {
