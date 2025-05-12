@@ -822,15 +822,6 @@
           bind:progress={progressN}
         >
           <div slot="background">
-            <p style="font-size:small;">these sliders are for debug -Nicola</p>
-            <p>current section: <strong>{indexN + 1}/{countN}</strong></p>
-            <progress value="{countN ? (indexN + 1) / countN : 0}"></progress>
-    
-            <p>offset in current section</p>
-            <progress value={offsetN || 0}></progress>
-    
-            <p>total progress</p>
-            <progress value={progressN || 0}></progress>
             <div style="position: relative; flex-grow: 1;">
 
               <div id="roxburyMap">
@@ -1036,6 +1027,7 @@
               </div>
               <p>In addition to the hotspots noted in earlier data—near Northeastern University and surrounding Malcolm X Park—we see a large concentration of evictions along the edge of Franklin Park. This park has been called <a href="https://baystatebanner.com/2025/03/12/franklin-park-bostons-urban-oasis-for-generations/" target="_blank" rel="noopener noreferrer">“the shrine of Black golf in Boston,”</a>, with many local residents caring for the park themselves. The City of Boston just unveiled a $28 million renovation plan for the park, the <a href="https://www.boston.gov/departments/parks-and-recreation/franklin-park-action-plan#about" target="_blank" rel="noopener noreferrer">Franklin Park Action Plan</a>. While some groups have commended the involvement of the community in the creation of the Action Plan, groups like the Franklin Park Defenders are speaking out against the planned <a href="https://www.franklinparkdefenders.com/faqs" target="_blank" rel="noopener noreferrer">privatization of the park’s White Stadium, which was not a part of the approved plan for the park</a>. Our data shows that these development plans are already triggering displacement of residents through speculation triggering property value increases.
               </p>
+              <div style="height:19.5rem"></div>
               
                 
             </section>
@@ -1147,7 +1139,7 @@
   
   /* styling from svelte-scroller tutorial */
   .scroller {
-          padding: 0 100px 0 0;
+          padding: 0 100px 50px 0;
       }
       
       [slot="background"] {
