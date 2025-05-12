@@ -177,7 +177,7 @@
 
 <p><a href="https://citationsneeded.medium.com/news-brief-detailing-the-connection-between-gentrification-and-racist-police-harassment-468b7ac615b1" target="_blank"><em>News Brief: Detailing the Connection Between Gentrification and Racist Police Harassment</em></a> (Citation Needed, 2020).</p>
 
-<h3>Listen</h3>
+<h3>Join</h3>
 
 <p><a href="https://www.reclaimroxbury.org/" target="_blank">Reclaim Roxbury</a></p>
 
