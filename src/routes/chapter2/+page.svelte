@@ -85,7 +85,17 @@
       scrollerMap.addSource('investorPurchases', {
         type: 'geojson',
         data: investorPurchases
-      });      
+      });    
+      
+      roxburyMap.addSource('rentBurden', {
+        type: 'geojson',
+        data: rentBurden
+      });
+
+      roxburyMap.addSource('investorPurchases', {
+        type: 'geojson',
+        data: investorPurchases
+      }); 
 
       scrollerMap.addSource('points311', {
         type: 'geojson',
@@ -122,6 +132,46 @@
       });
 
       scrollerMap.addLayer({
+        'id': 'circleInvestorPurchases',
+        'type': 'circle',
+        'source': 'investorPurchases',
+        'paint': {
+          'circle-radius': [
+            'interpolate',
+            ['linear'],
+            ['get', 'investor_sales_pct'],
+            0, 4,
+            0.05, 6,
+            0.20, 8,
+            0.30, 10,
+            0.40, 12,
+            1, 14
+          ],
+          'circle-color': '#8790BC',
+          'circle-opacity': 0
+        }
+      });
+
+      roxburyMap.addLayer({
+        'id': 'choroplethRentBurden',
+        'type': 'fill',
+        'source': 'rentBurden',
+        'paint': {
+          'fill-color': [
+            'interpolate',
+            ['linear'],
+            ['get', 'Neighborhood_RentBurden'], 
+            0.25, '#E3BFBE',
+            0.35, '#D6A2A1',
+            0.45, '#CA8584',
+            0.55, '#B55554',
+            0.65, '#A12624'
+          ],
+          'fill-opacity': 0
+        }
+      });
+
+      roxburyMap.addLayer({
         'id': 'circleInvestorPurchases',
         'type': 'circle',
         'source': 'investorPurchases',
@@ -283,6 +333,44 @@
           scrollerMap.setPaintProperty('heatmapEvictions', 'heatmap-opacity', 0);
         }
       }
+    }
+
+    $: if (countN !== undefined && roxburyMap) {
+      // if (scrollerMap.getLayer('choroplethArrests')) {
+      //   if (index === 2) {
+      //     scrollerMap.setPaintProperty('choroplethArrests', 'fill-opacity', 1);
+      //   } else {
+      //     scrollerMap.setPaintProperty('choroplethArrests', 'fill-opacity', 0);
+      //   }
+      // }
+      // if (scrollerMap.getLayer('heatmap311') && scrollerMap.getLayer('heatmapViolations')) {
+      //   if (index === 3) {
+      //     scrollerMap.setPaintProperty('heatmap311', 'heatmap-opacity', 0.8);
+      //     scrollerMap.setPaintProperty('heatmapViolations', 'heatmap-opacity', 0);
+      //   } else if (index === 4) {
+      //     scrollerMap.setPaintProperty('heatmap311', 'heatmap-opacity', 0);
+      //     scrollerMap.setPaintProperty('heatmapViolations', 'heatmap-opacity', 0.8);
+      //   } else {
+      //     scrollerMap.setPaintProperty('heatmap311', 'heatmap-opacity', 0);
+      //     scrollerMap.setPaintProperty('heatmapViolations', 'heatmap-opacity', 0);
+      //   }
+      // }
+      if (roxburyMap.getLayer('choroplethRentBurden') && roxburyMap.getLayer('circleInvestorPurchases')) {
+        if (indexN === 1) {
+          roxburyMap.setPaintProperty('choroplethRentBurden', 'fill-opacity', 1);
+          roxburyMap.setPaintProperty('circleInvestorPurchases', 'circle-opacity', 1);
+        } else {
+          roxburyMap.setPaintProperty('choroplethRentBurden', 'fill-opacity', 0);
+          roxburyMap.setPaintProperty('circleInvestorPurchases', 'circle-opacity', 0);
+        }
+      }
+      // if (scrollerMap.getLayer('heatmapEvictions')) {
+      //   if (index === 5) {
+      //     scrollerMap.setPaintProperty('heatmapEvictions', 'heatmap-opacity', 0.8);
+      //   } else {
+      //     scrollerMap.setPaintProperty('heatmapEvictions', 'heatmap-opacity', 0);
+      //   }
+      // }
     }
 
     let svgEl;
@@ -494,12 +582,13 @@
                 </ul>
               </div>
             </section>
-            <section><p style="font-size: 20px;">Investor Purchase & Community Rent Burden</p>
+            <section><p style="font-size: 20px;">Rent Burden & Investor Purchases</p>
               <p>Yet, across Boston, we see a growing problem of rising investor purchase rate, exacerbating rent burden. This correlation is particularly true since the financial crisis in historically redlined neighborhoods such as Mattapan (2023 Rent Burden = 64%; Investor Sales 100%), South Boston Waterfront (2023 Rent Burden = 39%; Investor Sales = 31%), North End (2023 Rent Burden = 34%; Investor Sales = 26%). 
               </p>
               <p>Along with the increase of rent burden, we also observe significant change in the neighborhood demographics, especially with education level, a key indicator of gentrification.
                 From 2015 to 2023, there has been a 25% increase in the population that holds a Bachelor's degree or higher in the entirety of Suffolk county.
                 While housing is becoming an asset class for corporations, longtime residents are forced out.
+
                 </p>
                 <div class="legend-container">
                 <ul class="legend">
@@ -694,11 +783,13 @@
               </div>
             </section>
             <section><p style="font-size: 20px;">Investor Purchase & Community Rent Burden</p>
-              <p>Yet, across Boston, we see a growing problem of rising investor purchase rate, exacerbating rent burden. This correlation is particularly true since the financial crisis in historically redlined neighborhoods such as Mattapan (2023 Rent Burden = 64%; Investor Sales 100%), South Boston Waterfront (2023 Rent Burden = 39%; Investor Sales = 31%), North End (2023 Rent Burden = 34%; Investor Sales = 26%). 
-              </p>
-              <p>Along with the increase of rent burden, we also observe significant change in the neighborhood demographics, especially with education level, a key indicator of gentrification.
-                From 2015 to 2023, there has been a 25% increase in the population that holds a Bachelor's degree or higher in the entirety of Suffolk county.
-                While housing is becoming an asset class for corporations, longtime residents are forced out.
+              <p>
+                The majority (54%) of Roxbury residents are rent-burdened, and 16% of all residential property sales (2000-2022) were purchased by investors.
+                Housing prices in Roxbury <a href="https://huntnewsnu.com/50562/city/roxbury-residents-face-gentrification/" target="_blank" rel="noopener noreferrer">rose 70% between 2010 and 2015</a>, nearly double the city average.
+                <a href="https://storymaps.arcgis.com/stories/c6352b5c740c40bfb3df33cab6eabb85" target="_blank" rel="noopener noreferrer">Northeastern University is a large contributor to gentrification in Roxbury</a>,
+                admitting more students than it can house and encroaching on the neighborhood with new development projects.
+                Grassroots organizers and movements like <a href="https://www.reclaimroxbury.org/mission-and-vision" target="_blank" rel="noopener noreferrer">Reclaim Roxbury</a> are fighting to resist displacement.
+                There is an <a href="https://baystatebanner.com/2023/11/22/petition-aims-to-resist-planned-luxury-housing-on-blue-hill-avenue/" target="_blank" rel="noopener noreferrer">ongoing movement</a> to resist a luxury development on Blue Hill Ave, which will only provide 5 affordable housing units.
                 </p>
                 <div class="legend-container">
                 <ul class="legend">
