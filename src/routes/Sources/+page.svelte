@@ -18,6 +18,14 @@
       <h2>Chapter 1: Sources</h2>
 
       <p>
+        <strong>Boston Indicators (2023).</strong>
+        <a href="https://www.bostonindicators.org/indicators/housing#:~:text=Housing%20cost%20burdens%20have%20increased,the%20same%20in%202009%2D2013" target="_blank" rel="noopener noreferrer">
+          Housing Indicators
+        </a><br>
+        • Source for Boston’s 1990 rent burden rate.
+      </p>
+
+      <p>
         <strong>City Life/Vida Urbana (2020).</strong> 
         <a href="https://d3n8a8pro7vhmx.cloudfront.net/themes/5eee7e564445ea4f9a6f3080/attachments/original/1592786979/EvictionReport_Final_Spreads.pdf?1592786979" target="_blank" rel="noopener noreferrer">
           Evicted for Being Poor
@@ -30,7 +38,13 @@
         <strong>Desmond, Matthew.</strong> <em>Evicted: Poverty and Profit in the American City</em>.<br>
         • Informed the broader framing around evictions, particularly the role that auxiliary policing plays in eviction proceedings.<br>
       </p>
-
+      <p>
+        <strong>Eviction Lab (2022).</strong>
+        <a href="https://evictionlab.org/rising-rents-and-evictions-linked-to-premature-death/" target="_blank" rel="noopener noreferrer">
+          Rising Rents and Evictions Linked to Premature Death
+        </a><br>
+        • Cited to demonstrate the connection between rent burden, eviction risk, and public health outcomes.
+      </p>
       <p>
         <strong>NPR (2016).</strong> 
         <a href="https://www.npr.org/2016/06/29/482615176/for-low-income-victims-nuisance-laws-force-ultimatum-silence-or-eviction" target="_blank" rel="noopener noreferrer">
@@ -96,6 +110,9 @@
       </p>
     </div>
   <div>
+    <p>
+        Cover Image Source: <a href="https://bostonresearchcenter.org/digitizing-bostons-powerful-chinatown-neighborhood-history/" target="_blank" rel="noopener noreferrer">Northeastern University Library Boston Research Center</a>
+    </p>
     <p>
         Portions of code formatting and debugging were supported by OpenAI’s ChatGPT, GPT-4o version.
     </p>

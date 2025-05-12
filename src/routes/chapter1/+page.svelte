@@ -134,6 +134,14 @@ let data = [
       1990: 0.05,
     }
   
+    let familiesHoused = {};
+$: {
+  data.forEach(d => {
+    if ([1990, 2000, 2010, 2020].includes(d.year)) {
+      familiesHoused[d.year] = Math.floor(d.budget / 34000);
+    }
+  });
+}
     
 
   
@@ -597,45 +605,53 @@ The Chinatown Community Land Trust (CCLT) was formed in 2015 by residents, organ
         
         
         
-        {#if currentYearPhase?.phase === "police" && !suppressScrollyBox}
-        <div class="scrolly-box">
-          <h5>In {currentYearPhase.year}, Boston's police budget was ${data.find(d => d.year === currentYearPhase.year)?.budget.toLocaleString()}.</h5>
-        </div>
-      {/if}
+{#if currentYearPhase?.phase === "police" && !suppressScrollyBox}
+  <div class="scrolly-box">
+    <h5>
+      In {currentYearPhase.year}, Boston's police budget was ${data.find(d => d.year === currentYearPhase.year)?.budget.toLocaleString()}.
+    </h5>
+
+    <p style="margin-top: 1rem;">
+      That’s enough to house approximately <strong>{familiesHoused[currentYearPhase.year]?.toLocaleString()}</strong> families for a year.*
+    </p>
+
+    <div class="dense-house-grid">
+      {#each Array(familiesHoused[currentYearPhase.year]) as _}
+        <div class="mini-house"></div>
+      {/each}
+    </div>
+
+        <p style="font-size: 0.8rem; margin-top: 0.5rem;">
+          *Assumes $34,000 annual housing cost per family. Based on the <a href="https://www.rentdata.org/states/massachusetts/2024?utm_source=chatgpt.com#google_vignette" target="_blank" style="color:#A12624; text-decoration: underline;">Fair Market Rent rate</a> ($2,827) for a 2-bedroom apartment in Boston.
+        </p>
+  </div>
+{/if}
+
       
       {#if currentYearPhase?.phase === "rent" && !suppressScrollyBox}
       <div class="scrolly-box rent-burden-box">
         {#if currentYearPhase.year === 1990}
-          <h5>In 1990, 28% of Boston households were rent burdened. Housing costs were beginning to outpace wages, especially for working-class residents.</h5>
-          <div class="house-grid">
-            {#each Array(100) as _, index}
-              <div class="house {index < 28 ? 'filled' : ''}"></div>
-            {/each}
-          </div>
+          <h5>In 1990, 28% of Boston households were rent burdened. </h5>
+          <p>
+            While rent burden is an imperfect metric, it is closely linked to eviction rates and housing instability. <a href="https://evictionlab.org/rising-rents-and-evictions-linked-to-premature-death/" target="_blank" style="color:#A12624; text-decoration: underline;">Studies have shown</a> that rising rents and evictions are associated with premature death and displacement. In 1990, formal eviction data is not available for the city of Boston.
+          </p>
     
         {:else if currentYearPhase.year === 2000}
-          <h5>By 2000, rent burden had risen to 40%. This marked the beginning of a rapid increase in housing insecurity across many Boston neighborhoods.</h5>
-          <div class="house-grid">
-            {#each Array(100) as _, index}
-              <div class="house {index < 40 ? 'filled' : ''}"></div>
-            {/each}
-          </div>
+          <h5 style>By 2000, rent burden had risen to 40%. This marked the beginning of a rapid increase in housing insecurity across many Boston neighborhoods.</h5>
+
     
           {:else if currentYearPhase.year === 2010}
           <h5>Between 2010 and 2019, landlords filed over 50,000 evictions in Boston Housing Court — an average of 5,451 per year.</h5>
-          <p style="margin-top: 1rem;">
-            These filings weren’t spread evenly across the city. Some neighborhoods were hit much harder than others.
-          </p>
+
+                    <h5 style="margin-top: 1rem;">From 2014–2016, Roxbury made up 27.1% of all eviction filings despite having just 10.8% of Boston’s rental housing.</h5>
+        <h5 style="margin-top: 1rem;">
+          Mattapan and Dorchester also faced high filing rates, while filings were lowest in wealthier, whiter areas like Back Bay and Central Boston.
+        </h5>
+        <h5 style="margin-top: 1rem;">
+          The geography of eviction in Boston mirrors racial segregation, rent burden, and income inequality—with Black and Latinx renters bearing the brunt. <span style="font-size: 0.9rem;">Source: CLVU (2020)</span>
+        </h5>
         
 
-        {:else if currentYearPhase.year === 2020}
-        <h5>From 2014–2016, Roxbury made up 27.1% of all eviction filings despite having just 10.8% of Boston’s rental housing.</h5>
-        <p style="margin-top: 1rem;">
-          Mattapan and Dorchester also faced high filing rates, while filings were lowest in wealthier, whiter areas like Back Bay and Central Boston.
-        </p>
-        <p style="margin-top: 1rem;">
-          The geography of eviction in Boston mirrors racial segregation, rent burden, and income inequality—with Black and Latinx renters bearing the brunt. <span style="font-size: 0.9rem;">Source: CLVU (2020)</span>
-        </p>
         
         {/if}
       </div>
@@ -724,6 +740,29 @@ The Chinatown Community Land Trust (CCLT) was formed in 2015 by residents, organ
         </div> <!-- .container -->
         </div> <!-- #home-page -->
   <style>
+
+    .scrolly-box h5 {
+  font-size: 28px;
+}
+
+.dense-house-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 4px); /* ✅ exact fixed width */
+  gap: 1px;
+  background: #fff;
+  padding: 4px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  margin-top: 1rem;
+}
+
+.mini-house {
+  width: 4px;
+  height: 4px;
+  background: #A12624;
+  border-radius: 50%; /* ✅ perfect circle for dot effect */
+}
+
 
 .next-chapter-link{
   margin-top: 127rem; /* 👈 Add this to push it down */
@@ -1011,7 +1050,7 @@ html {
   top: 20%;
   left: 55%;
   transform: translateX(-50%);
-  max-width: 400px;
+  max-width: 1000px;
   padding: 1rem;
   font-family: 'Utendo, sans-serif';
   z-index: 20;
@@ -1080,4 +1119,3 @@ html {
 
 
   </style>
-  
