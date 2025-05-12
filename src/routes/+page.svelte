@@ -50,11 +50,11 @@
         </div>
       </div>
   
-      <div class="next-chapter-link">
+      <!-- <div class="next-chapter-link">
         <a href="{base}/chapter1">
           ↓ Chapter 1: Introduction
         </a>
-      </div>
+      </div> -->
     </div>
   </div>
   

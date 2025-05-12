@@ -51,6 +51,7 @@
       font-size: 0.7rem;
       box-shadow: 0 2px 5px rgba(0,0,0,0.15);
       z-index: 999;
+      padding-bottom: 10rem;
     }
 
     .legend-table {
