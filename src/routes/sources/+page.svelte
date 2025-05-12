@@ -18,6 +18,14 @@
       <h2>Chapter 1: Sources</h2>
 
       <p>
+        <strong>Boston Indicators (2023).</strong>
+        <a href="https://www.bostonindicators.org/indicators/housing#:~:text=Housing%20cost%20burdens%20have%20increased,the%20same%20in%202009%2D2013" target="_blank" rel="noopener noreferrer">
+          Housing Indicators
+        </a><br>
+        • Source for Boston’s 1990 rent burden rate.
+      </p>
+
+      <p>
         <strong>City Life/Vida Urbana (2020).</strong> 
         <a href="https://d3n8a8pro7vhmx.cloudfront.net/themes/5eee7e564445ea4f9a6f3080/attachments/original/1592786979/EvictionReport_Final_Spreads.pdf?1592786979" target="_blank" rel="noopener noreferrer">
           Evicted for Being Poor
@@ -30,7 +38,13 @@
         <strong>Desmond, Matthew.</strong> <em>Evicted: Poverty and Profit in the American City</em>.<br>
         • Informed the broader framing around evictions, particularly the role that auxiliary policing plays in eviction proceedings.<br>
       </p>
-
+      <p>
+        <strong>Eviction Lab (2022).</strong>
+        <a href="https://evictionlab.org/rising-rents-and-evictions-linked-to-premature-death/" target="_blank" rel="noopener noreferrer">
+          Rising Rents and Evictions Linked to Premature Death
+        </a><br>
+        • Cited to demonstrate the connection between rent burden, eviction risk, and public health outcomes.
+      </p>
       <p>
         <strong>NPR (2016).</strong> 
         <a href="https://www.npr.org/2016/06/29/482615176/for-low-income-victims-nuisance-laws-force-ultimatum-silence-or-eviction" target="_blank" rel="noopener noreferrer">
@@ -96,12 +110,55 @@
       </p>
     </div>
   <div>
+
+    <h2>Chapter 2: Data Sources</h2>
+<p>
+  <strong>Mapping Inequality</strong>
+  <a href="https://dsl.richmond.edu/panorama/redlining" target="_blank" rel="noopener noreferrer">
+    Redlining in New Deal America
+  </a><br>
+  • Provided historical maps of redlining in Boston.
+</p>
+
+<p>
+<strong>Boston Police Department (2020)</strong> 
+  <a href="https://www.boston.gov/departments/police" target="_blank" rel="noopener noreferrer">
+    Arrest data
+  </a><br>
+  • Provided data on police arrests in Boston.
+</p>
+
+<p>
+<strong>American Community Survey (2019-2023)</strong> 
+  <a href="https://data.census.gov/" target="_blank" rel="noopener noreferrer">
+    Rent burden rate data
+  </a><br>
+  • Provided data on rent burden rates in Boston neighborhoods.
+</p>
+
+<p>
+<strong>Warren Group</strong> 
+  <br>
+  • Provided data on investor purchases of residential properties in Boston.
+</p>
+
+<p>
+<strong>MAPC</strong> 
+  <br>
+  • Eviction data.
+</p>
+
+    <p>
+        Cover Image Source: <a href="https://bostonresearchcenter.org/digitizing-bostons-powerful-chinatown-neighborhood-history/" target="_blank" rel="noopener noreferrer">Northeastern University Library Boston Research Center</a>
+    </p>
     <p>
         Portions of code formatting and debugging were supported by OpenAI’s ChatGPT, GPT-4o version.
     </p>
+
   </div>
   </div>
 </div>
+
 
 <style>
   .text-content p {

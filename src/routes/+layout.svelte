@@ -9,7 +9,7 @@
       { url: `${base}/chapter2`, title: '2. Mapping Narratives →' },
       { url: `${base}/chapter2-2`, title: '3. Interactive Map →' },
       { url: `${base}/missingdata`, title: '4. Missing Data →' },
-      { url: `${base}/sources`, title: 'Sources' },
+      { url: `${base}/sources`, title: '5. Sources' },
 
     ];
   
