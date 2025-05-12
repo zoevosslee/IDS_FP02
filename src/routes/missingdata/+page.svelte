@@ -1,32 +1,33 @@
 <script>
     import { onMount } from 'svelte';
+    import { base } from '$app/paths';
 
     let stories = [
         { quote: "I have no choice, but to stay. I have nowhere to go. I am old and I don't know English. I have to stay here", source: "Forced from Home Report" },
         {
           quote: "",
-          image: '/protest.jpeg',
+          image: `${base}/protest.jpeg`,
           description: "Housing redevelopment protest on Hefferan Street in the Allston-Brighton section in November 1965",
           source: "Bill Brett, Ollie Noonan Jr./Globe Staff"
         },
         { quote: "It's natural to be scared... but we can't fear stop us from fighting for our home", source: "Lucia Guardado, Honduran abuela in City Life / Vida Urbana" },
         {
           quote: "",
-          image: '/protest2.jpeg',
+          image: `${base}/protest2.jpeg`,
           description: "Anti-urban renewal protestos picketing the Smith Transfer Corp terminal demanding Lenox Street apartments be renovated rather than demolished in April 1968",
           source: "Bill Brett, Ollie Noonan Jr./Globe Staff"
         },
         { quote: "I think it's fair that everyone have the same opportunity to live in places like this, it creates better community, it creates diversity in the city and it creates a more egalotarian system ", source: "Orlando in City Life / Vida Urbana" },
         {
           quote: "",
-          image: '/protest_3.jpeg',
+          image: `${base}/protest_3.jpeg`,
           description: "Members of Homes for All Massachusetts stand out in front of the State House calling for passage of an act to guarantee housing stability during the COVID-19 pandemic in September, 2020.",
           source: "Photo By Nancy Lane/MediaNews Group/Boston Herald"
         },
         { quote: "I am not going nowhere, I am going to stay and I am going to fight", source: "Marshall Cooper in City Life / Vida Urbana" },
         {
           quote: "",
-          image: '/protest_4.jpeg',
+          image: `${base}/protest_4.jpeg`,
           description: "Boston Tent City, an open air camp protesting city housing policies in 1968. In the 1980s the city built a subsidized housing complex known also as Tent City",
           source: "DAN SHEEHAN/GLOBE STAFF"
         },
@@ -34,25 +35,25 @@
         { quote: "We didn't know how to protect our rights before so we just paid whatever the landlord asked us to pay or we have to move to the suburb", source: "Forced from Home: A Human Rights Assessment of Displacement and Evictions in Boston's Chinatown Report" },
         {
           quote: "",
-          image: '/protest_5.jpeg',
+          image: `${base}/protest_5.jpeg`,
           description: "March to promote the 'Campaign of Conscience' against high rents on Centre Street in central Jamaica Plain in 1999",
           source: "Gazatte File Photo"
         },
         {
           quote: "",
-          image: '/protest_6.jpeg',
+          image: `${base}/protest_6.jpeg`,
           description: "Anti-displacement protest in Chinatown, Boston",
           source: "Chinese Progressive Association"
         },
         {
           quote: "",
-          image: '/protest_7.png',
+          image: `${base}/protest_7.png`,
           description: "Saundra Graham speaks into a megaphone suring the occupation of 319th Harvard Commencement June 11, 1970",
           source: "Cambridge Historical Commission"
         },
         {
           quote: "",
-          image: '/protest_8.png',
+          image: `${base}/protest_8.png`,
           description: "Joanne Pelham and Saundra Graham speaking at Police Brutality Hearings at the Cambridge City Council",
           source: "Cambridge Public Library Archives and Special Collections"
         },
