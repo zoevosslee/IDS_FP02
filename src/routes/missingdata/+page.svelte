@@ -14,7 +14,7 @@
         {
           quote: "",
           image: `${base}/protest2.jpeg`,
-          description: "Anti-urban renewal protestos picketing the Smith Transfer Corp terminal demanding Lenox Street apartments be renovated rather than demolished in April 1968",
+          description: "Anti-urban renewal protestors picketing the Smith Transfer Corp terminal demanding Lenox Street apartments be renovated rather than demolished in April 1968",
           source: "Bill Brett, Ollie Noonan Jr./Globe Staff"
         },
         { quote: "I think it's fair that everyone have the same opportunity to live in places like this, it creates better community, it creates diversity in the city and it creates a more egalotarian system ", source: "Orlando in City Life / Vida Urbana" },

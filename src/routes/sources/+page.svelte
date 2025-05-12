@@ -115,7 +115,7 @@
     </div>
   <div>
 
-    <h2>Chapter 2: Data Sources</h2>
+    <h2>Chapter 2: Sources</h2>
 <p>
   <strong>Mapping Inequality</strong>
   <a href="https://dsl.richmond.edu/panorama/redlining" target="_blank" rel="noopener noreferrer">
