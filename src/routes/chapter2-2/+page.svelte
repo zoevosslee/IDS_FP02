@@ -48,6 +48,10 @@
     2015: 'custom-dem-2',
     2023: 'custom-dem-4'
   },
+  terrain5: {
+    2015: 'custom-dem-5',
+    2023:'custom-dem-5'
+  }
 };
 
 
@@ -95,13 +99,22 @@ function applySelectedTerrain() {
   let terrainSource = null;
   let pointLayer = null;
 
+  if (terrainSources[selectedTerrain]) {
+  terrainSource = terrainSources[selectedTerrain][selectedYear];
   if (selectedTerrain === 'terrain1') {
-    terrainSource = selectedYear === 2015 ? 'custom-dem' : 'custom-dem-3';
     pointLayer = selectedYear === 2015 ? 'points-311-layer' : 'points-terrain3-layer';
   } else if (selectedTerrain === 'terrain2') {
-    terrainSource = selectedYear === 2015 ? 'custom-dem-2' : 'custom-dem-4';
     pointLayer = selectedYear === 2015 ? 'points-terrain2-layer' : 'points-terrain4-layer';
+  } if (selectedTerrain === 'terrain5') {
+    pointLayer = 'points-terrain5-layer';
   }
+  console.log('Selected terrain:', selectedTerrain);
+console.log('Setting pointLayer to:', pointLayer);
+
+}
+
+
+
 
   if (terrainSource) {
     map.setTerrain({ source: terrainSource, exaggeration: 0.0015 });
@@ -130,7 +143,8 @@ function applySelectedTerrain() {
     'points-311-layer',
     'points-terrain2-layer',
     'points-terrain3-layer',
-    'points-terrain4-layer'
+    'points-terrain4-layer',
+    'points-terrain5-layer'
   ];
 
   for (const layer of allPointLayers) {
@@ -379,6 +393,23 @@ map.addLayer({
   }
 });
 
+//Terrain 5 points
+map.addSource('points-terrain5', {
+  type: 'geojson',
+  data: `${base}/data/arrests_points_corrected.geojson`
+});
+
+map.addLayer({
+  id: 'points-terrain5-layer',
+  type: 'circle',
+  source: 'points-terrain5',
+  paint: {
+    'circle-radius': 4,
+    'circle-color': '#00ff00',
+    'circle-opacity': 0
+  }
+});
+
 // After adding all points layers
 map.setLayoutProperty('points-311-layer', 'visibility', 'none');
 map.setLayoutProperty('points-terrain2-layer', 'visibility', 'none');
@@ -399,7 +430,8 @@ const pointLayers = [
   'points-311-layer', 
   'points-terrain2-layer', 
   'points-terrain3-layer', 
-  'points-terrain4-layer'
+  'points-terrain4-layer',
+  'points-terrain5-layer'
 ];
 
 // Define labels by layer ID
@@ -407,7 +439,8 @@ const labels = {
   'points-311-layer': 'Calls',
   'points-terrain3-layer': 'Calls',
   'points-terrain2-layer': 'Violations',
-  'points-terrain4-layer': 'Violations'
+  'points-terrain4-layer': 'Violations',
+  'points-terrain5-layer': 'Arrests per 1000'
 };
 
 // Attach events
@@ -434,7 +467,10 @@ for (const layerName of pointLayers) {
       label = 'Calls';
     } else if (layerId === 'points-terrain2-layer' || layerId === 'points-terrain4-layer') {
       label = 'Violations';
-    }
+    } else if (layerId === 'points-terrain5-layer' || layerId === 'points-terrain5-layer') {
+    label = 'Arrests (per 1000 people)';
+  }
+
 
     popup.setLngLat(coords)
          .setHTML(`${label}: ${val}`)
@@ -476,6 +512,16 @@ for (const layerName of pointLayers) {
       tileSize: 512,
       maxzoom: 14
     });
+
+    map.addSource('custom-dem-5', {
+      type: 'raster-dem',
+      url: 'mapbox://claudiatomateo.c06mp2uc', 
+      tileSize: 512,
+      maxzoom: 14
+    });
+
+    console.log('Terrain sources available:', map.getStyle().sources);
+    console.log('Current terrain:', map.getTerrain());
 
 
     function smoothExaggeration(targetExaggeration, duration = 1500) {
@@ -605,10 +651,12 @@ map.moveLayer('highlight-layer');
       <h1>Rent is a Trap!</h1>
       <h2>By Yeonhoo Cho, Nicola Lawford, Claudia Tomateo, Zoe Voss Lee</h2>
     </div>
-    <p>What is the correlation between gentrification and non-criminal policing? 
-      In this visualization, we map indicators of non-criminal policing as vertical heights,
-      and indicators relevant to gentrification as color shades. This is our ground work of exploring the neighborhood trends before
-      we dive into the data analysis of speculative housing market and policing in Boston. 
+    <p>What is the correlation between gentrification and different ways of policing? 
+      In this visualization, we map indicators of policing and auxiliary policing as a topographic terrain,
+      and indicators relevant to gentrification as color shades. Given the diverse definitions for gentrification, we leave it up to you to explore different combinations and create your own ways of analyzing displacement. 
+      For instance, abolitionists such as Ruth Wilson Gilmore and Mariame Kaba would conceptualize gentrification as a carceral logic of spatial control where policing and real estate act to displace racialized and marginalized communities for wealth accumulation; Black activists and scholars would define gentrification as racially driven displacement following the patterns of redlining and state violence; and Indigenous thinkers would frame gentrification as an extension of settler claims to land through aesthetics, dispossession and ownership
+    </p>
+    <p>
       Pan and explore below!
     </p>
 
@@ -634,6 +682,14 @@ map.moveLayer('highlight-layer');
         Building & Property Violations
       </p>
       </label>
+
+      <label>
+        <p>
+        <input type="radio" name="terrain" value="terrain5" bind:group={selectedTerrain} on:change={applySelectedTerrain}>
+        Arrest Density 2020-2024
+        </p>
+      </label>
+      
   
       <label>
         <p>
