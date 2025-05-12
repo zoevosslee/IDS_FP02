@@ -659,7 +659,7 @@ map.moveLayer('highlight-layer');
       </div>
     </div>
     <Legend></Legend>
-    <h4>Our Data Design Choices</h4>
+    <!-- <h4>Our Data Design Choices</h4>
     <p>Above, you can explore 4 gentrification variables: education level (Bachelor’s Degrees or Higher), household median income, percentage of non-Hispanic white population, and percentage of rent burdened population (those who pay more than 30% of income for rent). Given the diverse scholarship on defining gentrification,
       we leave it up to you to explore different possible variables and create your own analysis on gentrification. For instance, abolitionists such as Ruth Wilson Gilmore and Mariame Kaba would conceptualize gentrification as a carceral logic of spatial control where policing and real estate act to displace racialized and marginalized communities for wealth accumulation;
       Black activists and scholars would define gentrification as racially driven displacement following the patterns of redlining and state violence; and Indigenous thinkers would frame gentrification as an extension of settler claims to land through aesthetics, dispossession and ownership.
@@ -672,14 +672,14 @@ map.moveLayer('highlight-layer');
     <p>Gentrification Indicators: <a href=data.census.gov target=blank>Census data</a></p> 
     <p>311 Requests: <a href=https://data.boston.gov/dataset/311-service-requests target=blank>Analyze Boston</a></p>
     <p>Building & Property Violations: <a href=https://data.boston.gov/dataset/building-and-property-violations1 target=blank>Analyze Boston</a></p>
-    <p>Neighborhood Boundaries Approximated to Census Tracts: <a href=https://bostonopendata-boston.opendata.arcgis.com/datasets/boston::boston-neighborhood-boundaries-approximated-by-2020-census-block-groups/about target=blank>BostonMap</p>
+    <p>Neighborhood Boundaries Approximated to Census Tracts: <a href=https://bostonopendata-boston.opendata.arcgis.com/datasets/boston::boston-neighborhood-boundaries-approximated-by-2020-census-block-groups/about target=blank>BostonMap</p> -->
    </div>
-   <div class="next-chapter-link">
+   <!-- <div class="next-chapter-link">
     <br><br>
     <a href="{base}/missingdata">
       ↓ Chapter 3: Missing Data
     </a>
-  </div>
+  </div> -->
 </div>
 
 

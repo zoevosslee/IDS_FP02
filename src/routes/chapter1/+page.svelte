@@ -654,11 +654,11 @@ opacity="1"
             <svelte:component this={FlowchartEmbed} />
           </div>
         
-        <div class="next-chapter-link">
+        <!-- <div class="next-chapter-link">
           <a href="{base}/chapter2">
             ↓ Chapter 2: Map Exploration
           </a>
-        </div>
+        </div> -->
         </div> <!-- .chart-wrapper -->
         </div> <!-- .container -->
         </div> <!-- #home-page -->
@@ -699,6 +699,7 @@ opacity="1"
   padding: 2rem;
   background: rgba(255, 255, 255, 0.85);
   border-radius: 12px;
+  padding-bottom: 10rem;
 }
 
 

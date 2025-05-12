@@ -84,7 +84,9 @@
             </div>
           {/each}
         </div>
+        <div class="citation">
         <p>Graphic inspired by Neta Bomani's image in 'Finding the Blank Spots in Big Data'</p>
+      </div>
       </div>
   
       {#if hoveringTiles}
@@ -99,7 +101,6 @@
         html, body {
         margin: 0;
         padding: 0;
-        padding-bottom: 4rem;
         min-height: 100%;
         width: 100%;
         background: black;
@@ -107,6 +108,9 @@
         overflow-y: auto; /* allow vertical scroll! */
     }
 
+    .citation {
+      padding-bottom: 10rem
+    }
 
     .tiles-wrapper {
         width: 100%;

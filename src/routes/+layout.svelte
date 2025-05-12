@@ -4,11 +4,11 @@
     import { base } from '$app/paths';
   
     let pages = [
-      { url: `${base}/`, title: 'Landing' },
-      { url: `${base}/chapter1`, title: 'Chapter 1' },
-      { url: `${base}/chapter2`, title: 'Chapter 2' },
-      { url: `${base}/chapter2-2`, title: 'Chapter 2, Part 2' },
-      { url: `${base}/missingdata`, title: 'Missing Data' },
+      { url: `${base}/`, title: 'Introduction →' },
+      { url: `${base}/chapter1`, title: '[1] Resistance Timeline →' },
+      { url: `${base}/chapter2`, title: '[2] Mapping Narratives →' },
+      { url: `${base}/chapter2-2`, title: '[3] Interactive Map →' },
+      { url: `${base}/missingdata`, title: '[4] Missing Data →' },
       { url: `${base}/sources`, title: 'Sources' },
 
     ];
@@ -21,23 +21,22 @@
 
   <div class="nav-wrapper">
     <div class="menu-container">
-    <button on:click={() => (menuOpen = !menuOpen)} class="menu-toggle">
-      ☰ Menu
-    </button>
-  
-    {#if menuOpen}
-      <nav>
+      <nav class="bottom-nav">
         {#each pages as p}
           <a
             href={p.url}
-            class:current={$page.url.pathname === p.url}
+            class:current={
+              typeof window !== 'undefined' &&
+              new URL(p.url, window.location.origin).pathname.replace(/\/$/, '') ===
+              $page.url.pathname.replace(/\/$/, '')
+            }                        
             target={p.url.startsWith('http') ? '_blank' : null}
           >
             {p.title}
           </a>
         {/each}
       </nav>
-    {/if}
+    
   </div>
   </div>
 
@@ -69,7 +68,7 @@
 nav {
   display: flex;
   flex-direction: column;
-  background-color: white;
+  background-color: gray;
   padding: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -92,6 +91,44 @@ nav a.current {
 nav a:hover {
   color: var(--black);
 }
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  background-color: lightgray;
+  display: flex;
+  flex-direction: row;         /* Makes items go side-by-side */
+  justify-content: center;     /* Centers them horizontally */
+  align-items: top;
+  padding: 20px 0;
+  border-top: 1px solid #ddd;
+  z-index: 1000;
+  font-family: 'Utendo', sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: left;
+}
+
+.bottom-nav a {
+  margin: 0 2rem;
+  color: var(--black);
+  text-decoration: none;
+  font: inherit; /* ✅ Inherits size, weight, and family from .bottom-nav */
+}
+
+
+.bottom-nav a.current {
+  color: var(--red);
+  text-decoration: underline;
+}
+
+.bottom-nav a:hover {
+  color: var(--red);
+}
+
+
 
   </style>
   

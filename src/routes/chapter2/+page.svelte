@@ -550,11 +550,11 @@
       </div>
     <!-- end of content from svelte-scroller tutorial -->
     </div>
-    <div class="next-chapter-link">
+    <!-- <div class="next-chapter-link">
       <a href="{base}/chapter2-2">
         ↓ Chapter 2, Part 2: Data Explorer
       </a>
-    </div>
+    </div> -->
   </div>
   
   
