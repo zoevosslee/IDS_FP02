@@ -127,6 +127,9 @@
         data: arrestDensity
       });
 
+ 
+
+      
       scrollerMap.addLayer({
         'id': 'choroplethRentBurden',
         'type': 'fill',
@@ -135,12 +138,12 @@
           'fill-color': [
             'interpolate',
             ['linear'],
-            ['get', 'Neighborhood_RentBurden'], 
-            0.25, '#E3BFBE',
-            0.35, '#D6A2A1',
-            0.45, '#CA8584',
-            0.55, '#B55554',
-            0.65, '#A12624'
+            ['get', 'Neighborhood_RentBurden'],
+            0.25, '#fef6e7',
+            0.35, '#f9d7a5',
+            0.45, '#f4b46f',
+            0.55, '#ee8c3f',
+            0.65, '#ee762c'
           ],
           'fill-opacity': 0
         }
@@ -176,11 +179,11 @@
             'interpolate',
             ['linear'],
             ['get', 'Neighborhood_RentBurden'], 
-            0.25, '#E3BFBE',
-            0.35, '#D6A2A1',
-            0.45, '#CA8584',
-            0.55, '#B55554',
-            0.65, '#A12624'
+            0.25, '#fef6e7',
+            0.35, '#f9d7a5',
+            0.45, '#f4b46f',
+            0.55, '#ee8c3f',
+            0.65, '#ee762c'
           ],
           'fill-opacity': 0
         }
@@ -397,11 +400,11 @@
   });
     
     let rentBurdenLabels = [
-      { label: '25%', color: '#E3BFBE' },
-      { label: '35%', color: '#D6A2A1' },
-      { label: '45%', color: '#CA8584' },
-      { label: '55%', color: '#B55554' },
-      { label: '65%', color: '#A12624' }
+      { label: '25%', color: '#fef6e7' },
+      { label: '35%', color: '#f9d7a5' },
+      { label: '45%', color: '#f4b46f' },
+      { label: '55%', color: '#ee8c3f' },
+      { label: '65%', color: '#ee762c' }
     ];
 
     $: if (scrollerMapLoaded && count !== undefined && scrollerMap) {
