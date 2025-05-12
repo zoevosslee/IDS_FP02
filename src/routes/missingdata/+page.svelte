@@ -3,27 +3,76 @@
 
     let stories = [
         { quote: "I have no choice, but to stay. I have nowhere to go. I am old and I don't know English. I have to stay here", source: "Forced from Home Report" },
-        { quote: "It's natural to be scared... but we can't fear stop us from fighting for our home", source: "Lucia Guardado, Honduran abuela" },
-        { quote: "I think it's fair that everyone have the same opportunity to live in places like this, it creates better community, it creates diversity in the city and it creates a more egalotarian system ", source: "Orlando, City Life / Vida Urbana" },
-        { quote: "I am not going nowhere, I am going to stay and I am going to fight", source: "Marshall Cooper" },
-        { quote: "The home where I lived now, until tomorrow was a place of love, was a place of refuge", source: "Christina Soares" },
-        { quote: "We didn't know how to protect our rights before so we just paid whatever the landlord asked us to pay or we have to move to the suburb", source: "Forced from Home Report" },
-        { quote: "Connection", source: "Author G" },
-        { quote: "Renewal", source: "Author H" },
-        { quote: "Ceremony", source: "Author I" },
+        {
+          quote: "",
+          image: '/protest.jpeg',
+          description: "Housing redevelopment protest on Hefferan Street in the Allston-Brighton section in November 1965",
+          source: "Bill Brett, Ollie Noonan Jr./Globe Staff"
+        },
+        { quote: "It's natural to be scared... but we can't fear stop us from fighting for our home", source: "Lucia Guardado, Honduran abuela in City Life / Vida Urbana" },
+        {
+          quote: "",
+          image: '/protest2.jpeg',
+          description: "Anti-urban renewal protestos picketing the Smith Transfer Corp terminal demanding Lenox Street apartments be renovated rather than demolished in April 1968",
+          source: "Bill Brett, Ollie Noonan Jr./Globe Staff"
+        },
+        { quote: "I think it's fair that everyone have the same opportunity to live in places like this, it creates better community, it creates diversity in the city and it creates a more egalotarian system ", source: "Orlando in City Life / Vida Urbana" },
+        {
+          quote: "",
+          image: '/protest_3.jpeg',
+          description: "Members of Homes for All Massachusetts stand out in front of the State House calling for passage of an act to guarantee housing stability during the COVID-19 pandemic in September, 2020.",
+          source: "Photo By Nancy Lane/MediaNews Group/Boston Herald"
+        },
+        { quote: "I am not going nowhere, I am going to stay and I am going to fight", source: "Marshall Cooper in City Life / Vida Urbana" },
+        {
+          quote: "",
+          image: '/protest_4.jpeg',
+          description: "Boston Tent City, an open air camp protesting city housing policies in 1968. In the 1980s the city built a subsidized housing complex known also as Tent City",
+          source: "DAN SHEEHAN/GLOBE STAFF"
+        },
+        { quote: "The home where I lived now, until tomorrow was a place of love, was a place of refuge", source: "Christina Soares in City Life / Vida Urbana" },
+        { quote: "We didn't know how to protect our rights before so we just paid whatever the landlord asked us to pay or we have to move to the suburb", source: "Forced from Home: A Human Rights Assessment of Displacement and Evictions in Boston's Chinatown Report" },
+        {
+          quote: "",
+          image: '/protest_5.jpeg',
+          description: "March to promote the 'Campaign of Conscience' against high rents on Centre Street in central Jamaica Plain in 1999",
+          source: "Gazatte File Photo"
+        },
+        {
+          quote: "",
+          image: '/protest_6.jpeg',
+          description: "Anti-displacement protest in Chinatown, Boston",
+          source: "Chinese Progressive Association"
+        },
+        {
+          quote: "",
+          image: '/protest_7.png',
+          description: "Saundra Graham speaks into a megaphone suring the occupation of 319th Harvard Commencement June 11, 1970",
+          source: "Cambridge Historical Commission"
+        },
+        {
+          quote: "",
+          image: '/protest_8.png',
+          description: "Joanne Pelham and Saundra Graham speaking at Police Brutality Hearings at the Cambridge City Council",
+          source: "Cambridge Public Library Archives and Special Collections"
+        },
         { quote: "Eviction filings in court significantly undercount the number of evictions that occur", source: "Evictions in Boston Report, City Life / Vida Urbana" },
         { quote: "Without [community] spaces, the people of our community would not be connected. It is better for our health", source: "Forced from Home Report" },
-        { quote: "Return", source: "Author L" }
+        { quote: "They use [legal status] against them. They say ‘you don’t have any rights. If you don’t pay rent, we can just kick you out and if you don’t agree, we will call the police and you’ll get in trouble,", source: "Maria Hernandez in the Tennessee Lookout" },
+        { quote: "78% of Suspended Eviction Cases in Boston were communities of color", source: "Evictions in Boston: The Disproportionate effects of Forced Moves on Communities of Color 2020" }
         ];
 
   
-    let tiles = stories.map((story, index) => ({
-        id: `tile-${index}`,
-        revealed: false,
-        quote: story.quote,
-        source: story.source,
-        isLong: story.quote.length > 150 // 🔥 Mark quotes longer than 150 characters
-    }));
+        let tiles = stories.map((story, index) => ({
+          id: `tile-${index}`,
+          revealed: false,
+          quote: story.quote || "",
+          source: story.source,
+          image: story.image || null,
+          description: story.description || "",
+          isLong: (story.quote || "").length > 150
+      }));
+
 
 
 
@@ -75,13 +124,22 @@
               <div class="tile-inner {tile.revealed ? 'revealed' : ''}">
                 <div class="tile-front"></div>
                 <div class="tile-back">
-                    <div class="tile-text-wrapper">
-                      <div class="quote-text {tile.isLong ? 'long-quote' : ''}">{tile.quote}</div>
+                  <div class="tile-back-content">
+                      {#if tile.image}
+                        <img src={tile.image} alt="Tile image" class="tile-photo" />
+                      {/if}
+                      {#if tile.quote}
+                        <div class="quote-text {tile.isLong ? 'long-quote' : ''}">{tile.quote}</div>
+                      {/if}
+                      {#if tile.description}
+                        <div class="tile-description">{tile.description}</div>
+                      {/if}
                       <div class="quote-source">{tile.source}</div>
                     </div>
+                  </div>
+                
                   </div>                
               </div>
-            </div>
           {/each}
         </div>
         <div class="citation">
@@ -115,7 +173,7 @@
     .tiles-wrapper {
         width: 100%;
         max-width: 1450px; /* optional: limit it if needed */
-        height: 650px;
+        height: 2500px;
         cursor: none;
         margin: 0 auto 5rem auto;
         border: 2px solid #A12624;
@@ -126,8 +184,8 @@
   
     .tiles-container {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(3, 1fr);
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(6, 1fr);
       width: 100%;
       height: 100%;
     }
@@ -202,16 +260,25 @@
 }
 
 .quote-text {
-    font-family: sans-serif;
+    font-family: 'Utendo', sans-serif;
     font-style: italic;
     font-weight: normal;
     padding: 0 0.5rem;
     margin-bottom: 0.5rem;
+    font-size: 1.5rem
 }
 
 .quote-source {
-    font-family: sans-serif;
+    font-family: 'Utendo', sans-serif;
     font-size: 0.7rem;
+    opacity: 0.8;
+    padding: 0 0.5rem;
+    padding-top: 0.4rem
+}
+
+.tile-description {
+    font-family: 'Utendo', sans-serif;
+    font-size: 0.9rem;
     opacity: 0.8;
     padding: 0 0.5rem;
 }
@@ -248,6 +315,13 @@
         transform: translate(-40px, -60px);
         z-index: 10000;
     }
+
+    .tile-photo {
+    max-width: 100%;
+    max-height: 50%;
+    object-fit: cover;
+    margin-bottom: 0.1rem;
+  }
 
   </style>
   
