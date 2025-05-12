@@ -822,15 +822,6 @@
           bind:progress={progressN}
         >
           <div slot="background">
-            <p style="font-size:small;">these sliders are for debug -Nicola</p>
-            <p>current section: <strong>{indexN + 1}/{countN}</strong></p>
-            <progress value="{countN ? (indexN + 1) / countN : 0}"></progress>
-    
-            <p>offset in current section</p>
-            <progress value={offsetN || 0}></progress>
-    
-            <p>total progress</p>
-            <progress value={progressN || 0}></progress>
             <div style="position: relative; flex-grow: 1;">
 
               <div id="roxburyMap">
