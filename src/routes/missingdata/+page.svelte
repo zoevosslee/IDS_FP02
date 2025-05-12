@@ -152,6 +152,43 @@
         <div class="custom-cursor" style="left: {mouseX}px; top: {mouseY}px;"></div>
       {/if}
     </div> <!-- ✅ now close .container correctly -->
+
+    <h4>Call to Action</h4>
+    <h3>Read</h3>
+    <p>Ruth Wilson Gilmore, <a href="https://www.ucpress.edu/books/golden-gulag/paper" target="_blank"><em>Golden Gulag: Prisons, Surplus, Crisis, and Opposition in Globalizing California</em></a> (University of California Press, 2007).</p>
+
+<p>Tracy Rosenthal and Leonardo Vilchis, <a href="https://www.haymarketbooks.org/books/2496-abolish-rent" target="_blank"><em>Abolish Rent</em></a> (Haymarket Books, 2024).</p>
+
+<p>Margaret Ramirez, <a href="https://journals.sagepub.com/doi/10.1177/0263775819843924?icid=int.sj-full-text.similar-articles.5" target="_blank"><em>City as Borderland: Gentrification and the Policing of Black and Latinx Geographies in Oakland</em></a> (Society and Space, 2019).</p>
+
+<p>Terra Graziani, Joel Montano, and Ananya Roy, <a href="https://onlinelibrary.wiley.com/doi/full/10.1111/anti.12792" target="_blank"><em>Property, Personhood, and Police: The Making of Race and Space through Nuisance Law</em></a> (Antipode, 2021).</p>
+
+<p>Brenden Beck, <a href="https://theappeal.org/the-role-of-police-igentrification-breonna-taylor/" target="_blank"><em>The Role of Police in Gentrification</em></a> (The Appeal, 2020).</p>
+
+<p>K-Sue Park, <a href="https://www.jstor.org/stable/26630897" target="_blank"><em>Money, Mortgages, and the Conquest of America</em></a> (Law & Social Inquiry, 2016).</p>
+
+
+    
+    <h3>Listen</h3>
+
+    <p><a href="https://thedigradio.com/podcast/abolish-rent-w-leonardo-vilchis-and-tracy-rosenthal/" target="_blank"><em>Abolish Rent w/ Leonardo Vilchis and Tracy Rosenthal</em></a> (The Dig, 2025).</p>
+
+<p><a href="https://thedigradio.com/podcast/policing-for-the-market-with-brenden-beck/" target="_blank"><em>Policing for the Market with Brenden Beck</em></a> (The Dig, 2017).</p>
+
+<p><a href="https://citationsneeded.medium.com/news-brief-detailing-the-connection-between-gentrification-and-racist-police-harassment-468b7ac615b1" target="_blank"><em>News Brief: Detailing the Connection Between Gentrification and Racist Police Harassment</em></a> (Citation Needed, 2020).</p>
+
+<h3>Listen</h3>
+
+<p><a href="https://www.reclaimroxbury.org/" target="_blank">Reclaim Roxbury</a></p>
+
+<p><a href="https://www.dsni.org/" target="_blank">Dudley Street Neighborhood Initiative</a></p>
+
+<p><a href="https://www.franklinparkdefenders.com/" target="_blank">Franklin Park Defenders</a></p>
+
+<p><a href="https://www.bnclt.org/" target="_blank">Boston Neighborhood Community Land Trust</a></p>
+
+
+
   </div>
   </div>
   
@@ -322,6 +359,10 @@
     max-height: 50%;
     object-fit: cover;
     margin-bottom: 0.1rem;
+  }
+  
+  #missing_data-page {
+    padding-bottom: 40px;
   }
 
   </style>
