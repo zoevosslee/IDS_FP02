@@ -168,62 +168,84 @@
   
   
     const policingLenses = {
-    "311": {
-      label: "311 + Code Enforcement",
-      highlights: [1, 6],
-      description: "How 311 calls and building code enforcement can trigger or accelerate eviction.",
-      example: "A neighbor files a 311 complaint. An inspector finds code violations. The landlord uses this as pretext to start the eviction process.",
-      story: [
-        "After a neighbor calls 311 to complain about noise, the city sends an inspector.",
-        "The inspector finds minor issues—peeling paint, a missing smoke detector.",
-        "The landlord tells the tenant they must leave or face formal action.",
-        "The tenant receives a notice to quit and moves out rather than fight."
-      ],
-      storySteps: [0, 0, 0, 1]
-    },
-  
-    "surveillance": {
-      label: "Surveillance + Data Sharing",
-      highlights: [2, 3, 5],
-      description: "How surveillance and predictive tools influence the eviction process.",
-      example: "A tenant is flagged by screening software. The landlord files to evict them before any problems arise.",
-      story: [
-        "The landlord uses a predictive screening tool that flags the tenant as a 'high eviction risk.'",
-        "Without any specific complaints, the landlord files an eviction case in court.",
-        "The tenant receives a summons and legal notice, shocked they’re being sued.",
-        "They try to defend themselves, but the judge sides with the landlord."
-      ],
-      storySteps: [0, 3, 2, 5]
-    },
-  
-    "criminal": {
-      label: "Criminal Legal System",
-      highlights: [2, 5, 6, 7],
-      description: "How criminal records and policing actions intersect with eviction enforcement.",
-      example: "A tenant’s guest is arrested. The landlord evicts the tenant based on a zero-tolerance policy.",
-      story: [
-        "One night, a tenant’s cousin is arrested for drug possession while visiting.",
-        "The landlord hears about the arrest and files an eviction case, claiming the home is unsafe.",
-        "The tenant appears in court and tries to explain they weren’t involved.",
-        "The judge rules against them, and the sheriff is eventually sent to enforce the eviction."
-      ],
-      storySteps: [0, 3, 5, 8]
-    },
-  
-    "immigration": {
-      label: "Immigration and ICE",
-      highlights: [3, 8],
-      description: "How immigration enforcement escalates displacement risk during eviction proceedings.",
-      example: "An undocumented tenant is scared to show up in court. A default judgment is issued and ICE later detains them.",
-      story: [
-        "A tenant falls behind on rent and is served legal papers.",
-        "They want to fight the eviction, but fear showing up in housing court could expose their undocumented status.",
-        "They stay home to avoid ICE, and a default judgment is issued against them.",
-        "Days later, immigration officials show up during the scheduled move-out."
-      ],
-      storySteps: [0, 3, 5, 8]
-    }
-  };
+  "311": {
+    label: "311 Service Requests",
+    highlights: [1, 6],
+    description: "How noise-related 311 service requests can trigger or accelerate eviction, especially in gentrifying neighborhoods where complaints reflect shifting social norms and racialized perceptions.",
+    example: "After a neighbor files a 311 complaint about noise from a long-time tenant’s apartment – such as music or family gatherings – a police officer is dispatched. The landlord uses this as pretext to begin the eviction process under the guise of lease noncompliance or nuisance.",
+    story: [
+      "As housing prices rise, new residents move into historically working-class or immigrant neighborhoods.",
+      "A neighbor calls 311 to report noise they find disruptive or 'suspicious.'",
+      "The request is routed to the police, prompting police visits or inspections.",
+      "The landlord is notified and uses the visit to justify initiating eviction proceedings.",
+      "The tenant – often unaware of their rights – moves out or is removed.",
+      "The unit is re-rented at a higher price, accelerating gentrification."
+    ],
+    storySteps: [0, 0, 0, 1, 1, 1]
+  },
+
+  "Code": {
+    label: "Building & Property Violations",
+    highlights: [1, 6],
+    description: "How building and property violations are used in urban renewal zones to displace long-time residents and replace them with higher-income tenants.",
+    example: "After the city designates a working-class neighborhood as an 'urban renewal zone,' inspectors begin issuing violations for minor infractions. A landlord uses the pressure to evict tenants and renovate the property for higher-paying renters.",
+    story: [
+      "The city announces an urban renewal initiative targeting a disinvested neighborhood.",
+      "Developers and landlords anticipate rising property values.",
+      "Inspectors issue multiple citations for minor infractions.",
+      "Fines accumulate; landlords pressure tenants to vacate for 'major repairs.'",
+      "Long-time tenants are displaced.",
+      "The units are renovated and listed at luxury rates, shifting neighborhood demographics."
+    ],
+    storySteps: [0, 0, 0, 1, 1, 1]
+  },
+
+  "surveillance": {
+    label: "Surveillance + Data Sharing",
+    highlights: [2, 3, 5],
+    description: "How surveillance and predictive tenant screening tools are used to initiate preemptive eviction based on algorithmic risk scores.",
+    example: "A tenant is flagged by screening software for being a potential eviction risk. The landlord preemptively begins eviction proceedings based on this prediction.",
+    story: [
+      "Tenant screening software flags the resident as a risk.",
+      "Landlord initiates legal action without a specific incident.",
+      "The tenant is served with an eviction complaint.",
+      "In court, the tenant attempts to contest the eviction but lacks legal support.",
+      "The judge rules in favor of the landlord; tenant is displaced."
+    ],
+    storySteps: [0, 3, 2, 5, 5]
+  },
+
+  "criminal": {
+    label: "Criminal Legal System",
+    highlights: [2, 5, 6, 7],
+    description: "How arrests or criminal allegations, even involving guests or unrelated individuals, can be grounds for eviction—especially under policies like HUD v. Rucker.",
+    example: "A tenant’s guest is arrested for alleged drug possession. Under 'zero tolerance' policies, the tenant is evicted even if they had no knowledge of the offense.",
+    story: [
+      "A tenant’s guest is arrested near the property.",
+      "The housing authority or landlord cites the incident as grounds for eviction.",
+      "The tenant is unaware of the offense or is not legally involved.",
+      "The tenant is evicted under nuisance or 'zero tolerance' policies.",
+      "The unit is reassigned to a new tenant or sold at market rate."
+    ],
+    storySteps: [0, 3, 5, 8, 8]
+  },
+
+  "immigration": {
+    label: "Immigration and ICE",
+    highlights: [3, 8],
+    description: "How undocumented tenants face heightened eviction risks due to court exposure, data sharing with ICE, and fear of detention.",
+    example: "An undocumented tenant facing eviction avoids court due to ICE presence, resulting in a default judgment and later detention during forced removal.",
+    story: [
+      "A tenant falls behind on rent and is served an eviction notice.",
+      "The landlord files a court case.",
+      "The tenant wants to fight the case but fears ICE surveillance at court.",
+      "They skip the hearing and receive a default judgment.",
+      "During eviction enforcement, ICE agents detain the tenant."
+    ],
+    storySteps: [0, 3, 5, 5, 8]
+  }
+};
+
     $: if (selectedLens !== null) {
       currentFrame = 0;
     }
@@ -241,27 +263,51 @@
   }
   
   afterUpdate(() => {
-    if (showPolicing && selectedLens !== null && stepRefs.length) {
-      // Remove previous highlights
-      stepRefs.forEach((el) => {
-        const front = el?.querySelector(".front");
-        if (front?.classList) {
-          front.classList.remove("glow");
-        }
-      });
-  
-      // Add glow to the current step
-      const currentStepIndex = policingLenses[selectedLens].storySteps[currentFrame];
-      const stepEl = stepRefs[currentStepIndex];
-      if (stepEl?.querySelector) {
-        const frontEl = stepEl.querySelector(".front");
-        if (frontEl?.classList) {
-          frontEl.classList.add("glow");
-        }
-      }
-    }
+  if (!showPolicing || selectedLens === null || !stepRefs.length) {
+    console.log("🚫 Conditions not met for highlighting");
+    return;
+  }
+
+  // Clear previous highlights
+  stepRefs.forEach((el, idx) => {
+    el?.classList.remove("active-step");
   });
-  
+
+  // Get the target index for the current frame
+  const stepIndex = policingLenses[selectedLens].storySteps[currentFrame];
+  console.log("👉 Current frame:", currentFrame);
+  console.log("👉 Eviction step index:", stepIndex);
+  console.log("👉 stepRefs[stepIndex]:", stepRefs[stepIndex]);
+
+  // Apply highlight
+  const el = stepRefs[stepIndex];
+  if (el) {
+    el.classList.add("active-step");
+    console.log("✅ Highlight added to step:", stepIndex);
+  } else {
+    console.log("⚠️ stepRef is null at index", stepIndex);
+  }
+});
+
+afterUpdate(() => {
+  if (!showPolicing || selectedLens === null || !stepRefs.length) return;
+
+  // Clear previous highlights
+  stepRefs.forEach((el) => {
+    el?.classList.remove("active-step");
+  });
+
+  // Highlight the current eviction step
+  const stepIndex = policingLenses[selectedLens].storySteps[currentFrame];
+  const el = stepRefs[stepIndex];
+  if (el) {
+    el.classList.add("active-step");
+  }
+});
+
+
+
+
   
   
   </script>
@@ -488,8 +534,8 @@
   }
   
   .card-box {
-    min-height: calc(100vh / 12);
-    max-height: calc(100vh / 1);
+    min-height: calc(100vh / 14);
+    max-height: calc(100vh / 12);
   }
   
   .front {
@@ -636,9 +682,7 @@
     line-height: 1.4;
   }
   
-  .glow {
-    outline: 3px solid yellow !important;
-  }
+
   
 
 
@@ -682,6 +726,26 @@
   margin: 0;
 }
 
+:global(.flip-container.active-step) {
+  animation: softPulse 2.5s ease-in-out infinite;
+  box-shadow: 0 0 15px 8px #8790BC; /* warm orange */
+
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+
+@keyframes subtlePulse {
+  0% {
+    box-shadow: 0 0 0 rgba(255, 220, 100, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px 10px rgba(255, 220, 100, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(255, 220, 100, 0.3);
+  }
+}
 
 
     </style>
@@ -747,17 +811,16 @@
           {#if !showPolicing}
             <!-- INTRO PANEL -->
             <div class="lens-panel lens-intro">
-                <p class="p-bold">How Evictions Happen</p>
-                <p>This walkthrough illustrates how formal eviction proceedings typically unfold. There are multiple points at which displacement can occur — including before court proceedings even begin. Often, the mere threat of eviction can force a tenant to leave. And if a tenant receives a formal eviction judgment, it can follow them for years, affecting their ability to find future housing.</p>
-                <p>The chart to the right is adapted from <a href="https://d3n8a8pro7vhmx.cloudfront.net/themes/5eee7e564445ea4f9a6f3080/attachments/original/1592786979/EvictionReport_Final_Spreads.pdf?1592786979" target="_blank" rel="noopener noreferrer">a 2020 report by City Life/Vida Urbana</a> titled <em>Evicted for Being Poor</em>, which documents how landlords often use eviction filings not to win in court, but to pressure tenants into leaving. These proceedings are frequently traumatic, opaque, and wielded unequally.</p>
-                <p class="p-bold">But this isn't the full story.</p>
-                <p>There are different types of policing that can lead to displacement in different ways. In most cases, policing is not the only factor at play, but part of a broader pattern of systemic dispossession. This section highlights how different policing systems interact with housing precarity and eviction. These examples are far from exhaustive, but are intended to educate and inform tenants about how different forms of policing may be — or have been — part of their housing story.</p>
-              
-                <div class="flex-end">
-                  <button on:click={() => showPolicing = true} class="next-button">How Policing Connects →</button>
-                </div>
+              <p class="p-bold">How Evictions Happen</p>
+              <p>This walkthrough illustrates how formal eviction proceedings typically unfold. There are multiple points at which displacement can occur — including before court proceedings even begin. Often, the mere threat of eviction can force a tenant to leave. And if a tenant receives a formal eviction judgment, it can follow them for years, affecting their ability to find future housing.</p>
+              <p>The chart to the right is adapted from <a href="https://d3n8a8pro7vhmx.cloudfront.net/themes/5eee7e564445ea4f9a6f3080/attachments/original/1592786979/EvictionReport_Final_Spreads.pdf?1592786979" target="_blank" rel="noopener noreferrer">a 2020 report by City Life/Vida Urbana</a> titled <em>Evicted for Being Poor</em>, which documents how landlords often use eviction filings not to win in court, but to pressure tenants into leaving. These proceedings are frequently traumatic, opaque, and wielded unequally.</p>
+              <p class="p-bold">But this isn't the full story.</p>
+              <p>There are different types of policing that can lead to displacement in different ways. In most cases, policing is not the only factor at play, but part of a broader pattern of systemic dispossession. This section highlights how different policing systems interact with housing precarity and eviction. These examples are far from exhaustive, but are intended to educate and inform tenants about how different forms of policing may be — or have been — part of their housing story.</p>
+      
+              <div class="flex-end">
+                <button on:click={() => showPolicing = true} class="next-button">How Policing Connects →</button>
               </div>
-              
+            </div>
       
           {:else if showPolicing && !showStoryboard}
             <!-- LENS SELECTION PANEL -->
@@ -768,25 +831,32 @@
               <!-- Auxiliary Policing -->
               <div class="lens-group">
                 <p class="lens-label">Auxiliary Policing</p>
-                <p class="lens-explainer">City systems like 311, inspections, and predictive tech that can initiate or accelerate eviction.</p>
+                <p class="lens-explainer">311 noise complaints, property code enforcement, and predictive tenant screening systems.</p>
                 <div class="button-row">
-                  <button class:active={selectedLens === "311"} on:click={() => { selectedLens = "311"; showStoryboard = true; }}>311 + Code Enforcement</button>
-                  <button class:active={selectedLens === "surveillance"} on:click={() => { selectedLens = "surveillance"; showStoryboard = true; }}>Surveillance + Data Sharing</button>
+                  <button class:active={selectedLens === "311"} on:click={() => { selectedLens = "311"; showStoryboard = true; }}>
+                    311 Service Requests
+                  </button>
+                  <button class:active={selectedLens === "Code"} on:click={() => { selectedLens = "Code"; showStoryboard = true; }}>
+                    Building & Property Violations
+                  </button>
+                  <button class:active={selectedLens === "surveillance"} on:click={() => { selectedLens = "surveillance"; showStoryboard = true; }}>
+                    Surveillance + Data Sharing
+                  </button>
                 </div>
               </div>
       
               <!-- Formal Policing -->
               <div class="lens-group">
                 <p class="lens-label">Formal Policing</p>
-                <p class="lens-explainer">Law enforcement, courts, and immigration systems directly involved in enforcing eviction.</p>
+                <p class="lens-explainer">Criminal legal system and immigration enforcement involvement in eviction.</p>
                 <div class="button-row">
-                  <button class:active={selectedLens === "criminal"} on:click={() => { selectedLens = "criminal"; showStoryboard = true; }}>Criminal Legal System</button>
-                  <button class:active={selectedLens === "immigration"} on:click={() => { selectedLens = "immigration"; showStoryboard = true; }}>Immigration and ICE</button>
+                  <button class:active={selectedLens === "criminal"} on:click={() => { selectedLens = "criminal"; showStoryboard = true; }}>
+                    Criminal Legal System
+                  </button>
+                  <button class:active={selectedLens === "immigration"} on:click={() => { selectedLens = "immigration"; showStoryboard = true; }}>
+                    Immigration and ICE
+                  </button>
                 </div>
-              </div>
-      
-              <div class="flex-end" style="margin-bottom: 1rem;">
-                <button on:click={() => showPolicing = false} class="next-button">← Back</button>
               </div>
             </div>
       
