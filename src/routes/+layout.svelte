@@ -5,10 +5,10 @@
   
     let pages = [
       { url: `${base}/`, title: 'Introduction →' },
-      { url: `${base}/chapter1`, title: '[1] Resistance Timeline →' },
-      { url: `${base}/chapter2`, title: '[2] Mapping Narratives →' },
-      { url: `${base}/chapter2-2`, title: '[3] Interactive Map →' },
-      { url: `${base}/missingdata`, title: '[4] Missing Data →' },
+      { url: `${base}/chapter1`, title: '1. Resistance Timeline →' },
+      { url: `${base}/chapter2`, title: '2. Mapping Narratives →' },
+      { url: `${base}/chapter2-2`, title: '3. Interactive Map →' },
+      { url: `${base}/missingdata`, title: '4. Missing Data →' },
       { url: `${base}/sources`, title: 'Sources' },
 
     ];
@@ -97,16 +97,15 @@ nav a:hover {
   bottom: 0;
   left: 0;
   width: 100vw;
-  background-color: lightgray;
-  display: flex;
+  background-color: rgba(211, 211, 211, 0.85); /* lightgray with 80% opacity */  display: flex;
   flex-direction: row;         /* Makes items go side-by-side */
   justify-content: center;     /* Centers them horizontally */
   align-items: top;
-  padding: 20px 0;
+  padding: 15px;
   border-top: 1px solid #ddd;
   z-index: 1000;
   font-family: 'Utendo', sans-serif;
-  font-size: 20px;
+  font-size: 17px;
   font-weight: bold;
   text-align: left;
 }
