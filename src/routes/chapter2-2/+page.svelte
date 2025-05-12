@@ -455,6 +455,7 @@ for (const layerName of pointLayers) {
   });
 
   map.on('mousemove', layerName, (e) => {
+    if (layerName === 'points-terrain5-layer' && selectedTerrain !== 'terrain5') return;
     if (!e.features || !e.features.length) return;
 
     const coords = e.features[0].geometry.coordinates.slice();
