@@ -839,9 +839,7 @@ afterUpdate(() => {
                   <button class:active={selectedLens === "Code"} on:click={() => { selectedLens = "Code"; showStoryboard = true; }}>
                     Building & Property Violations
                   </button>
-                  <button class:active={selectedLens === "surveillance"} on:click={() => { selectedLens = "surveillance"; showStoryboard = true; }}>
-                    Surveillance + Data Sharing
-                  </button>
+
                 </div>
               </div>
       
