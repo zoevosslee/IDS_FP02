@@ -94,12 +94,136 @@
         </a><br>
         • Demonstrated the risks undocumented tenants face when entering housing court.
       </p>
-    </div>
-  <div>
+ 
     <p>
         Portions of code formatting and debugging were supported by OpenAI’s ChatGPT, GPT-4o version.
     </p>
-  </div>
+
+  <h2>Chapter 3: Sources</h2>
+
+  <p>
+    <strong>Gentrification Indicators</strong> 
+    <a href="https://data.census.gov" target="_blank" rel="noopener noreferrer">
+      Census Data
+    </a><br>
+    • To inform the chloropleth maps for education, income, race, and rent burden<br>
+  </p>
+
+  <p>
+    <strong>311 Requests</strong> 
+    <a href="https://data.boston.gov/dataset/311-service-requests" target="_blank" rel="noopener noreferrer">
+      Analyze Boston
+    </a><br>
+    • For the first topographic surface<br>
+  </p>
+
+  <p>
+    <strong>Building & Property Violations</strong> 
+    <a href="https://data.boston.gov/dataset/building-and-property-violations1" target="_blank" rel="noopener noreferrer">
+      Analyze Boston
+    </a><br>
+    • For the second topographic surface<br>
+  </p>
+
+  <p>
+    <strong>Arrests Density per 1000 people</strong> 
+    <a href="https://boston-pd-crime-hub-boston.hub.arcgis.com/datasets/8cec12c8d60140aca2827eb45484f10b/explore" target="_blank" rel="noopener noreferrer">
+      Boston Police Department
+    </a><br>
+    • For the second topographic surface<br>
+  </p>
+
+  <p>
+    <strong>Neighborhood Boundaries Approximated to Census Tracts</strong> 
+    <a href="https://bostonopendata-boston.opendata.arcgis.com/datasets/boston::boston-neighborhood-boundaries-approximated-by-2020-census-block-groups/about" target="_blank" rel="noopener noreferrer">
+      Analyze Boston
+    </a><br>
+    • For basemap<br>
+  </p>
+
+  <h2>Chapter 4: Sources</h2>
+
+  <p>
+    <strong>Housing Redevelopment Protest on Hefferan Street Picture</strong> 
+    <a href="https://apps.bostonglobe.com/2023/10/special-projects/spotlight-boston-housing/milton-restrictive-zoning/" target="_blank" rel="noopener noreferrer">
+      Boston Globe
+    </a><br>
+    • Image<br>
+  </p>
+
+  <p>
+    <strong>Anti-urban renewal protestors picketing the Smith Transfer Corp</strong> 
+    <a href="https://apps.bostonglobe.com/2023/10/special-projects/spotlight-boston-housing/milton-restrictive-zoning/" target="_blank" rel="noopener noreferrer">
+      Boston Globe
+    </a><br>
+    • Image<br>
+  </p>
+
+  <p>
+    <strong>Members of Homes for All massachusetts stand out in front of the State House</strong> 
+    <a href="https://www.bostonherald.com/2022/10/26/a-failing-grade-boston-housing-report-card-illustrates-depth-of-crisis/" target="_blank" rel="noopener noreferrer">
+      Boston Globe
+    </a><br>
+    • Image<br>
+  </p>
+
+  <p>
+    <strong>Boston Tent City</strong> 
+    <a href="https://archive.is/20230107231626/https://www.bostonglobe.com/2023/01/07/metro/tent-city-once-triumph-community-activism-is-now-home-strife-over-maintenance-security/#selection-2023.138-2027.23" target="_blank" rel="noopener noreferrer">
+      Boston Globe
+    </a><br>
+    • Image<br>
+  </p>
+
+  <p>
+    <strong>March to promote the 'Campaign of Conscience'</strong> 
+    <a href="https://static1.squarespace.com/static/56340b91e4b017e2546998c0/t/5c7811640852290f392207ca/1551372655581/CPA+report+final+2019.pdf" target="_blank" rel="noopener noreferrer">
+      Forced From Home: A Human Rights Assessment of Displacement and Evictions on Boston's Chinatown
+    </a><br>
+    • Image<br>
+  </p>
+
+  <p>
+    <strong>Anti-displacement protest in Chinatown</strong> 
+    <a href="http://jamaicaplaingazette.com/2013/05/10/city-life-marks-40-years-of-helping-residents/" target="_blank" rel="noopener noreferrer">
+      Jamaica Plain Gazette
+    </a><br>
+    • Image<br>
+  </p>
+
+  <p>
+    <strong>Saundra Graham speaks into a megaphone suring the occupation</strong> 
+    <a href="https://historycambridge.org/self-guided-tours/self-guided-tour-women-activists-of-riverside-50-years-after-suffrage/" target="_blank" rel="noopener noreferrer">
+      History Cambridge
+    </a><br>
+    • Image<br>
+  </p>
+
+  <p>
+    <strong>Joanne Palham and Saundra Graham speaking at Policy brutality Hearings</strong> 
+    <a href="https://historycambridge.org/self-guided-tours/self-guided-tour-women-activists-of-riverside-50-years-after-suffrage/" target="_blank" rel="noopener noreferrer">
+      History Cambridge
+    </a><br>
+    • Image<br>
+  </p>
+
+  <p>
+    <strong>Quotes from community members</strong> 
+    <a href="https://www.clvu.org/lucia_victory" target="_blank" rel="noopener noreferrer">
+      City life Vida Urbana
+    </a><br>
+    • Quotes<br>
+  </p>
+
+  <p>
+    <strong>Quotes from community members</strong> 
+    <a href="https://tennesseelookout.com/2020/12/02/immigrants-face-unique-challenges-in-staving-off-evictions/" target="_blank" rel="noopener noreferrer">
+      Tennessee Lookout
+    </a><br>
+    • Quotes<br>
+  </p>
+      
+    </div>
   </div>
 </div>
 
@@ -121,5 +245,9 @@
 
   h2 {
     margin-bottom: 1rem;
+  }
+
+  .container {
+    padding-bottom: 10rem;
   }
 </style>
