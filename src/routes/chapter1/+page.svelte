@@ -64,7 +64,9 @@ onDestroy(() => {
     let flowerBoxY = 0;
 
 let flower1993Visible = false;
+let flower2008Visible = false;
 let flower2011Visible = false;
+let flower2015Visible = false;
 let flower2016Visible = false;
 let flower2020Visible = false;
 let hoveredFlower = null;
@@ -207,11 +209,18 @@ const yRentEnd = yPoliceEnd + 500; // wider rent window
   }
 
   // Handle flower visibility
+ 
   if (relativeScroll > yScale(1993) - 400) {
     flower1993Visible = true;
   }
+  if (relativeScroll > yScale(2008) - 400) {
+    flower2008Visible = true;
+  }
   if (relativeScroll > yScale(2011) - 400) {
     flower2011Visible = true;
+  }
+  if (relativeScroll > yScale(2015) - 400) {
+    flower2015Visible = true;
   }
   if (relativeScroll > yScale(2016) - 400) {
     flower2016Visible = true;
@@ -443,6 +452,32 @@ opacity="1"
             </div>
           {/if}
           
+          {#if flower2008Visible}
+          <div 
+            class="flower-box" 
+            style="top: {yScale(2008)}px; left: {centerX + 60}px; --rotate: -90deg;"
+            on:mouseenter={() => {
+              hoveredFlower = { x: centerX + 60, y: yScale(2008) };
+              hoveredFlowerImage1 = `${base}/elmont.jpeg`;
+              hoveredFlowerText = `
+            <strong>2008: The Coalition for Occupied Homes in Foreclosure is Formed</strong><br><br>
+           During the 2008 foreclosure crisis, organizers, tenants, and legal advocates formed the Coalition for Occupied Homes in Foreclosure (COHIF), which would later become the Boston Neighborhood Community Land Trust (BNCLT). Focused on keeping residents in Roxbury, Dorchester, and Mattapan from being displaced, they began buying up homes facing foreclosure or eviction and keeping them permanently affordable and under community control.
+<br><br>
+            Sources: <a href="https://www.bnclt.org/our-history" target="_blank" style="color:#A12624; text-decoration: underline;">BNCLT</a>
+            `;
+              suppressScrollyBox = true; 
+            }}
+            on:mouseleave={() => {
+              hoveredFlower = null;
+              hoveredFlowerImage1 = null;
+              hoveredFlowerImage2 = null;
+              hoveredFlowerText = null;
+              suppressScrollyBox = false;
+            }}
+          >
+            <img src="{base}/flower.png" alt="Flower 2011" />
+          </div>
+          {/if}
           
           
           {#if flower2011Visible}
@@ -473,6 +508,31 @@ opacity="1"
           </div>
           {/if}
           
+          {#if flower2015Visible}
+          <div 
+            class="flower-box" 
+            style="top: {yScale(2015)}px; left: {centerX -100}px; --rotate: +100deg;"
+            on:mouseenter={() => {
+              hoveredFlower = { x: centerX -100, y: yScale(2015) };
+              hoveredFlowerImage1 = `${base}/CCLT.png`;
+              hoveredFlowerText = `
+            <strong>2015: The Chinatown Community Land Trust (CCLT) is Formed </strong><br><br>
+The Chinatown Community Land Trust (CCLT) was formed in 2015 by residents, organizers, and housing advocates in Boston's Chinatown to fight back against displacement and gentrification. Since then, the CCLT has been focused on preserving affordable housing, protecting tenants, and building collective ownership structures that keep longtime residents in the neighborhood and strengthen cultural continuity.<br><br>
+            Sources: <a href="https://chinatownclt.org/" target="_blank" style="color:#A12624; text-decoration: underline;">CCLT</a>
+            `;
+              suppressScrollyBox = true; 
+            }}
+            on:mouseleave={() => {
+              hoveredFlower = null;
+              hoveredFlowerImage1 = null;
+              hoveredFlowerImage2 = null;
+              hoveredFlowerText = null;
+              suppressScrollyBox = false;
+            }}
+          >
+            <img src="{base}/flower.png" alt="Flower 2011" />
+          </div>
+          {/if}
           
         
           {#if flower2016Visible}
@@ -561,21 +621,22 @@ opacity="1"
             {/each}
           </div>
     
-        {:else if currentYearPhase.year === 2010}
-          <h5>In 2010, nearly half of renters (48%) were burdened by rent. The aftermath of the foreclosure crisis pushed many households into the rental market.</h5>
-          <div class="house-grid">
-            {#each Array(100) as _, index}
-              <div class="house {index < 48 ? 'filled' : ''}"></div>
-            {/each}
-          </div>
-    
+          {:else if currentYearPhase.year === 2010}
+          <h5>Between 2010 and 2019, landlords filed over 50,000 evictions in Boston Housing Court — an average of 5,451 per year.</h5>
+          <p style="margin-top: 1rem;">
+            These filings weren’t spread evenly across the city. Some neighborhoods were hit much harder than others.
+          </p>
+        
+
         {:else if currentYearPhase.year === 2020}
-          <h5>By 2020, rent burden remained high at 46%, even as wages stagnated. The pandemic further exposed deep inequities in housing access.</h5>
-          <div class="house-grid">
-            {#each Array(100) as _, index}
-              <div class="house {index < 46 ? 'filled' : ''}"></div>
-            {/each}
-          </div>
+        <h5>From 2014–2016, Roxbury made up 27.1% of all eviction filings despite having just 10.8% of Boston’s rental housing.</h5>
+        <p style="margin-top: 1rem;">
+          Mattapan and Dorchester also faced high filing rates, while filings were lowest in wealthier, whiter areas like Back Bay and Central Boston.
+        </p>
+        <p style="margin-top: 1rem;">
+          The geography of eviction in Boston mirrors racial segregation, rent burden, and income inequality—with Black and Latinx renters bearing the brunt. <span style="font-size: 0.9rem;">Source: CLVU (2020)</span>
+        </p>
+        
         {/if}
       </div>
     {/if}

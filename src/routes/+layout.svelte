@@ -97,7 +97,7 @@ nav a:hover {
   bottom: 0;
   left: 0;
   width: 100vw;
-  background-color: rgba(211, 211, 211, 0.75); /* lightgray with 80% opacity */  display: flex;
+  background-color: rgba(211, 211, 211, 0.85); /* lightgray with 80% opacity */  display: flex;
   flex-direction: row;         /* Makes items go side-by-side */
   justify-content: center;     /* Centers them horizontally */
   align-items: top;
