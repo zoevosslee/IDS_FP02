@@ -523,6 +523,7 @@ opacity="1"
             on:mouseenter={() => {
               hoveredFlower = { x: centerX -100, y: yScale(2015) };
               hoveredFlowerImage1 = `${base}/CCLT.png`;
+              hoveredFlowerImage2 = `${base}/cclt3.png`;
               hoveredFlowerText = `
             <strong>2015: The Chinatown Community Land Trust (CCLT) is Formed </strong><br><br>
 The Chinatown Community Land Trust (CCLT) was formed in 2015 by residents, organizers, and housing advocates in Boston's Chinatown to fight back against displacement and gentrification. Since then, the CCLT has been focused on preserving affordable housing, protecting tenants, and building collective ownership structures that keep longtime residents in the neighborhood and strengthen cultural continuity.<br><br>
@@ -652,7 +653,7 @@ The Chinatown Community Land Trust (CCLT) was formed in 2015 by residents, organ
         </h5>
         
         {:else if currentYearPhase.year === 2020}
-  <h5>Housing insecurity continues to grow while resources are diverted to policing.</h5>
+  <h5>Housing insecurity continues to grow while resources are diverted to policing. And communites are fighting back.</h5>
   <p>
     
   </p>
