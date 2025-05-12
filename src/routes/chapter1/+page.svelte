@@ -651,6 +651,12 @@ The Chinatown Community Land Trust (CCLT) was formed in 2015 by residents, organ
           The geography of eviction in Boston mirrors racial segregation, rent burden, and income inequality—with Black and Latinx renters bearing the brunt. <span style="font-size: 0.9rem;">Source: CLVU (2020)</span>
         </h5>
         
+        {:else if currentYearPhase.year === 2020}
+  <h5>Housing insecurity continues to grow while resources are diverted to policing.</h5>
+  <p>
+    
+  </p>
+
 
         
         {/if}
