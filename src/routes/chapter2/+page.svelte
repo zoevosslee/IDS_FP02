@@ -102,12 +102,27 @@
         data: points311
       });
 
+      roxburyMap.addSource('points311', {
+        type: 'geojson',
+        data: points311
+      });
+
       scrollerMap.addSource('evictions', {
+        type: 'geojson',
+        data: evictions
+      });
+      
+      roxburyMap.addSource('evictions', {
         type: 'geojson',
         data: evictions
       });
 
       scrollerMap.addSource('arrestDensity', {
+        type: 'geojson',
+        data: arrestDensity
+      });
+
+      roxburyMap.addSource('arrestDensity', {
         type: 'geojson',
         data: arrestDensity
       });
@@ -210,8 +225,51 @@
           'fill-opacity': 0
         }
       });
+
+      roxburyMap.addLayer({
+        'id': 'choroplethArrests',
+        'type': 'fill',
+        'source': 'arrestDensity',
+        'paint': {
+          'fill-color': [
+            'interpolate',
+            ['linear'],
+            ['get', 'arrest_density'],
+            0, '#E3BFBE',
+            40, '#D6A2A1',
+            80, '#CA8584',
+            120, '#B55554',
+            160, '#A12624'
+          ],
+          'fill-opacity': 0
+        }
+      });
       
       scrollerMap.addLayer({
+        'id': 'heatmap311',
+        'type': 'heatmap',
+        'source': 'points311',
+        'paint': {
+          'heatmap-weight': 1,
+          'heatmap-intensity': 1,
+          'heatmap-radius': ["interpolate", ['exponential', 2], ['zoom'], 10, 2, 15, 64 ],
+          'heatmap-opacity': 0,
+          'heatmap-color': [
+            'interpolate',
+            ['linear'],
+            ['heatmap-density'],
+            0, 'rgba(0,0,255,0)',
+            0.2, 'blue',
+            0.4, 'cyan',
+            0.6, 'lime',
+            0.8, 'yellow',
+            1, 'red'
+          ]
+            }
+      
+      });
+
+      roxburyMap.addLayer({
         'id': 'heatmap311',
         'type': 'heatmap',
         'source': 'points311',
@@ -240,6 +298,11 @@
         data: pointsViolations
       });
 
+      roxburyMap.addSource('pointsViolations', {
+        type: 'geojson',
+        data: pointsViolations
+      });
+
       scrollerMap.addLayer({
         'id': 'heatmapViolations',
         'type': 'heatmap',
@@ -263,7 +326,28 @@
         },
       });
   
-
+      roxburyMap.addLayer({
+        'id': 'heatmapViolations',
+        'type': 'heatmap',
+        'source': 'pointsViolations',
+        'paint': {
+          'heatmap-weight': 1,
+          'heatmap-intensity': 1,
+          'heatmap-radius': ["interpolate", ['exponential', 2], ['zoom'], 10, 1, 15, 32 ],
+          'heatmap-opacity': 0, 
+          'heatmap-color': [
+            'interpolate',
+            ['linear'],
+            ['heatmap-density'],
+            0, 'rgba(0,0,255,0)',
+            0.2, 'purple',
+            0.4, 'magenta',
+            0.6, 'orange',
+            0.8, 'gold',
+            1, 'red'
+          ]
+        },
+      });
 
     scrollerMap.addLayer({
       'id': 'heatmapEvictions',
@@ -272,7 +356,30 @@
       'paint': {
         'heatmap-weight': 1,
         'heatmap-intensity': 1,
-        'heatmap-radius': 2,
+        'heatmap-radius': ["interpolate", ['exponential', 2], ['zoom'], 10, 1, 15, 32 ],
+        'heatmap-opacity': 0, 
+        'heatmap-color': [
+          'interpolate',
+          ['linear'],
+          ['heatmap-density'],
+          0, 'rgba(0,0,255,0)',
+          0.2, 'blue',
+          0.4, 'cyan',
+          0.6, 'lime',
+          0.8, 'yellow',
+          1, 'red'
+        ]
+      },
+    });
+
+    roxburyMap.addLayer({
+      'id': 'heatmapEvictions',
+      'type': 'heatmap',
+      'source': 'evictions',
+      'paint': {
+        'heatmap-weight': 1,
+        'heatmap-intensity': 1,
+        'heatmap-radius': ["interpolate", ['exponential', 2], ['zoom'], 10, 1, 15, 32 ],
         'heatmap-opacity': 0, 
         'heatmap-color': [
           'interpolate',
@@ -336,25 +443,25 @@
     }
 
     $: if (countN !== undefined && roxburyMap) {
-      // if (scrollerMap.getLayer('choroplethArrests')) {
-      //   if (index === 2) {
-      //     scrollerMap.setPaintProperty('choroplethArrests', 'fill-opacity', 1);
-      //   } else {
-      //     scrollerMap.setPaintProperty('choroplethArrests', 'fill-opacity', 0);
-      //   }
-      // }
-      // if (scrollerMap.getLayer('heatmap311') && scrollerMap.getLayer('heatmapViolations')) {
-      //   if (index === 3) {
-      //     scrollerMap.setPaintProperty('heatmap311', 'heatmap-opacity', 0.8);
-      //     scrollerMap.setPaintProperty('heatmapViolations', 'heatmap-opacity', 0);
-      //   } else if (index === 4) {
-      //     scrollerMap.setPaintProperty('heatmap311', 'heatmap-opacity', 0);
-      //     scrollerMap.setPaintProperty('heatmapViolations', 'heatmap-opacity', 0.8);
-      //   } else {
-      //     scrollerMap.setPaintProperty('heatmap311', 'heatmap-opacity', 0);
-      //     scrollerMap.setPaintProperty('heatmapViolations', 'heatmap-opacity', 0);
-      //   }
-      // }
+      if (roxburyMap.getLayer('choroplethArrests')) {
+        if (indexN === 2) {
+          roxburyMap.setPaintProperty('choroplethArrests', 'fill-opacity', 1);
+        } else {
+          roxburyMap.setPaintProperty('choroplethArrests', 'fill-opacity', 0);
+        }
+      }
+      if (roxburyMap.getLayer('heatmap311') && roxburyMap.getLayer('heatmapViolations')) {
+        if (indexN === 3) {
+          roxburyMap.setPaintProperty('heatmap311', 'heatmap-opacity', 0.8);
+          roxburyMap.setPaintProperty('heatmapViolations', 'heatmap-opacity', 0);
+        } else if (indexN === 4) {
+          roxburyMap.setPaintProperty('heatmap311', 'heatmap-opacity', 0);
+          roxburyMap.setPaintProperty('heatmapViolations', 'heatmap-opacity', 0.8);
+        } else {
+          roxburyMap.setPaintProperty('heatmap311', 'heatmap-opacity', 0);
+          roxburyMap.setPaintProperty('heatmapViolations', 'heatmap-opacity', 0);
+        }
+      }
       if (roxburyMap.getLayer('choroplethRentBurden') && roxburyMap.getLayer('circleInvestorPurchases')) {
         if (indexN === 1) {
           roxburyMap.setPaintProperty('choroplethRentBurden', 'fill-opacity', 1);
@@ -364,13 +471,13 @@
           roxburyMap.setPaintProperty('circleInvestorPurchases', 'circle-opacity', 0);
         }
       }
-      // if (scrollerMap.getLayer('heatmapEvictions')) {
-      //   if (index === 5) {
-      //     scrollerMap.setPaintProperty('heatmapEvictions', 'heatmap-opacity', 0.8);
-      //   } else {
-      //     scrollerMap.setPaintProperty('heatmapEvictions', 'heatmap-opacity', 0);
-      //   }
-      // }
+      if (roxburyMap.getLayer('heatmapEvictions')) {
+        if (indexN === 5) {
+          roxburyMap.setPaintProperty('heatmapEvictions', 'heatmap-opacity', 0.8);
+        } else {
+          roxburyMap.setPaintProperty('heatmapEvictions', 'heatmap-opacity', 0);
+        }
+      }
     }
 
     let svgEl;
@@ -813,10 +920,13 @@
               </div>             
             </section>
             <section><p style="font-size: 20px;">Arrests per 1000 (2020-2024))</p>
-              <p>Scholars like <a href="https://www.ucpress.edu/books/golden-gulag/paper">Ruth Wilson Gilmore (2007)</a> have argued that criminalization serves as a tool to justify state violence and the containment of marginalized populations. 
-                By criminalizing certain behaviors and populations, police provide real estate developers with justification for urban renewal efforts that erase community histories and identities.
-                The disproportionate arrest density is particularly stark in neighborhoods where <a href="https://www.bostonplans.org/real-estate/urban-renewal/overview">Boston's Urban Renewal</a> plans are extended, such as Downtown, West End, and Roxbury, in addition to neighborhoods with large Black and migrant populations, such as Mattapan and Dorchester.
+              <p>With 176 arrests per 1000 residents between 2020 and 2024, Roxbury has the second-highest rate of arrests after Downtown. In the 1960s, the city government <a href="https://www.segregationbydesign.com/boston/dudley-street-baptist-church" target="_blank" rel="noopener noreferrer">displaced about 2,500 families and demolished Dudley St Church to make room for a police station</a>. The situation of this police station along with Boston Police Department Headquarters in Roxbury, the heart of Black culture in Boston, is an example of how policing is weaponized against racialized communities. As you can see in the image, the building of this police station coincided with a variety of other “urban renewal” projects that displaced thousands of residents throughout Roxbury. In response, activists formed the Greater Roxbury Incorporation Project (GRIP), also known as the Mandela Initiative, believing that “land control is the key to self-determination.” <a href="https://theflaw.org/articles/activism-and-land-control-in-a-changing-boston/" target="_blank" rel="noopener noreferrer">Saleh Ismail notes:</a>
+              </p>
+                <p><em>After repeated failures by the city government to desegregate the city… Roxbury residents identified Black liberation as the key to ensuring the continuity of their community. Many realized their relationship with the city mirrored the colonial relationship seen in much of the Global South, noting that “the economic relations of the ghetto to white America closely parallel [the relations] between third world nations and the industrially advanced countries.”</em>
                 </p>
+
+                <img src="{base}/roxbury_church_police_station.png" alt="Intersection in 1963 shows a church and many housing units. Same intersection in 2018 shows a police station and many parking lots where the church and housing once were." width=100%/>
+
                 <ul class="legend">
                   <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of 311 calls</p></li>
                   <li style="--color: blue"><span class="swatch"></span><p></p></li>
@@ -828,13 +938,8 @@
                 
             </section>
             <section><p style="font-size: 20px;">311 Service Requests Assigned to Police (2015-2024)</p>
-              <p>Nuisance ordinances are framed as neutral regulatory measures intended to preserve public order, yet their application disproportionately affects Black and low-income communities. 
-                By labeling properties as “nuisances” due to alleged criminal activity, excessive noise, or even repeated police calls, municipalities establish legal grounds for eviction and redevelopment. 
-                As <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/anti.12792">Terra Graziani et al. (2021)</a> argue, these laws operate as “borderland” mechanisms, defining and reshaping urban space to facilitate capital investment. 
-                </p>
-                <p>
-                We have noticed that, across Boston, 311 service requests for noise complaints increased drastically since 2015. North End, a historically redlined neighborhood currently undergoing urban renewal, demonstrates a low arrest rate, but a high density of 311 noise complaint requests. 
-                </p>
+              <p>As we have seen, nuisance ordinances such as noise complaints are a part of the displacement process, leading police and inspectors to residents’ homes. In NYC, noise complaints are rising 70% faster in gentrifying neighborhoods than in the rest of the city <a href="https://psmag.com/social-justice/gentrification-increaes-noise-complaints-in-nyc/" target="_blank" rel="noopener noreferrer">(source)</a>. In Roxbury, noise complaint hotspots are clustered near the police stations and Northeastern University, <a href="https://huntnewsnu.com/50562/city/roxbury-residents-face-gentrification" target="_blank" rel="noopener noreferrer">which is developing student dorms and enrolling more students than it can house</a>. Clusters can be seen directly North and South of Horatio Harris Park, where a student researcher <a href="https://landscapes.northeastern.edu/malav-mehta/" target="_blank" rel="noopener noreferrer">noticed signs of urban renewal</a>. It <a href="https://archives.boston.gov/repositories/2/archival_objects/10334" target="_blank" rel="noopener noreferrer">underwent improvements in 1979-1980</a> and more recently was a <a href="https://www.raydunetz.com/portfolio/horatio-harris-park/" target="_blank" rel="noopener noreferrer">client of a landscape architecture firm</a>. Hotspots are also visible in areas surrounding Malcolm X park—named for the civil rights activist who once lived in Roxbury—the immediate surroundings of which have <a href="https://landscapes.northeastern.edu/malav-mehta/" target="_blank" rel="noopener noreferrer">already experienced gentrification</a>. In 2022, activists demonstrated at mayor Michelle Wu’s coffee hour, <a href="https://baystatebanner.com/2022/06/15/coalition-presses-mayor-on-police-budget/" target="_blank" rel="noopener noreferrer">protesting the city’s reconstruction of the park and plans to build new market-rate housing</a>. This action brought attention to the impact of policing on residents, with the Defund BosCops coalition demanding a $10 million cut to the BPD’s overtime budget.
+</p>
                 <ul class="legend">
                   <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of 311 calls</p></li>
                   <li style="--color: blue"><span class="swatch"></span><p></p></li>
@@ -846,7 +951,8 @@
                 
             </section>
             <section><p style="font-size: 20px;">Building and Property Violations</p>
-              <p>Buildings & property violations seem to be on the rise, showing a similar pattern. These non-criminal, auxiliary policing is more clearly associated with early-stage urban “renewal” than already wealthy neighborhoods, such as North End, East Boston, and Dorchester.</p>
+            <p>Building and property violations are more concentrated on the Eastern side of Roxbury. These are typically associated with the early stages of urban "renewal," while as we have seen, many parts of the West side of Roxbury have already undergone redevelopment and gentrification. The concentration of Department of Buildings violations in Eastern Roxbury may be a warning sign of displacement to come. However, this area has also seen wins for community housing activists. Just past the Eastern border of Dorchester, the <a href="https://www.baystatebanner.com/2022/04/14/housing-activists-seek-to-expand-land-trusts/" target="_blank" rel="noopener noreferrer">Boston Neighborhood Community Land Trust acquired a multi-family home</a>, winning a years-long legal battle with a landlord attempting to evict tenants. They urged the city and state to use federal funds to acquire more land and preserve it as permanent affordable housing.
+            </p>
               <ul class="legend">
                 <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of violations</p></li>
                 <li style="--color: purple"><span class="swatch"></span><p></p></li>
@@ -856,6 +962,19 @@
                 <li style="--color: red"><span class="swatch"></span><p>Highest density of violations</p></li>
               </ul>
               
+            </section>
+            <section><p style="font-size: 20px;">Eviction filings (2020-2022)</p>
+              <p>In addition to the hotspots noted in earlier data—near Northeastern University and surrounding Malcolm X Park—we see a large concentration of evictions along the edge of Franklin Park. This park has been called <a href="https://baystatebanner.com/2025/03/12/franklin-park-bostons-urban-oasis-for-generations/" target="_blank" rel="noopener noreferrer">“the shrine of Black golf in Boston,”</a>, with many local residents caring for the park themselves. The City of Boston just unveiled a $28 million renovation plan for the park, the <a href="https://www.boston.gov/departments/parks-and-recreation/franklin-park-action-plan#about" target="_blank" rel="noopener noreferrer">Franklin Park Action Plan</a>. While some groups have commended the involvement of the community in the creation of the Action Plan, groups like the Franklin Park Defenders are speaking out against the planned <a href="https://www.franklinparkdefenders.com/faqs" target="_blank" rel="noopener noreferrer">privatization of the park’s White Stadium, which was not a part of the approved plan for the park</a>.
+              </p>
+                <ul class="legend">
+                  <li style="--color: rgba(0,0,255,0)"><span class="swatch"></span><p>Lowest density of eviction filings</p></li>
+                  <li style="--color: blue"><span class="swatch"></span><p></p></li>
+                  <li style="--color: cyan"><span class="swatch"></span><p></p></li>
+                  <li style="--color: lime"><span class="swatch"></span><p></p></li>
+                  <li style="--color: yellow"><span class="swatch"></span><p></p></li>
+                  <li style="--color: red"><span class="swatch"></span><p>Highest density of eviction filings</p></li>
+                </ul>
+                
             </section>
           </div>
         </Scroller>
@@ -993,7 +1112,7 @@
       }
       
       section {
-          height: 80vh;
+          min-height: 60vh;
           /* background-color: rgba(255,62,0,0.05); */
           color: white;
           padding: 1em;
